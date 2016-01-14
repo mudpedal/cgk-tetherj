@@ -1,12 +1,13 @@
 package com.cegeka.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
-import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.Util;
+import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
 
 public class DevTest {
 
@@ -31,9 +32,14 @@ public class DevTest {
 		System.out.println(c.getTransactionReceipt("0x19945f66caa2b830dac6e479114b10bce11637bace3e131c5c69db77dea0e561"));
 		*/
 		
-		EthWallet wallet = EthWallet.createWallet("secret");
+		WalletStoragePojoV3 wallet = WalletStoragePojoV3.createWallet("secret");
 		System.out.println(wallet.toString());
-		wallet.writeToFile(new File("/home/andreicg/.ethereum/keystore/walletGen"));
+		try {
+			wallet.writeToFile(new File("/home/andreicg/.ethereum/keystore/walletGen"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
