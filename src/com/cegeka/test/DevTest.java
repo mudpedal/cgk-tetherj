@@ -1,10 +1,11 @@
 package com.cegeka.test;
 
-import java.lang.reflect.Array;
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
+import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.Util;
 
 public class DevTest {
@@ -12,6 +13,7 @@ public class DevTest {
 	public static EthRpcClient c = new EthRpcClient();
 	
 	public static void main(String[] args) {
+		/*
 		c.unlockAccount(c.getCoinbase(), "secret");
 		//System.out.println(c.getTransaction("0x19945f66caa2b830dac6e479114b10bce11637bace3e131c5c69db77dea0e561"));
 		
@@ -27,7 +29,11 @@ public class DevTest {
 		System.out.println(c.getTransaction(tx));
 		
 		System.out.println(c.getTransactionReceipt("0x19945f66caa2b830dac6e479114b10bce11637bace3e131c5c69db77dea0e561"));
+		*/
 		
+		EthWallet wallet = EthWallet.createWallet("secret");
+		System.out.println(wallet.toString());
+		wallet.writeToFile(new File("/home/andreicg/.ethereum/keystore/walletGen"));
 	}
 
 }
