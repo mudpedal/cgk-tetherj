@@ -1,18 +1,16 @@
 package com.cegeka.blocklinks.api;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.concurrent.Callable;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
+import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
 
 /**
- * Implementation for a provisioning service for Ethereum
+ * Implementation for an Ethereum service api
  *
  */
 public class EthereumService {
@@ -27,21 +25,16 @@ public class EthereumService {
 	private final EthRpcClient rpc = new EthRpcClient();
 	private final ScheduledExecutorService executor;
 
-	/**
-	 * Creates an Ethereum provisioning service
-	 * 
-	 * @param rootAccount
-	 *            account used for funding
-	 * @param secret
-	 *            secret to be used for operations
-	 * @param executor
-	 */
 	public EthereumService(ScheduledExecutorService executor, File keystoreDir) {
 		this.executor = executor;
 	}
 	
-	public void createWallet(String passphrase) {
-		throw new UnsupportedOperationException("Not implemented yet!");
+	public EthWallet createWallet(String passphrase) {
+		return EthWallet.createWallet(passphrase);
+	}
+	
+	public EthRpcClient getRpcClient() {
+		return rpc;
 	}
 
 	private void listenForTxReceipt(final String txHash, final int checkIntervalMillis, final int checks,

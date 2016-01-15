@@ -7,7 +7,7 @@ import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
 
 public class EthWallet {
 	WalletStoragePojoV3 storage;
-	byte[] privateKey;
+	private byte[] privateKey;
 	
 	private EthWallet(WalletStoragePojoV3 storage) {
 		privateKey = null;
@@ -26,6 +26,10 @@ public class EthWallet {
 		return new EthWallet(WalletStoragePojoV3.loadWalletFromFile(file));
 	}
 	
+	public void writeToFile(File file) throws IOException {
+		storage.writeToFile(file);
+	}
+	
 	public boolean isUnlocked() {
 		return privateKey != null;
 	}
@@ -39,7 +43,22 @@ public class EthWallet {
 		return true;
 	}
 	
+	/*
+	 * Be careful with it
+	 */
+	public String getPrivateKey() {
+		if (privateKey != null) {
+			return com.cegeka.blocklinks.ethereum.crypto.Util.byteToHex(privateKey);
+		}
+		
+		return null;
+	}
+	
 	public void lock() {
 		storage = null;
+	}
+
+	public WalletStoragePojoV3 getStorage() {
+		return storage;
 	}
 }
