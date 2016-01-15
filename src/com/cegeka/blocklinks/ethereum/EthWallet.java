@@ -2,6 +2,12 @@ package com.cegeka.blocklinks.ethereum;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatterBuilder;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
 
@@ -82,5 +88,13 @@ public class EthWallet {
 	 */
 	public WalletStoragePojoV3 getStorage() {
 		return storage;
+	}
+
+	public String generateStandardFilename() {
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-DD'T'HH-mm-ss'.'SS");
+		DateTime now = DateTime.now(DateTimeZone.UTC);
+		
+		String filename = "UTC--" + now.toString(fmt) + "--" + storage.getAddress();
+		return filename;
 	}
 }

@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.Util;
@@ -36,7 +40,8 @@ public class DevTest {
 		EthWallet wallet = EthWallet.createWallet("secret");
 		System.out.println("Created wallet " + wallet.getStorage().toString());
 		try {
-			wallet.writeToFile(new File("/home/andreicg/.ethereum/keystore/walletGen"));
+			String filename = wallet.generateStandardFilename();
+			wallet.writeToFile(new File("/home/andreicg/.ethereum/keystore/" + filename));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -49,6 +54,7 @@ public class DevTest {
 		if (unlockHandle && wallet.isUnlocked()) {
 			System.out.println("Wallet is now unlocked!");
 		}
+		
 		System.out.println("Private key from unlock is " + wallet.getPrivateKey());
 	}
 
