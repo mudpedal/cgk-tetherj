@@ -18,22 +18,38 @@ public class EthWallet {
 		return new EthWallet(WalletStoragePojoV3.createWallet(passphrase));
 	}
 	
+	/* 
+	 * Accepts only version 3 storage wallets
+	 */
 	public static EthWallet loadWalletFromString(String json) {
 		return new EthWallet(WalletStoragePojoV3.loadWalletFromString(json));
 	}
 	
+	/* 
+	 * Accepts only version 3 storage wallets
+	 */
 	public static EthWallet loadWalletFromFile(File file) throws IOException {
 		return new EthWallet(WalletStoragePojoV3.loadWalletFromFile(file));
 	}
 	
+	/* 
+	 * Writes the wallet to disk in version 3 format.
+	 */
 	public void writeToFile(File file) throws IOException {
 		storage.writeToFile(file);
 	}
 	
+	/* 
+	 * Is the private key available? If true then this wallet can be used to sign transactions
+	 */
 	public boolean isUnlocked() {
 		return privateKey != null;
 	}
 	
+	/* 
+	 * Uncrypt and store private key(temporarily). May be locked to prevent further signing.
+	 * @return Returns true if passphrase was correct.
+	 */
 	public boolean unlock(String passphrase) {
 		privateKey = storage.getPrivateKey(passphrase);
 		if (privateKey == null) {
@@ -44,7 +60,7 @@ public class EthWallet {
 	}
 	
 	/*
-	 * Be careful with it
+	 * Returns hex privateKey, be careful with it, don't expose it.
 	 */
 	public String getPrivateKey() {
 		if (privateKey != null) {
@@ -54,10 +70,16 @@ public class EthWallet {
 		return null;
 	}
 	
+	/*
+	 * Delete private key from temporary storage, further signing won't be possible.
+	 */
 	public void lock() {
 		storage = null;
 	}
 
+	/*
+	 * Get the wallet storage, may be used to get storage information
+	 */
 	public WalletStoragePojoV3 getStorage() {
 		return storage;
 	}
