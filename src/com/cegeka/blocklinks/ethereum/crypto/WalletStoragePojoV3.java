@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
@@ -22,9 +23,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.crypto.digests.KeccakDigest;
-import org.bouncycastle.jce.spec.ECPrivateKeySpec;
-import org.bouncycastle.jce.spec.ECPublicKeySpec;
-import org.bouncycastle.math.ec.ECPoint;
+import org.ethereum.crypto.ECKey;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -92,20 +91,11 @@ public class WalletStoragePojoV3 {
 		wallet.version = storageVersion;
 		wallet.id = UUID.randomUUID().toString();
 
-		KeyPair ecdsaPair = Util.generateECDSAPair();
+		ECKey ecdsaPair = new ECKey();
 
 		try {
-			KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-			ECPrivateKeySpec privateSpec = kf.getKeySpec(ecdsaPair.getPrivate(), ECPrivateKeySpec.class);
-			byte[] privateKeyBytesWithHeader = privateSpec.getD().toByteArray();
-			ECPublicKeySpec publicSpec = kf.getKeySpec(ecdsaPair.getPublic(), ECPublicKeySpec.class);
-			ECPoint publicPoint = publicSpec.getQ();
-			byte[] publicKeyBytesWithHeader = publicPoint.getEncoded(false);
-			
-			byte[] privateKeyBytes = Arrays.copyOfRange(privateKeyBytesWithHeader, 1, privateKeyBytesWithHeader.length);
-			byte[] publicKeyBytes = Arrays.copyOfRange(publicKeyBytesWithHeader, 1, publicKeyBytesWithHeader.length);
-
-			wallet.address = Util.getEthereumAddress(publicKeyBytes);
+			wallet.address = CryptoUtil.byteToHex(ecdsaPair.getAddress());
+			byte[] privateKeyBytes = ecdsaPair.getPrivKeyBytes();
 
 			WalletCryptoPojoV3 crypto = new WalletCryptoPojoV3();
 			wallet.crypto = crypto;
@@ -114,14 +104,18 @@ public class WalletStoragePojoV3 {
 			// create key to crypt private key with AES
 			// key will be a derived hash
 
-			String salt = "7431f7e1f1d253fdb0a74d597267fad836786863d70b451162011937279351ec";
+			byte[] saltBytes = new byte[32];
+			Random saltRandom = new Random();
+			saltRandom.nextBytes(saltBytes);
+			String salt = CryptoUtil.byteToHex(saltBytes);
+			
 			crypto.kdf = kdf;
 			crypto.kdfparams.salt = salt;
 			crypto.kdfparams.dklen = dklen;
 			crypto.kdfparams.prf = prf;
 			crypto.kdfparams.c = iterations;
 
-			byte[] key = Pbkdf2.derive(passphrase, Util.hexToBytes(salt), crypto.kdfparams.c, crypto.kdfparams.dklen);
+			byte[] key = Pbkdf2.derive(passphrase, saltBytes, crypto.kdfparams.c, crypto.kdfparams.dklen);
 
 			// select AES algorithm
 			Cipher c = Cipher.getInstance("AES/CTR/NoPadding");
@@ -150,9 +144,9 @@ public class WalletStoragePojoV3 {
 			md.doFinal(mac, 0);
 
 			// set in storage
-			crypto.mac = Util.byteToHex(mac);
-			crypto.cipherparams.iv = Util.byteToHex(iv);
-			crypto.ciphertext = Util.byteToHex(ciphertext);
+			crypto.mac = CryptoUtil.byteToHex(mac);
+			crypto.cipherparams.iv = CryptoUtil.byteToHex(iv);
+			crypto.ciphertext = CryptoUtil.byteToHex(ciphertext);
 
 		} catch (InvalidKeyException e) {
 			e.printStackTrace();
@@ -163,12 +157,6 @@ public class WalletStoragePojoV3 {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -230,7 +218,7 @@ public class WalletStoragePojoV3 {
 	 */
 	public byte[] getPrivateKey(String passphrase) {
 		if (crypto.cipher == cipher && crypto.kdf == kdf) {
-			byte[] key = Pbkdf2.derive(passphrase, Util.hexToBytes(crypto.kdfparams.salt), crypto.kdfparams.c,
+			byte[] key = Pbkdf2.derive(passphrase, CryptoUtil.hexToBytes(crypto.kdfparams.salt), crypto.kdfparams.c,
 					crypto.kdfparams.dklen);
 			try {
 				Cipher c = Cipher.getInstance("AES/CTR/NoPadding");
@@ -242,7 +230,7 @@ public class WalletStoragePojoV3 {
 				// ethereum standard)
 				byte[] macKey = Arrays.copyOfRange(key, 16, 32);
 
-				byte[] ciphertext = Util.hexToBytes(crypto.ciphertext);
+				byte[] ciphertext = CryptoUtil.hexToBytes(crypto.ciphertext);
 				// generate MAC as per ethereum standard
 				KeccakDigest md = new KeccakDigest(256);
 				byte[] macSource = new byte[macKey.length + ciphertext.length];
@@ -253,17 +241,17 @@ public class WalletStoragePojoV3 {
 				byte[] mac = new byte[md.getDigestSize()];
 				md.doFinal(mac, 0);
 
-				if (!Util.byteToHex(mac).equals(crypto.mac)) {
+				if (!CryptoUtil.byteToHex(mac).equals(crypto.mac)) {
 					// MAC MISMATCH
 					return null;
 				}
 
 				SecretKeySpec secretKeySpec = new SecretKeySpec(trimmedKey, "AES");
-				byte[] ivAsBytes = Util.hexToBytes(crypto.cipherparams.iv);
+				byte[] ivAsBytes = CryptoUtil.hexToBytes(crypto.cipherparams.iv);
 				IvParameterSpec iv = new IvParameterSpec(ivAsBytes);
 				c.init(Cipher.DECRYPT_MODE, secretKeySpec, iv);
 
-				byte[] privateKey = c.doFinal(Util.hexToBytes(crypto.ciphertext));
+				byte[] privateKey = c.doFinal(CryptoUtil.hexToBytes(crypto.ciphertext));
 
 				return privateKey;
 

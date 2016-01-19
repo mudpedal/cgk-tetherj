@@ -16,6 +16,8 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+  </repositories>
   <dependencies>
   	<dependency>
 	  	<groupId>joda-time</groupId>
@@ -36,6 +38,12 @@
 		<groupId>org.bouncycastle</groupId>
 		<artifactId>bcprov-jdk15on</artifactId>
 		<version>1.54</version>
+	</dependency>
+	<dependency>
+    <groupId>ethereumj-light</groupId>
+    <artifactId>ethereumj-light</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <scope>bundle</scope>
 	</dependency>
   </dependencies>
 </project>

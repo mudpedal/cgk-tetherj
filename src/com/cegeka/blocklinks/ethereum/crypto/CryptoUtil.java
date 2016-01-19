@@ -11,8 +11,10 @@ import java.util.Arrays;
 import java.util.Formatter;
 
 import org.bouncycastle.crypto.digests.KeccakDigest;
+import org.ethereum.crypto.ECKey;
+import org.ethereum.crypto.SHA3Helper;
 
-public class Util {
+public class CryptoUtil {
 	public static String byteToHex(final byte[] hash) {
 		Formatter formatter = new Formatter();
 		for (byte b : hash) {
@@ -50,39 +52,5 @@ public class Util {
 			return (byte) (10 + c - 'a');
 		}
 		throw new IllegalArgumentException("Invalid hex character");
-	}
-	
-	public static KeyPair generateECDSAPair() {
-		
-		try {
-			if (Security.getProvider("BC") == null) {
-				Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-			}
-			
-			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA", "BC");
-			ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
-			keyGen.initialize(ecSpec);
-		    return keyGen.generateKeyPair();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			e.printStackTrace();
-		} catch (InvalidAlgorithmParameterException e) {
-			e.printStackTrace();
-		}
-		
-	    return null;
-	}
-	
-	public static String getEthereumAddress(byte[] publicKey) {
-		// generate MAC as per ethereum standard
-		KeccakDigest md = new KeccakDigest(256);
-		md.update(publicKey, 0, publicKey.length);
-		byte[] digest = new byte[md.getDigestSize()];
-		md.doFinal(digest, 0);
-		
-		byte[] trim = Arrays.copyOfRange(digest, 12, 32);
-		
-		return byteToHex(trim);
 	}
 }
