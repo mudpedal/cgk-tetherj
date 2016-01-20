@@ -1,7 +1,7 @@
 package com.cegeka.blocklinks.api;
 
 public class BlocklinksResponse<T> {
-	public ErrorTypes getErrType() {
+	public ErrorType getErrType() {
 		return errType;
 	}
 
@@ -13,11 +13,11 @@ public class BlocklinksResponse<T> {
 		return resp;
 	}
 
-	private final ErrorTypes errType;
+	private final ErrorType errType;
 	private final Exception ex;
 	private final T resp;
 	
-	public BlocklinksResponse (ErrorTypes errType, Exception ex, T resp) {
+	public BlocklinksResponse (ErrorType errType, Exception ex, T resp) {
 		this.errType = errType;
 		this.ex = ex;
 		this.resp = resp;

@@ -1,18 +1,11 @@
 package com.cegeka.test;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.ConnectException;
+
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.ethereum.core.CallTransaction;
-import org.ethereum.core.CallTransaction.Function;
-import org.ethereum.core.Transaction;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
