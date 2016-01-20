@@ -32,34 +32,33 @@ public class EthRpcClient {
 		}
 	}
 
-	public String getCoinbase() {
+	public String getCoinbase() throws JsonRpcClientException {
 		return rpc.eth_coinbase();
 	}
 	
-	public String[] getAccounts() {
+	public String[] getAccounts()throws JsonRpcClientException {
 		return rpc.eth_accounts();
 	}
 	
-	public BigInteger getAccountNonce(String address) {
+	public BigInteger getAccountNonce(String address) throws JsonRpcClientException {
 		String nonce = rpc.eth_getTransactionCount(address);
 		return CryptoUtil.hexToBigInteger(nonce);
 	}
 
-	public boolean unlockAccount(String address, String secret) {
+	public boolean unlockAccount(String address, String secret) throws JsonRpcClientException {
 		return rpc.personal_unlockAccount(address, secret);
 	}
 
-	public String sendTransaction(String from, String fromSecret, String to, BigInteger valueWei) {
+	public String sendTransaction(String from, String fromSecret, String to, BigInteger valueWei) throws JsonRpcClientException {
 		boolean unlock = rpc.personal_unlockAccount(from, fromSecret);
 
 		if (unlock) {
 			return this.sendTransaction(from, to, valueWei);
 		}
-
 		return null;
 	}
 
-	public String sendTransaction(String from, String to, BigInteger valueWei) {
+	public String sendTransaction(String from, String to, BigInteger valueWei) throws JsonRpcClientException {
 		Transaction t = new Transaction();
 
 		t.setFrom(from.toString());
@@ -69,30 +68,24 @@ public class EthRpcClient {
 		return rpc.eth_sendTransaction(t);
 	}
 	
-	public String sendRawTransaction(String encodedSignedTransaction) {
-		try {
-			return rpc.eth_sendRawTransaction(encodedSignedTransaction);
-		} catch (JsonRpcClientException e) {
-			System.out.println("Caught message " + e.getMessage() + "!");
-		}
-		
-		return null;
+	public String sendRawTransaction(String encodedSignedTransaction) throws JsonRpcClientException {
+		return rpc.eth_sendRawTransaction(encodedSignedTransaction);
 	}
 	
-	public String sendRawTransaction(byte[] encodedSignedTransaction) {
+	public String sendRawTransaction(byte[] encodedSignedTransaction) throws JsonRpcClientException {
 		return sendRawTransaction(CryptoUtil.byteToHex(encodedSignedTransaction));
 	}
 
-	public BigInteger getBalance(String address) {
+	public BigInteger getBalance(String address) throws JsonRpcClientException {
 		String balance = rpc.eth_getBalance(address);
 		return CryptoUtil.hexToBigInteger(balance);
 	}
 
-	public TransactionReceipt getTransactionReceipt(String txHash) {
+	public TransactionReceipt getTransactionReceipt(String txHash) throws JsonRpcClientException {
 		return rpc.eth_getTransactionReceipt(txHash);
 	}
 	
-	public Transaction getTransaction(String txHash) {
+	public Transaction getTransaction(String txHash) throws JsonRpcClientException {
 		return rpc.eth_getTransactionByHash(txHash);
 	}
 }

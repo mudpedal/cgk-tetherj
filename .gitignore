@@ -1,3 +1,6 @@
 /bin/
 /target/
-.settings/
+/.settings/
+/ethereumj-light/bin/
+/ethereumj-light/target/
+/ethereumj-light/.settings/

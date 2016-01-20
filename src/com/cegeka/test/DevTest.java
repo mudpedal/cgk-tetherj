@@ -2,9 +2,13 @@ package com.cegeka.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.ConnectException;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.ethereum.core.CallTransaction;
 import org.ethereum.core.CallTransaction.Function;
@@ -13,6 +17,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import com.cegeka.blocklinks.api.BlocklinksCallable;
+import com.cegeka.blocklinks.api.BlocklinksResponse;
 import com.cegeka.blocklinks.api.EthereumService;
 import com.cegeka.blocklinks.api.WalletLockedException;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
@@ -21,6 +27,7 @@ import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.Util;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
+import com.googlecode.jsonrpc4j.JsonRpcClientException;
 
 public class DevTest {
 
@@ -66,26 +73,43 @@ public class DevTest {
 		 * wallet.getPrivateKey());
 		 */
 
-		EthWallet wallet = EthWallet.createWallet("secret");
+		/*
+		 * EthWallet wallet = EthWallet.createWallet("secret");
+		 * 
+		 * String to2 = "5cc3a427f9c91781625ea36fa3b2f71baa8467bb"; try { String
+		 * filename = wallet.generateStandardFilename();
+		 * wallet.writeToDummyFile(new File("/home/andreicg/.ethereum/keystore/"
+		 * + filename)); } catch (IOException e) { // TODO Auto-generated catch
+		 * block e.printStackTrace(); }
+		 * 
+		 * try { c.getAccounts(); EthTransaction tx = new EthTransaction(to2,
+		 * BigInteger.ONE); BigInteger nonce =
+		 * c.getAccountNonce(wallet.getStorage().getAddress()); byte[] raw =
+		 * tx.signWithWallet(wallet, nonce, "secret"); System.out.println(
+		 * "Signed: " + CryptoUtil.byteToHex(raw));
+		 * 
+		 * c.sendRawTransaction(raw); } catch (WalletLockedException e) {
+		 * e.printStackTrace(); } catch (JsonRpcClientException je) {
+		 * je.printStackTrace(); } catch (UndeclaredThrowableException ce) {
+		 * ce.printStackTrace(); }
+		 * 
+		 */
 
-		String to2 = "5cc3a427f9c91781625ea36fa3b2f71baa8467bb";
-		try {
-			String filename = wallet.generateStandardFilename();
-			wallet.writeToDummyFile(new File("/home/andreicg/.ethereum/keystore/" + filename));
-		} catch (IOException e) { // TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		try {
-			EthTransaction tx = new EthTransaction(to2, BigInteger.ONE);
-			BigInteger nonce = c.getAccountNonce(wallet.getStorage().getAddress());
-			byte[] raw = tx.signWithWallet(wallet, nonce, "secret");
-			System.out.println("Signed: " + CryptoUtil.byteToHex(raw));
-			
-			c.sendRawTransaction(raw);
-		} catch (WalletLockedException e) {
-			e.printStackTrace();
-		}
-		
+		File keystore = new File("/home/andreicg/.ethereum/keystore");
+		ScheduledExecutorService exec = Executors.newScheduledThreadPool(2);
+		EthereumService service = new EthereumService(exec, keystore);
+
+		service.getAccounts(new BlocklinksCallable<String[]>() {
+
+			@Override
+			public void call(BlocklinksResponse<String[]> response) {
+				if (response.getErrType() != null) {
+					System.out.println("GOT ERROR " + response.getErrType().name());
+				} else {
+					System.out.println("GOT response " + Arrays.toString(response.getResp()));
+				}
+			}
+		});
+
 	}
 }

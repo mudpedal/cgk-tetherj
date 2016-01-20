@@ -56,8 +56,9 @@ public class CryptoUtil {
 	}
 
 	public static byte[] hexToBytes(char[] hex) {
-		if (hex.length % 2 != 0)
+		if (hex.length % 2 != 0) {
 			throw new IllegalArgumentException("Must pass an even number of characters.");
+		}
 
 		int length = hex.length >> 1;
 		byte[] raw = new byte[length];
