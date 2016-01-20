@@ -9,7 +9,9 @@ public interface EthRpcInterface {
 	Transaction 		eth_getTransactionByHash(String txhash);
 	TransactionReceipt 	eth_getTransactionReceipt(String txhash);
 	String 				eth_sendTransaction(Transaction t);
+	String 				eth_sendRawTransaction(String encoded);
 	String 				eth_coinbase();
+	String				eth_getTransactionCount(String address);
 	
 	/** 
 	 * experimental, remote unlocking

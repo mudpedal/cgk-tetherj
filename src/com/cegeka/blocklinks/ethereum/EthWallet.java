@@ -2,6 +2,7 @@ package com.cegeka.blocklinks.ethereum;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -14,6 +15,7 @@ import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
 public class EthWallet {
 	WalletStoragePojoV3 storage;
 	private byte[] privateKey;
+	private BigInteger nonce;
 	
 	private EthWallet(WalletStoragePojoV3 storage) {
 		privateKey = null;
@@ -43,6 +45,14 @@ public class EthWallet {
 	 */
 	public void writeToFile(File file) throws IOException {
 		storage.writeToFile(file);
+	}
+	
+	/* 
+	 * Call this to write to geth dir so that geth will allow transactions on this wallet (private key won't
+	 * be stored.
+	 */
+	public void writeToDummyFile(File file) throws IOException {
+		storage.writeToDummyFile(file);
 	}
 	
 	/* 

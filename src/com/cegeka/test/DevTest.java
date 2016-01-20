@@ -13,7 +13,10 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import com.cegeka.blocklinks.api.EthereumService;
+import com.cegeka.blocklinks.api.WalletLockedException;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
+import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.Util;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
@@ -65,35 +68,24 @@ public class DevTest {
 
 		EthWallet wallet = EthWallet.createWallet("secret");
 
-		BigInteger amount = Util.fromEtherToWei(1);
-		BigInteger nonce = BigInteger.ONE;
-		BigInteger gasPrice = BigInteger.valueOf(50000000000L);
-		BigInteger gasLimit = BigInteger.valueOf(100000L);
-
 		String to2 = "5cc3a427f9c91781625ea36fa3b2f71baa8467bb";
-		Transaction tx = Transaction.create(to2, amount, nonce, gasPrice, gasLimit);
-		byte[] encoded = tx.getEncoded();
-		byte[] encodedRaw = tx.getEncodedRaw();
-		System.out.println("Enc " + CryptoUtil.byteToHex(encoded));
-		System.out.println("Raw " + CryptoUtil.byteToHex(encodedRaw));
-
-		wallet.unlock("secret");
-		tx.sign(CryptoUtil.hexToBytes(wallet.getPrivateKey()));
-
-		encoded = tx.getEncoded();
-		encodedRaw = tx.getEncodedRaw();
-		System.out.println("Enc " + CryptoUtil.byteToHex(encoded));
-		System.out.println("Raw " + CryptoUtil.byteToHex(encodedRaw));
-
-		System.out.println("wallet is " + wallet.getStorage().getAddress());
-		System.out.println("PrivKey is " + wallet.getPrivateKey());
 		try {
 			String filename = wallet.generateStandardFilename();
-			wallet.writeToFile(new File("/home/andreicg/.ethereum/keystore/" + filename));
+			wallet.writeToDummyFile(new File("/home/andreicg/.ethereum/keystore/" + filename));
 		} catch (IOException e) { // TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		try {
+			EthTransaction tx = new EthTransaction(to2, BigInteger.ONE);
+			BigInteger nonce = c.getAccountNonce(wallet.getStorage().getAddress());
+			byte[] raw = tx.signWithWallet(wallet, nonce, "secret");
+			System.out.println("Signed: " + CryptoUtil.byteToHex(raw));
+			
+			c.sendRawTransaction(raw);
+		} catch (WalletLockedException e) {
+			e.printStackTrace();
+		}
+		
 	}
-
 }

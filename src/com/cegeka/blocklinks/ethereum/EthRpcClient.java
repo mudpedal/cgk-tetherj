@@ -4,8 +4,10 @@ import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.pojo.Transaction;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
+import com.googlecode.jsonrpc4j.JsonRpcClientException;
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
 import com.googlecode.jsonrpc4j.ProxyUtil;
 
@@ -37,6 +39,11 @@ public class EthRpcClient {
 	public String[] getAccounts() {
 		return rpc.eth_accounts();
 	}
+	
+	public BigInteger getAccountNonce(String address) {
+		String nonce = rpc.eth_getTransactionCount(address);
+		return CryptoUtil.hexToBigInteger(nonce);
+	}
 
 	public boolean unlockAccount(String address, String secret) {
 		return rpc.personal_unlockAccount(address, secret);
@@ -61,21 +68,24 @@ public class EthRpcClient {
 
 		return rpc.eth_sendTransaction(t);
 	}
+	
+	public String sendRawTransaction(String encodedSignedTransaction) {
+		try {
+			return rpc.eth_sendRawTransaction(encodedSignedTransaction);
+		} catch (JsonRpcClientException e) {
+			System.out.println("Caught message " + e.getMessage() + "!");
+		}
+		
+		return null;
+	}
+	
+	public String sendRawTransaction(byte[] encodedSignedTransaction) {
+		return sendRawTransaction(CryptoUtil.byteToHex(encodedSignedTransaction));
+	}
 
 	public BigInteger getBalance(String address) {
 		String balance = rpc.eth_getBalance(address);
-
-		// remove 0x
-		if (balance.startsWith("0x")) {
-			balance = balance.substring(2);
-		}
-
-		// remove starting zeros
-		while (balance.length() > 0 && balance.charAt(0) == '0') {
-			balance = balance.substring(1);
-		}
-
-		return new BigInteger(balance, 16);
+		return CryptoUtil.hexToBigInteger(balance);
 	}
 
 	public TransactionReceipt getTransactionReceipt(String txHash) {

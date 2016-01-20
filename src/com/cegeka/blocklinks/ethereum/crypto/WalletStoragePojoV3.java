@@ -276,4 +276,20 @@ public class WalletStoragePojoV3 {
 		return null;
 	}
 
+	public void writeToDummyFile(File file) throws IOException {
+		String walletAddress = getAddress();
+		Object dummy = new Object () {
+			public String address = walletAddress;
+		};
+		
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.writeValue(file, dummy);
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
