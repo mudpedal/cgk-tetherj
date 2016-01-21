@@ -13,7 +13,11 @@ import java.util.Arrays;
  */
 public class ByteArrayWrapper implements Comparable<ByteArrayWrapper>, Serializable {
 
-    private final byte[] data;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4940769515293188832L;
+	private final byte[] data;
     private int hashCode = 0;
 
     public ByteArrayWrapper(byte[] data) {

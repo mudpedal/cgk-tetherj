@@ -8,12 +8,19 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import com.cegeka.blocklinks.api.EthereumService;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class EthWallet {
+	
 	WalletStoragePojoV3 storage;
 	private byte[] privateKey;
+	
+	private static final Logger logger = LogManager.getLogger(EthWallet.class);
 	
 	private EthWallet(WalletStoragePojoV3 storage) {
 		privateKey = null;
@@ -21,27 +28,34 @@ public class EthWallet {
 	}
 	
 	public static EthWallet createWallet(String passphrase) {
-		return new EthWallet(WalletStoragePojoV3.createWallet(passphrase));
+		EthWallet wallet = new EthWallet(WalletStoragePojoV3.createWallet(passphrase)); 
+		logger.info("Generated wallet " + wallet.getStorage().toString());
+		return wallet;
 	}
 	
 	/* 
 	 * Accepts only version 3 storage wallets
 	 */
 	public static EthWallet loadWalletFromString(String json) {
-		return new EthWallet(WalletStoragePojoV3.loadWalletFromString(json));
+		EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromString(json));
+		logger.debug("Load wallet from string " + wallet.getStorage().toString());
+		return wallet;
 	}
 	
 	/* 
 	 * Accepts only version 3 storage wallets
 	 */
 	public static EthWallet loadWalletFromFile(File file) throws IOException {
-		return new EthWallet(WalletStoragePojoV3.loadWalletFromFile(file));
+		EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromFile(file));
+		logger.debug("Load wallet from string " + wallet.getStorage().toString());
+		return wallet;
 	}
 	
 	/* 
 	 * Writes the wallet to disk in version 3 format.
 	 */
 	public void writeToFile(File file) throws IOException {
+		logger.debug("Write wallet to file " + file.getAbsolutePath() + " " + storage.toString());
 		storage.writeToFile(file);
 	}
 	
@@ -50,6 +64,7 @@ public class EthWallet {
 	 * be stored.
 	 */
 	public void writeToDummyFile(File file) throws IOException {
+		logger.debug("Write dummy wallet to file " + file.getAbsolutePath() + " " + storage.toString());
 		storage.writeToDummyFile(file);
 	}
 	
@@ -67,9 +82,11 @@ public class EthWallet {
 	public boolean unlock(String passphrase) {
 		privateKey = storage.getPrivateKey(passphrase);
 		if (privateKey == null) {
+			logger.debug("Failed to unlock wallet " + storage.toString());
 			return false;
 		}
 		
+		logger.debug("Unlocked wallet " + storage.toString());
 		return true;
 	}
 	
@@ -88,6 +105,7 @@ public class EthWallet {
 	 * Delete private key from temporary storage, further signing won't be possible.
 	 */
 	public void lock() {
+		logger.debug("Locked wallet " + storage.toString());
 		storage = null;
 	}
 

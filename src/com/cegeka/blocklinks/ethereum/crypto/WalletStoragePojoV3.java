@@ -211,7 +211,7 @@ public class WalletStoragePojoV3 {
 	 * Use this to "unlock" and store the private key somewhere
 	 */
 	public byte[] getPrivateKey(String passphrase) {
-		if (crypto.cipher == cipher && crypto.kdf == kdf) {
+		if (crypto.cipher.equals(cipher) && crypto.kdf.equals(kdf)) {
 			byte[] key = Pbkdf2.derive(passphrase, CryptoUtil.hexToBytes(crypto.kdfparams.salt), crypto.kdfparams.c,
 					crypto.kdfparams.dklen);
 			try {
@@ -260,7 +260,6 @@ public class WalletStoragePojoV3 {
 			} catch (BadPaddingException e) {
 				e.printStackTrace();
 			} catch (InvalidAlgorithmParameterException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else {
@@ -285,5 +284,4 @@ public class WalletStoragePojoV3 {
 			e.printStackTrace();
 		}
 	}
-
 }

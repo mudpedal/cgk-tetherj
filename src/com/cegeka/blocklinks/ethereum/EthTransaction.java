@@ -25,6 +25,10 @@ public class EthTransaction {
 			throw new WalletLockedException();
 		}
 		
+		if (to.startsWith("0x")) {
+			to = to.substring(2);
+		}
+		
 		Transaction tx = Transaction.create(to, weiValue, nonce, gasPrice, gasLimit);
 		tx.sign(CryptoUtil.hexToBytes(privateKey));
 		return tx.getEncoded();

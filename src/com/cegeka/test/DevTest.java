@@ -1,14 +1,12 @@
 package com.cegeka.test;
 
 import java.io.File;
-
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import com.cegeka.blocklinks.api.BlocklinksCallable;
 import com.cegeka.blocklinks.api.BlocklinksResponse;
@@ -19,7 +17,7 @@ import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.Util;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
-import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
+import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
 
 public class DevTest {
@@ -27,6 +25,7 @@ public class DevTest {
 	public static EthRpcClient c = new EthRpcClient();
 
 	public static void main(String[] args) {
+
 		/*
 		 * c.unlockAccount(c.getCoinbase(), "secret");
 		 * //System.out.println(c.getTransaction(
@@ -66,32 +65,43 @@ public class DevTest {
 		 * wallet.getPrivateKey());
 		 */
 
-		/*
-		 * EthWallet wallet = EthWallet.createWallet("secret");
-		 * 
-		 * String to2 = "5cc3a427f9c91781625ea36fa3b2f71baa8467bb"; try { String
-		 * filename = wallet.generateStandardFilename();
-		 * wallet.writeToDummyFile(new File("/home/andreicg/.ethereum/keystore/"
-		 * + filename)); } catch (IOException e) { // TODO Auto-generated catch
-		 * block e.printStackTrace(); }
-		 * 
-		 * try { c.getAccounts(); EthTransaction tx = new EthTransaction(to2,
-		 * BigInteger.ONE); BigInteger nonce =
-		 * c.getAccountNonce(wallet.getStorage().getAddress()); byte[] raw =
-		 * tx.signWithWallet(wallet, nonce, "secret"); System.out.println(
-		 * "Signed: " + CryptoUtil.byteToHex(raw));
-		 * 
-		 * c.sendRawTransaction(raw); } catch (WalletLockedException e) {
-		 * e.printStackTrace(); } catch (JsonRpcClientException je) {
-		 * je.printStackTrace(); } catch (UndeclaredThrowableException ce) {
-		 * ce.printStackTrace(); }
-		 * 
-		 */
-
 		File keystore = new File("/home/andreicg/.ethereum/keystore");
 		ScheduledExecutorService exec = Executors.newScheduledThreadPool(2);
 		EthereumService service = new EthereumService(exec, keystore);
 
+		EthWallet wallet = EthWallet.loadWalletFromString("{\"address\":\"3b4277a7d0314fb70a2afab8c1f94bc20375f33f\",\"crypto\":{\"cipher\":\"aes-128-ctr\",\"ciphertext\":\"d5999ea5d1d81fa0c3218a7b02b93db18c7394ca6ecab4e96a9bee4c82573db9\",\"cipherparams\":{\"iv\":\"fb31d04c24a3dee4c31db9271d65f6c4\"},\"kdf\":\"pbkdf2\",\"kdfparams\":{\"prf\":\"hmac-sha256\",\"c\":262144,\"salt\":\"22896ce41107899bf960547affd091ee3101bd242219956ba4331e574faffeea\",\"dklen\":32},\"mac\":\"2bb16bb444159e743b3fde61bf09d9ba8f10c38c1fa15f934fa2046ad2f67c29\"},\"id\":\"ad94ca92-1dbe-457d-ba10-9aeadbd96e26\",\"version\":3}");
+		
+		wallet.unlock("secret");
+		String to = "0x5cc3a427f9c91781625ea36fa3b2f71baa8467bb";
+		BigInteger wei = Util.fromEtherToWei(BigDecimal.valueOf(1.2));
+		
+		EthTransaction tx = new EthTransaction(to, wei);
+		service.sendTransaction(wallet, tx, new BlocklinksCallable<String> () {
+
+			@Override
+			public void call(BlocklinksResponse<String> response) {
+				if (response.getErrType() == null) {
+					String txHash = response.getResp();
+					System.out.println("Sent transaction " + txHash);
+					
+					service.listenForTxReceipt(txHash, new BlocklinksCallable<TransactionReceipt>() {
+
+						@Override
+						public void call(BlocklinksResponse<TransactionReceipt> response) {
+							if (response.getErrType() != null) {
+								System.out.println("Error waiting for tx receipt " + response.getEx().getMessage() + " error " + response.getErrType().name());
+							} else {
+								System.out.println("Tx mined, receipt: " + response.getResp().toString());
+							}
+						}
+					});
+				} else {
+					System.out.println("Failed to send, error " + response.getErrType().name() + " ex " + response.getEx().getMessage()); 
+				}
+			}
+			
+		});
+		
 		service.getAccounts(new BlocklinksCallable<String[]>() {
 
 			@Override

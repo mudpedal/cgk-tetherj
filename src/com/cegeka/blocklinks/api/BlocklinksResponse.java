@@ -22,4 +22,17 @@ public class BlocklinksResponse<T> {
 		this.ex = ex;
 		this.resp = resp;
 	}
+	
+	public BlocklinksResponse (ErrorType errType, Exception ex) {
+		this.errType = errType;
+		this.ex = ex;
+		this.resp = null;
+	}
+
+	public <V> BlocklinksResponse(BlocklinksResponse<V> otherResponse) {
+		this.errType = otherResponse.errType;
+		this.ex = otherResponse.ex;
+		this.resp = null;
+	}
+
 }
