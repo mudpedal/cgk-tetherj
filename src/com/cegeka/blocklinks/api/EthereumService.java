@@ -9,7 +9,6 @@ import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.googlecode.jsonrpc4j.HttpException;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
-import com.sun.istack.internal.logging.Logger;
 
 /**
  * Implementation for an Ethereum service api

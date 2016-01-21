@@ -40,10 +40,10 @@
 		<version>1.54</version>
 	</dependency>
 	<dependency>
-    <groupId>ethereumj-light</groupId>
-    <artifactId>ethereumj-light</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <scope>bundle</scope>
+	    <groupId>ethereumj-light</groupId>
+	    <artifactId>ethereumj-light</artifactId>
+	    <version>0.0.1-SNAPSHOT</version>
+	    <scope>bundle</scope>
 	</dependency>
   </dependencies>
 </project>

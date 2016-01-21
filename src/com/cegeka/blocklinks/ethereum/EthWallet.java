@@ -2,7 +2,6 @@ package com.cegeka.blocklinks.ethereum;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -15,7 +14,6 @@ import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
 public class EthWallet {
 	WalletStoragePojoV3 storage;
 	private byte[] privateKey;
-	private BigInteger nonce;
 	
 	private EthWallet(WalletStoragePojoV3 storage) {
 		privateKey = null;

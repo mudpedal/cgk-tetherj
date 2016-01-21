@@ -1,19 +1,8 @@
 package com.cegeka.blocklinks.ethereum.crypto;
 
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
-import java.security.spec.ECGenParameterSpec;
-import java.util.Arrays;
 import java.util.Formatter;
 
-import org.bouncycastle.crypto.digests.KeccakDigest;
-import org.ethereum.crypto.ECKey;
-import org.ethereum.crypto.SHA3Helper;
 
 public class CryptoUtil {
 
