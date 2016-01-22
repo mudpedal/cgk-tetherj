@@ -3,6 +3,7 @@ package com.cegeka.blocklinks.ethereum;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.pojo.Transaction;
@@ -16,10 +17,10 @@ public class EthRpcClient {
 	public static String defaultHostname = "localhost";
 	public static int defaultPort = 8545;
 
-	public EthRpcClient () {
+	public EthRpcClient() {
 		this(defaultHostname, defaultPort);
 	}
-	
+
 	public EthRpcClient(String hostname, int port) {
 		URL url;
 		try {
@@ -35,21 +36,22 @@ public class EthRpcClient {
 	public String getCoinbase() throws JsonRpcClientException {
 		return rpc.eth_coinbase();
 	}
-	
-	public String[] getAccounts()throws JsonRpcClientException {
+
+	public String[] getAccounts() throws JsonRpcClientException {
 		return rpc.eth_accounts();
 	}
-	
+
 	public BigInteger getAccountNonce(String address) throws JsonRpcClientException {
-		String nonce = rpc.eth_getTransactionCount(address);
-		return CryptoUtil.hexToBigInteger(nonce);
+		String txCount = rpc.eth_getTransactionCount(address, "latest");
+		return CryptoUtil.hexToBigInteger(txCount);
 	}
 
 	public boolean unlockAccount(String address, String secret) throws JsonRpcClientException {
 		return rpc.personal_unlockAccount(address, secret);
 	}
 
-	public String sendTransaction(String from, String fromSecret, String to, BigInteger valueWei) throws JsonRpcClientException {
+	public String sendTransaction(String from, String fromSecret, String to, BigInteger valueWei)
+			throws JsonRpcClientException {
 		boolean unlock = rpc.personal_unlockAccount(from, fromSecret);
 
 		if (unlock) {
@@ -67,11 +69,11 @@ public class EthRpcClient {
 
 		return rpc.eth_sendTransaction(t);
 	}
-	
+
 	public String sendRawTransaction(String encodedSignedTransaction) throws JsonRpcClientException {
 		return rpc.eth_sendRawTransaction(encodedSignedTransaction);
 	}
-	
+
 	public String sendRawTransaction(byte[] encodedSignedTransaction) throws JsonRpcClientException {
 		return sendRawTransaction(CryptoUtil.byteToHex(encodedSignedTransaction));
 	}
@@ -84,7 +86,7 @@ public class EthRpcClient {
 	public TransactionReceipt getTransactionReceipt(String txHash) throws JsonRpcClientException {
 		return rpc.eth_getTransactionReceipt(txHash);
 	}
-	
+
 	public Transaction getTransaction(String txHash) throws JsonRpcClientException {
 		return rpc.eth_getTransactionByHash(txHash);
 	}

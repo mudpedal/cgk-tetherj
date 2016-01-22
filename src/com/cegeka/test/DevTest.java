@@ -11,14 +11,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import com.cegeka.blocklinks.api.BlocklinksCallable;
 import com.cegeka.blocklinks.api.BlocklinksResponse;
 import com.cegeka.blocklinks.api.EthereumService;
-import com.cegeka.blocklinks.api.WalletLockedException;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.Util;
-import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
-import com.googlecode.jsonrpc4j.JsonRpcClientException;
 
 public class DevTest {
 

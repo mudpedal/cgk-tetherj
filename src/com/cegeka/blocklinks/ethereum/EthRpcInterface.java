@@ -11,7 +11,7 @@ public interface EthRpcInterface {
 	String 				eth_sendTransaction(Transaction t);
 	String 				eth_sendRawTransaction(String encoded);
 	String 				eth_coinbase();
-	String				eth_getTransactionCount(String address);
+	String				eth_getTransactionCount(String address, String state);
 	
 	/** 
 	 * experimental, remote unlocking

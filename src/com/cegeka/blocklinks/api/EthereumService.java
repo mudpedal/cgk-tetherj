@@ -15,7 +15,6 @@ import com.googlecode.jsonrpc4j.JsonRpcClientException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.ethereum.crypto.ECKey;
 
 /**
  * Implementation for an Ethereum service api
