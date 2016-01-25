@@ -5,8 +5,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 
+import org.ethereum.core.CallTransaction.Function;
+
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
+import com.cegeka.blocklinks.ethereum.pojo.Block;
 import com.cegeka.blocklinks.ethereum.pojo.Transaction;
+import com.cegeka.blocklinks.ethereum.pojo.TransactionCall;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
@@ -89,5 +93,18 @@ public class EthRpcClient {
 
 	public Transaction getTransaction(String txHash) throws JsonRpcClientException {
 		return rpc.eth_getTransactionByHash(txHash);
+	}
+	
+	public String callMethod(TransactionCall call) {
+		return rpc.eth_call(call);
+	}
+
+	public BigInteger getBlockGasLimit() {
+		Block block = rpc.eth_getBlockByNumber("latest", true);
+		if (block != null) {
+			return CryptoUtil.hexToBigInteger(block.gasLimit);
+		}
+		
+		return null;
 	}
 }

@@ -8,14 +8,25 @@ import com.cegeka.blocklinks.api.WalletLockedException;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 
 public class EthTransaction {
+	public static final BigInteger defaultGasPrice = BigInteger.valueOf(50000000000L);
+	public static final BigInteger defaultGasLimit = BigInteger.valueOf(90000L);
 	BigInteger weiValue;
-	BigInteger gasPrice = BigInteger.valueOf(50000000000L);
+	BigInteger gasPrice = defaultGasPrice;
 	String to;
-	BigInteger gasLimit = BigInteger.valueOf(90000L);
+	BigInteger gasLimit = defaultGasLimit;
+	byte[] data = null;
 	
 	public EthTransaction(String to, BigInteger weiValue) {
 		this.to = to;
 		this.weiValue = weiValue; 
+	}
+	
+	public EthTransaction(String to, BigInteger weiValue, BigInteger gasPrice, BigInteger gasLimit, byte[] data) {
+		this.to = to;
+		this.weiValue = weiValue;
+		this.gasPrice = gasPrice;
+		this.gasLimit = gasLimit;
+		this.data = data;
 	}
 	
 	public byte[] signWithWallet(EthWallet wallet, BigInteger nonce) throws WalletLockedException {
@@ -26,11 +37,13 @@ public class EthTransaction {
 			throw new WalletLockedException();
 		}
 		
-		if (to.startsWith("0x")) {
+		if (to == null) {
+			to = "";
+		} else if (to.startsWith("0x")) {
 			to = to.substring(2);
 		}
 		
-		Transaction tx = Transaction.create(to, weiValue, nonce, gasPrice, gasLimit);
+		Transaction tx = Transaction.create(to, weiValue, nonce, gasPrice, gasLimit, data);
 		tx.sign(CryptoUtil.hexToBytes(privateKey));
 		return tx.getEncoded();
 	}
