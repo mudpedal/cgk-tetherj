@@ -399,4 +399,11 @@ public class Transaction {
 				BigIntegers.asUnsignedByteArray(gasLimit), Hex.decode(to), BigIntegers.asUnsignedByteArray(amount),
 				null);
 	}
+	
+	public static Transaction create(String to, BigInteger amount, BigInteger nonce, BigInteger gasPrice,
+			BigInteger gasLimit, byte[] data) {
+		return new Transaction(BigIntegers.asUnsignedByteArray(nonce), BigIntegers.asUnsignedByteArray(gasPrice),
+				BigIntegers.asUnsignedByteArray(gasLimit), Hex.decode(to), BigIntegers.asUnsignedByteArray(amount),
+				data);
+	}
 }

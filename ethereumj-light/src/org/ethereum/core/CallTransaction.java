@@ -2,6 +2,8 @@ package org.ethereum.core;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.webkit.SharedBuffer;
+
 import org.ethereum.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -16,7 +18,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.ArrayUtils.subarray;
 import static org.apache.commons.lang3.StringUtils.stripEnd;
-import static org.ethereum.crypto.SHA3Helper.sha3;
+import static org.ethereum.crypto.HashUtil.sha3;
 import static org.ethereum.util.ByteUtil.longToBytesNoLeadZeroes;
 
 /**
@@ -442,6 +444,7 @@ public class CallTransaction {
 
             int staticSize = 0;
             int dynamicCnt = 0;
+            
             // calculating static size and number of dynamic params
             for (int i = 0; i < args.length; i++) {
                 Param param = inputs[i];
