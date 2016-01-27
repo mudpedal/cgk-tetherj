@@ -3,7 +3,6 @@ package com.cegeka.blocklinks.ethereum.crypto;
 import java.math.BigInteger;
 import java.util.Formatter;
 
-
 public class CryptoUtil {
 
 	public static String byteToHexWithPrefix(final byte[] hash) {
@@ -31,7 +30,7 @@ public class CryptoUtil {
 		if (hex == null) {
 			return null;
 		}
-		
+
 		if (hex.startsWith("0x")) {
 			hex = hex.substring(2);
 		}

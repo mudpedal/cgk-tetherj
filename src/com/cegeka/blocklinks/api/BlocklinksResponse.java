@@ -16,14 +16,14 @@ public class BlocklinksResponse<T> {
 	private final ErrorType errorType;
 	private final Exception exception;
 	private final T value;
-	
-	public BlocklinksResponse (ErrorType errorType, Exception exception, T resp) {
+
+	public BlocklinksResponse(ErrorType errorType, Exception exception, T resp) {
 		this.errorType = errorType;
 		this.exception = exception;
 		this.value = resp;
 	}
-	
-	public BlocklinksResponse (ErrorType errorType, Exception exception) {
+
+	public BlocklinksResponse(ErrorType errorType, Exception exception) {
 		this.errorType = errorType;
 		this.exception = exception;
 		this.value = null;

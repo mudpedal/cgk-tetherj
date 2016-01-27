@@ -102,7 +102,7 @@ public class WalletStoragePojoV3 {
 			Random saltRandom = new Random();
 			saltRandom.nextBytes(saltBytes);
 			String salt = CryptoUtil.byteToHex(saltBytes);
-			
+
 			crypto.kdf = kdf;
 			crypto.kdfparams.salt = salt;
 			crypto.kdfparams.dklen = dklen;
@@ -271,10 +271,10 @@ public class WalletStoragePojoV3 {
 
 	public void writeToDummyFile(File file) throws IOException {
 		String walletAddress = getAddress();
-		Object dummy = new Object () {
+		Object dummy = new Object() {
 			public String address = walletAddress;
 		};
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			mapper.writeValue(file, dummy);

@@ -10,11 +10,11 @@ public class Util {
 		BigDecimal etherAsDecimal = BigDecimal.valueOf(ether);
 		return fromEtherToWei(etherAsDecimal);
 	}
-	
+
 	public static BigInteger fromEtherToWei(BigDecimal ether) {
 		return ether.multiply(etherValue).toBigInteger();
 	}
-	
+
 	public static BigDecimal fromWeiToEther(BigInteger wei) {
 		BigDecimal weiDecimal = new BigDecimal(wei);
 		return weiDecimal.divide(etherValue);

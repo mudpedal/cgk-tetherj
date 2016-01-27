@@ -2,6 +2,7 @@ package com.cegeka.blocklinks.api;
 
 /**
  * Thrown if the receipt was not received in due time
+ * 
  * @author Andrei Grigoriu <mudpedal@vertexarmy.org>
  *
  */

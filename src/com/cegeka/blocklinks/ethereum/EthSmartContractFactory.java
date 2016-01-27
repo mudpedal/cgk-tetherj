@@ -34,22 +34,22 @@ public class EthSmartContractFactory {
 
 	private void indexMethods() {
 		ContractAbiMethod[] methods = contractInfo.getAbiDefinition();
-		
+
 		try {
-		for (ContractAbiMethod method : methods) {
-			ObjectMapper mapper = new ObjectMapper();
-			Function function = Function.fromJsonInterface(mapper.writeValueAsString(method));
-			if (method.getType().equals("constructor")) {
-				constructor = function;
-			} else {
-				if (!method.isConstant()) {
-					modFunctions.put(method.getName(), function);
+			for (ContractAbiMethod method : methods) {
+				ObjectMapper mapper = new ObjectMapper();
+				Function function = Function.fromJsonInterface(mapper.writeValueAsString(method));
+				if (method.getType().equals("constructor")) {
+					constructor = function;
 				} else {
-					constFunctions.put(method.getName(), function);
+					if (!method.isConstant()) {
+						modFunctions.put(method.getName(), function);
+					} else {
+						constFunctions.put(method.getName(), function);
+					}
 				}
 			}
-		}
-		} catch(JsonProcessingException ex) {
+		} catch (JsonProcessingException ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -72,14 +72,15 @@ public class EthSmartContractFactory {
 		return code;
 	}
 
-	public EthTransaction createContract(BigInteger gasLimit, BigInteger gasPrice, Object ... args) {
-		
+	public EthTransaction createContract(Object... args) {
+
 		byte[] codeBytes = CryptoUtil.hexToBytes(this.code);
 		byte[] constructorCall = constructor.encodeArguments(args);
-		
-		return new EthTransaction(null, BigInteger.ZERO, gasPrice, gasLimit, ByteUtil.merge(codeBytes, constructorCall));
+
+		return new EthTransaction(null, BigInteger.ZERO, EthTransaction.defaultGasPrice, EthTransaction.defaultGasLimit,
+				ByteUtil.merge(codeBytes, constructorCall));
 	}
-	
+
 	public EthSmartContract getContract(String contractAddress) {
 		return new EthSmartContract(this, contractAddress);
 	}
@@ -87,7 +88,7 @@ public class EthSmartContractFactory {
 	public Function getConstantFunction(String method) {
 		return constFunctions.get(method);
 	}
-	
+
 	public Function getModFunction(String method) {
 		return modFunctions.get(method);
 	}

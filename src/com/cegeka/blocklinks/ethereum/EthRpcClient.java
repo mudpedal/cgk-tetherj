@@ -3,9 +3,6 @@ package com.cegeka.blocklinks.ethereum;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-
-import org.ethereum.core.CallTransaction.Function;
 
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.pojo.Block;
@@ -18,8 +15,8 @@ import com.googlecode.jsonrpc4j.ProxyUtil;
 
 public class EthRpcClient {
 	private EthRpcInterface rpc;
-	public static String defaultHostname = "localhost";
-	public static int defaultPort = 8545;
+	public final static String defaultHostname = "localhost";
+	public final static int defaultPort = 8545;
 
 	public EthRpcClient() {
 		this(defaultHostname, defaultPort);
@@ -94,9 +91,13 @@ public class EthRpcClient {
 	public Transaction getTransaction(String txHash) throws JsonRpcClientException {
 		return rpc.eth_getTransactionByHash(txHash);
 	}
-	
+
 	public String callMethod(TransactionCall call) {
 		return rpc.eth_call(call);
+	}
+	
+	public String callMethod(EthCall call) {
+		return rpc.eth_call(call.getCall());
 	}
 
 	public BigInteger getBlockGasLimit() {
@@ -104,7 +105,7 @@ public class EthRpcClient {
 		if (block != null) {
 			return CryptoUtil.hexToBigInteger(block.gasLimit);
 		}
-		
+
 		return null;
 	}
 }
