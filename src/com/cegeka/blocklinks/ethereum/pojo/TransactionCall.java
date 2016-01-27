@@ -1,6 +1,20 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
+import org.ethereum.core.CallTransaction.Function;
+
+import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
+
 public class TransactionCall {
+	private Function methodFunction;
+	
+	public TransactionCall(Function methodFunction) {
+		this.methodFunction = methodFunction;
+	}
+	
+	public Object[] decodeOutput(String output) {
+		return methodFunction.decodeResult(CryptoUtil.hexToBytes(output));
+	}
+	
 	public String getFrom() {
 		return from;
 	}

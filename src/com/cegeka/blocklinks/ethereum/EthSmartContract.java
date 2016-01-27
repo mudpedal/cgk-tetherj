@@ -17,14 +17,14 @@ public class EthSmartContract {
 		this.contractAddress = contractAddress;
 	}
 	
-	public Object[] callConstantMethod(EthRpcClient rpc, String method, Object ... args) throws NoSuchContractMethod {
+	public EthCall callConstantMethod(EthRpcClient rpc, String method, Object ... args) throws NoSuchContractMethod {
 		Function methodFunction = factory.getConstantFunction(method);
 		
 		if (methodFunction == null) {
 			throw new NoSuchContractMethod("Method " + method + " does not exist for contract factory");
 		}
 		
-		TransactionCall call = new TransactionCall();
+		EthCall call = new EthCall(methodFunction);
 		call.setData(CryptoUtil.byteToHexWithPrefix(methodFunction.encode(args)));
 		call.setFrom(null);
 		call.setGas(null);
@@ -32,20 +32,17 @@ public class EthSmartContract {
 		call.setTo(this.contractAddress);
 		call.setValue(null);
 		
-		String response = rpc.callMethod(call);
-		
-		Object[] decodedOutputs = methodFunction.decodeResult(CryptoUtil.hexToBytes(response));
-		return decodedOutputs;
+		return call;
 	}
 	
-	public Object[] dryCallModMethod(String from, EthRpcClient rpc, String method, Object ... args) throws NoSuchContractMethod {
+	public EthCall dryCallModMethod(String from, EthRpcClient rpc, String method, Object ... args) throws NoSuchContractMethod {
 		Function methodFunction = factory.getModFunction(method);
 		
 		if (methodFunction == null) {
 			throw new NoSuchContractMethod("Method " + method + " does not exist for contract factory");
 		}
-		
-		TransactionCall call = new TransactionCall();
+
+		EthCall call = new EthCall(methodFunction);
 		call.setData(CryptoUtil.byteToHexWithPrefix(methodFunction.encode(args)));
 		call.setFrom(from);
 		call.setGas(null);
@@ -53,10 +50,7 @@ public class EthSmartContract {
 		call.setTo(this.contractAddress);
 		call.setValue(null);
 		
-		String response = rpc.callMethod(call);
-		
-		Object[] decodedOutputs = methodFunction.decodeResult(CryptoUtil.hexToBytes(response));
-		return decodedOutputs;
+		return call;
 	}
 	
 	public EthTransaction callModMethod(EthWallet from, BigInteger gasLimit, String method, Object ... args) throws NoSuchContractMethod {

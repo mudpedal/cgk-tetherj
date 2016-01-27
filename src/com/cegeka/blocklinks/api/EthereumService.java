@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.cegeka.blocklinks.ethereum.EthCall;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
@@ -159,8 +160,8 @@ public class EthereumService {
 	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction) throws WalletLockedException {
 		BlocklinksResponse<BigInteger> nonceResponse = getAccountNonce(from.getStorage().getAddress());
 		
-		if (nonceResponse.getErrType() == null) {
-			return sendTransaction(from, transaction, nonceResponse.getResp());
+		if (nonceResponse.getErrorType() == null) {
+			return sendTransaction(from, transaction, nonceResponse.getValue());
 		}
 		
 		return new BlocklinksResponse<String>(nonceResponse);
@@ -184,8 +185,8 @@ public class EthereumService {
 			
 			@Override
 			public void call(BlocklinksResponse<BigInteger> response) {
-				if (response.getErrType() == null) {
-					sendTransaction(from, transaction, response.getResp(), callable);
+				if (response.getErrorType() == null) {
+					sendTransaction(from, transaction, response.getValue(), callable);
 				} else {
 					callable.call(new BlocklinksResponse<>(response));
 				}
@@ -230,10 +231,10 @@ public class EthereumService {
 
 			@Override
 			public void call(BlocklinksResponse<TransactionReceipt> response) {
-				if (response.getErrType() != null) {
+				if (response.getErrorType() != null) {
 					callable.call(response);
 				} else {
-					TransactionReceipt receipt = response.getResp();
+					TransactionReceipt receipt = response.getValue();
 					
 					if (receipt != null && receipt.getBlockNumber() != null) {
 						callable.call(response);
@@ -252,6 +253,27 @@ public class EthereumService {
 						}
 					}
 				}
+			}
+		});
+	}
+	
+	public void makeCall (final EthCall call, BlocklinksCallable<Object[]> callable) {
+		performAsyncRpcAction(new RpcAction<Object[]>() {
+
+			@Override
+			public Object[] call() {
+				return call.decodeOutput(rpc.callMethod(call));
+			}
+			
+		}, callable);
+	}
+	
+	public BlocklinksResponse<Object[]> makeCall(final EthCall call) {
+		return performBlockingRpcAction(new RpcAction<Object[]>() {
+
+			@Override
+			public Object[] call() {
+				return call.decodeOutput(rpc.callMethod(call));
 			}
 		});
 	}

@@ -1,38 +1,38 @@
 package com.cegeka.blocklinks.api;
 
 public class BlocklinksResponse<T> {
-	public ErrorType getErrType() {
-		return errType;
+	public ErrorType getErrorType() {
+		return errorType;
 	}
 
-	public Exception getEx() {
-		return ex;
+	public Exception getException() {
+		return exception;
 	}
 
-	public T getResp() {
-		return resp;
+	public T getValue() {
+		return value;
 	}
 
-	private final ErrorType errType;
-	private final Exception ex;
-	private final T resp;
+	private final ErrorType errorType;
+	private final Exception exception;
+	private final T value;
 	
-	public BlocklinksResponse (ErrorType errType, Exception ex, T resp) {
-		this.errType = errType;
-		this.ex = ex;
-		this.resp = resp;
+	public BlocklinksResponse (ErrorType errorType, Exception exception, T resp) {
+		this.errorType = errorType;
+		this.exception = exception;
+		this.value = resp;
 	}
 	
-	public BlocklinksResponse (ErrorType errType, Exception ex) {
-		this.errType = errType;
-		this.ex = ex;
-		this.resp = null;
+	public BlocklinksResponse (ErrorType errorType, Exception exception) {
+		this.errorType = errorType;
+		this.exception = exception;
+		this.value = null;
 	}
 
 	public <V> BlocklinksResponse(BlocklinksResponse<V> otherResponse) {
-		this.errType = otherResponse.errType;
-		this.ex = otherResponse.ex;
-		this.resp = null;
+		this.errorType = otherResponse.errorType;
+		this.exception = otherResponse.exception;
+		this.value = null;
 	}
 
 }

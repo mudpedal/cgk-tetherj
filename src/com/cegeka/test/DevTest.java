@@ -18,6 +18,7 @@ import com.cegeka.blocklinks.api.BlocklinksCallable;
 import com.cegeka.blocklinks.api.BlocklinksResponse;
 import com.cegeka.blocklinks.api.EthereumService;
 import com.cegeka.blocklinks.api.WalletLockedException;
+import com.cegeka.blocklinks.ethereum.EthCall;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthSmartContract;
 import com.cegeka.blocklinks.ethereum.EthSmartContractFactory;
@@ -142,52 +143,60 @@ public class DevTest {
 			EthTransaction tx = factory.createContract(BigInteger.valueOf(1000000L), EthTransaction.defaultGasPrice, "Hello World!", BigInteger.valueOf(500000L));
 			
 			BlocklinksResponse<BigInteger> response = service.getAccountNonce(wallet.getStorage().getAddress());
-			byte[] encoded = tx.signWithWallet(wallet, response.getResp());
+			byte[] encoded = tx.signWithWallet(wallet, response.getValue());
 			System.out.println(CryptoUtil.byteToHex(encoded));
 			BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet,tx);
 			
-			String txHash =  txHashResponse.getResp();
+			String txHash =  txHashResponse.getValue();
 			System.out.println("Sent transaction " + txHash);
 			
 			service.listenForTxReceipt(txHash, new BlocklinksCallable<TransactionReceipt>() {
 
 				@Override
 				public void call(BlocklinksResponse<TransactionReceipt> response) {
-					if (response.getErrType() != null) {
-						System.out.println("Error waiting for tx receipt " + response.getEx().getMessage() + " error " + response.getErrType().name());
+					if (response.getErrorType() != null) {
+						System.out.println("Error waiting for tx receipt " + response.getException().getMessage() + " error " + response.getErrorType().name());
 					} else {
 					
-						System.out.println("Tx mined, receipt: " + response.getResp().toString());
+						System.out.println("Tx mined, receipt: " + response.getValue().toString());
 						
-						EthSmartContract contract = factory.getContract(response.getResp().getContractAddress());
+						EthSmartContract contract = factory.getContract(response.getValue().getContractAddress());
 						
 						try {
-							Object[] greeting = contract.callConstantMethod(service.getRpcClient(), "greet");
+							EthCall call = contract.callConstantMethod(service.getRpcClient(), "greet");
+							BlocklinksResponse<Object[]> greetingResponse = service.makeCall(call);
+							Object[] greeting = greetingResponse.getValue();
 							System.out.println("Greeting is " + greeting[0].toString());
 							
-							Object[] newGreeting = contract.dryCallModMethod(wallet.getStorage().getAddress(), service.getRpcClient(), "setGreeting", "New greeting", BigInteger.valueOf(-1000));
+							call = contract.dryCallModMethod(wallet.getStorage().getAddress(), service.getRpcClient(), "setGreeting", "New greeting", BigInteger.valueOf(-1000));
+							greetingResponse = service.makeCall(call);
+							Object[] newGreeting = greetingResponse.getValue();
+							
 							if (newGreeting.length > 0) {
 								System.out.println("Greeting is " + newGreeting[0].toString());
 								// lets change it forever
 								EthTransaction tx = contract.callModMethod(wallet, BigInteger.valueOf(100000L), "setGreeting", "New greeting", BigInteger.valueOf(-1000));
 
 								BlocklinksResponse<BigInteger> newNonce = service.getAccountNonce(wallet.getStorage().getAddress());
-								byte[] encoded = tx.signWithWallet(wallet, newNonce.getResp());
+								byte[] encoded = tx.signWithWallet(wallet, newNonce.getValue());
 								System.out.println(CryptoUtil.byteToHex(encoded));
 								BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet,tx);
-								System.out.println("Sending transaction " + txHashResponse.getResp());
-								service.listenForTxReceipt(txHashResponse.getResp(), new BlocklinksCallable<TransactionReceipt>() {
+								System.out.println("Sending transaction " + txHashResponse.getValue());
+								service.listenForTxReceipt(txHashResponse.getValue(), new BlocklinksCallable<TransactionReceipt>() {
 
 									@Override
 									public void call(BlocklinksResponse<TransactionReceipt> response) {
-										if (response.getErrType() != null) {
-											System.out.println("Error waiting for tx receipt " + response.getEx().getMessage() + " error " + response.getErrType().name());
+										if (response.getErrorType() != null) {
+											System.out.println("Error waiting for tx receipt " + response.getException().getMessage() + " error " + response.getErrorType().name());
 										} else {
 										
-											System.out.println("Tx mined for set greeting, receipt: " + response.getResp().toString());
+											System.out.println("Tx mined for set greeting, receipt: " + response.getValue().toString());
 											Object[] greeting;
 											try {
-												greeting = contract.callConstantMethod(service.getRpcClient(), "greet");
+												EthCall call = contract.callConstantMethod(service.getRpcClient(), "greet");
+												BlocklinksResponse<Object[]> greetingResponse = service.makeCall(call);
+												greeting = greetingResponse.getValue();
+												
 												System.out.println("Greeting is " + greeting[0].toString());
 											} catch (NoSuchContractMethod e) {
 												e.printStackTrace();
