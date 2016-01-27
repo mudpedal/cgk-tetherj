@@ -8,7 +8,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import com.cegeka.blocklinks.api.EthereumService;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
 
@@ -57,15 +56,6 @@ public class EthWallet {
 	public void writeToFile(File file) throws IOException {
 		logger.debug("Write wallet to file " + file.getAbsolutePath() + " " + storage.toString());
 		storage.writeToFile(file);
-	}
-
-	/*
-	 * Call this to write to geth dir so that geth will allow transactions on
-	 * this wallet (private key won't be stored.
-	 */
-	public void writeToDummyFile(File file) throws IOException {
-		logger.debug("Write dummy wallet to file " + file.getAbsolutePath() + " " + storage.toString());
-		storage.writeToDummyFile(file);
 	}
 
 	/*
