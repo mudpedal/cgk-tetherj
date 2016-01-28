@@ -1,6 +1,5 @@
 package com.cegeka.blocklinks.api;
 
-import java.io.File;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
 import java.util.concurrent.Callable;
@@ -12,6 +11,7 @@ import com.cegeka.blocklinks.ethereum.EthCall;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
+import com.cegeka.blocklinks.ethereum.pojo.Contracts;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
 import com.googlecode.jsonrpc4j.HttpException;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
@@ -428,6 +428,41 @@ public class EthereumService {
 			@Override
 			public Object[] call() {
 				return call.decodeOutput(rpc.callMethod(call));
+			}
+		});
+	}
+	
+	/*
+	 * compiledSolidity implementations
+	 */
+
+	public void compileSolidity(String sourceCode, BlocklinksCallable<Contracts> callable) {
+		performAsyncRpcAction(new RpcAction<Contracts>() {
+
+			@Override
+			public Contracts call() {
+				return rpc.compileSolidity(sourceCode);
+			}
+
+		}, callable);
+	}
+
+	public BlocklinksResponse<Contracts> compileSolidity(String sourceCode) {
+		return performBlockingRpcAction(new RpcAction<Contracts>() {
+
+			@Override
+			public Contracts call() {
+				return rpc.compileSolidity(sourceCode);
+			}
+		});
+	}
+	
+	public Future<BlocklinksResponse<Contracts>> compileSolidityFuture(String sourceCode) {
+		return performFutureRpcAction(new RpcAction<Contracts>() {
+
+			@Override
+			public Contracts call() {
+				return rpc.compileSolidity(sourceCode);
 			}
 		});
 	}

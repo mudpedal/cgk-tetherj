@@ -1,6 +1,7 @@
 package com.cegeka.blocklinks.ethereum;
 
 import com.cegeka.blocklinks.ethereum.pojo.Block;
+import com.cegeka.blocklinks.ethereum.pojo.Contracts;
 import com.cegeka.blocklinks.ethereum.pojo.Transaction;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionCall;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
@@ -16,6 +17,7 @@ public interface EthRpcInterface {
 	String				eth_getTransactionCount(String address, String state);
 	Block 				eth_getBlockByNumber(Object string, Boolean full);
 	String				eth_call(TransactionCall txCall);
+	Contracts			eth_compileSolidity(String sourceCode);
 	
 	/** 
 	 * experimental, remote unlocking

@@ -6,6 +6,7 @@ import java.net.URL;
 
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.pojo.Block;
+import com.cegeka.blocklinks.ethereum.pojo.Contracts;
 import com.cegeka.blocklinks.ethereum.pojo.Transaction;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionCall;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
@@ -107,5 +108,9 @@ public class EthRpcClient {
 		}
 
 		return null;
+	}
+
+	public Contracts compileSolidity(String sourceCode) {
+		return rpc.eth_compileSolidity(sourceCode);
 	}
 }

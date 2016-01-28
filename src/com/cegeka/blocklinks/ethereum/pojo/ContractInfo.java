@@ -33,8 +33,44 @@ public class ContractInfo {
 		this.abiDefinition = abiDefinition;
 	}
 
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public Object getUserDoc() {
+		return userDoc;
+	}
+
+	public void setUserDoc(Object userDoc) {
+		this.userDoc = userDoc;
+	}
+
+	public Object getDeveloperDoc() {
+		return developerDoc;
+	}
+
+	public void setDeveloperDoc(Object developerDoc) {
+		this.developerDoc = developerDoc;
+	}
+
+	public String getCompilerOptions() {
+		return compilerOptions;
+	}
+
+	public void setCompilerOptions(String compilerOptions) {
+		this.compilerOptions = compilerOptions;
+	}
+
 	String language;
 	String languageVersion;
 	String compilerVersion;
+	String compilerOptions;
 	ContractAbiMethod[] abiDefinition;
+	String source;
+	Object userDoc;
+	Object developerDoc;
 }

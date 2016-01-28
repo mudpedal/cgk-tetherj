@@ -8,32 +8,26 @@ import org.ethereum.core.CallTransaction.Function;
 import org.ethereum.util.ByteUtil;
 
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
+import com.cegeka.blocklinks.ethereum.pojo.ContractData;
 import com.cegeka.blocklinks.ethereum.pojo.ContractAbiMethod;
-import com.cegeka.blocklinks.ethereum.pojo.ContractInfo;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EthSmartContractFactory {
-	private ContractInfo contractInfo;
-	private String code;
+	private ContractData contract;
 	private HashMap<String, Function> modFunctions;
 	private HashMap<String, Function> constFunctions;
 	private Function constructor;
 
-	public EthSmartContractFactory(String info, String code)
-			throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		contractInfo = mapper.readValue(info, ContractInfo.class);
-		this.code = code;
+	public EthSmartContractFactory(ContractData contract){
+		this.contract = contract;
 		this.modFunctions = new HashMap<>();
 		this.constFunctions = new HashMap<>();
 		indexMethods();
 	}
 
 	private void indexMethods() {
-		ContractAbiMethod[] methods = contractInfo.getAbiDefinition();
+		ContractAbiMethod[] methods = contract.getInfo().getAbiDefinition();
 
 		try {
 			for (ContractAbiMethod method : methods) {
@@ -54,14 +48,14 @@ public class EthSmartContractFactory {
 		}
 	}
 
-	public ContractInfo getContractInfo() {
-		return contractInfo;
+	public ContractData getContract() {
+		return contract;
 	}
 
-	public String getContractInfoAsString() {
+	public String getContractAsString() {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			return mapper.writeValueAsString(contractInfo);
+			return mapper.writeValueAsString(contract);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			return null;
@@ -69,12 +63,12 @@ public class EthSmartContractFactory {
 	}
 
 	public String getCode() {
-		return code;
+		return contract.getCode();
 	}
 
 	public EthTransaction createContract(Object... args) {
 
-		byte[] codeBytes = CryptoUtil.hexToBytes(this.code);
+		byte[] codeBytes = CryptoUtil.hexToBytes(contract.getCode());
 		byte[] constructorCall = constructor.encodeArguments(args);
 
 		return new EthTransaction(null, BigInteger.ZERO, EthTransaction.defaultGasPrice, EthTransaction.defaultGasLimit,
