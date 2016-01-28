@@ -155,9 +155,12 @@ public class DevTest {
 					.getAccountNonceFuture(wallet.getStorage().getAddress());
 			EthSmartContractFactory factory = new EthSmartContractFactory(firstContract);
 			
-			System.out.println(factory.getContractAsString());
 			
-			EthTransaction tx = factory.createContract("Hello World!", BigInteger.valueOf(500000L));
+			
+			String factoryJson = factory.getContractDataAsString();
+			EthSmartContractFactory newFactory = EthSmartContractFactory.createFactoryFromContractDataString(factoryJson);
+			
+			EthTransaction tx = newFactory.createContract("Hello World!", BigInteger.valueOf(500000L));
 			tx.setGasLimit(EthTransaction.maximumGasLimit);
 
 			BlocklinksResponse<BigInteger> response = responseFuture.get();

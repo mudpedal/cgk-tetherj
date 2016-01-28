@@ -1,5 +1,6 @@
 package com.cegeka.blocklinks.ethereum;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 
@@ -34,6 +35,23 @@ public class EthSmartContractFactory {
 		this.modFunctions = new HashMap<>();
 		this.constFunctions = new HashMap<>();
 		indexMethods();
+	}
+	
+	/**
+	 * 
+	 * @return smart contract factory from json string of contract data
+	 */
+	public static EthSmartContractFactory createFactoryFromContractDataString(String json) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return new EthSmartContractFactory(mapper.readValue(json, ContractData.class));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	/**
@@ -74,7 +92,7 @@ public class EthSmartContractFactory {
 	 * @return contract data as json string. Use this to store it into the
 	 *         database.
 	 */
-	public String getContractAsString() {
+	public String getContractDataAsString() {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(contract);
