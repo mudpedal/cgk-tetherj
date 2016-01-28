@@ -9,7 +9,7 @@ import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
 /**
  * Rpc Interface to use by json rpc invoker. All methods defined as per ethereum
  * rpc standard.
- * https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_compilesolidity
+ * https://github.com/ethereum/wiki/wiki/JSON-RPC
  * 
  * @author Andrei Grigoriu
  *

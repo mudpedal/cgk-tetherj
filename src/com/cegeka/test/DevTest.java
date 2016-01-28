@@ -122,8 +122,7 @@ public class DevTest {
 		 * "GOT response " + Arrays.toString(response.getResp())); } } });
 		 */
 
-		ScheduledExecutorService exec = Executors.newScheduledThreadPool(2);
-		EthereumService service = new EthereumService(exec);
+		EthereumService service = new EthereumService();
 
 		EthWallet wallet = EthWallet.loadWalletFromString(
 				"{\"address\":\"3b4277a7d0314fb70a2afab8c1f94bc20375f33f\",\"crypto\":{\"cipher\":\"aes-128-ctr\",\"ciphertext\":\"d5999ea5d1d81fa0c3218a7b02b93db18c7394ca6ecab4e96a9bee4c82573db9\",\"cipherparams\":{\"iv\":\"fb31d04c24a3dee4c31db9271d65f6c4\"},\"kdf\":\"pbkdf2\",\"kdfparams\":{\"prf\":\"hmac-sha256\",\"c\":262144,\"salt\":\"22896ce41107899bf960547affd091ee3101bd242219956ba4331e574faffeea\",\"dklen\":32},\"mac\":\"2bb16bb444159e743b3fde61bf09d9ba8f10c38c1fa15f934fa2046ad2f67c29\"},\"id\":\"ad94ca92-1dbe-457d-ba10-9aeadbd96e26\",\"version\":3}");
@@ -179,7 +178,6 @@ public class DevTest {
 					} else {
 
 						System.out.println("Tx mined, receipt: " + response.getValue().toString());
-
 						EthSmartContract contract = factory.getContract(response.getValue().getContractAddress());
 
 						try {

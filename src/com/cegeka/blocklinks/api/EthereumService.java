@@ -1,10 +1,15 @@
 package com.cegeka.blocklinks.api;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import com.cegeka.blocklinks.ethereum.EthCall;
@@ -26,6 +31,8 @@ import org.apache.logging.log4j.LogManager;
  *
  */
 public class EthereumService {
+
+	public final static int defaultExecutorThreads = 2;
 
 	/**
 	 * A generic wrapper for a rpc call.
@@ -61,6 +68,57 @@ public class EthereumService {
 	private static final Logger logger = LogManager.getLogger(EthereumService.class);
 
 	/**
+	 * Creates executor automatically
+	 */
+	public EthereumService() {
+		this(EthereumService.defaultExecutorThreads, EthRpcClient.defaultHostname, EthRpcClient.defaultPort);
+	}
+
+	/**
+	 * Creates executor with custom number of threads.
+	 * 
+	 * @param executorThreads
+	 *            to spawn
+	 */
+	public EthereumService(int executorThreads) {
+		this(executorThreads, EthRpcClient.defaultHostname, EthRpcClient.defaultPort);
+	}
+
+	/**
+	 * Creates custom number of threads and custom ethereum client connection
+	 * info.
+	 * 
+	 * @param executorThreads
+	 *            to spawn
+	 * @param rpcHostname
+	 *            of the ethereum client
+	 * @param port
+	 *            of the ethereum client
+	 */
+	public EthereumService(int executorThreads, String rpcHostname, int port) {
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(executorThreads, new ThreadFactory() {
+
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread t = new Thread(r);
+
+				t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+					@Override
+					public void uncaughtException(Thread t, Throwable e) {
+						handleUnknownThrowables(e);
+					}
+				});
+
+				return t;
+			}
+		});
+
+		this.executor = executor;
+		rpc = new EthRpcClient(rpcHostname, port);
+		logger.info("Created ethereum service");
+	}
+
+	/**
 	 * 
 	 * @param executor
 	 *            to use for async and future calls, also for polling
@@ -93,6 +151,37 @@ public class EthereumService {
 		this.executor = executor;
 		rpc = new EthRpcClient(rpcHostname, port);
 		logger.info("Created ethereum service");
+	}
+
+	/**
+	 * Call this when you don't know what to do with e
+	 * 
+	 * @param e
+	 *            the exception thrown somewhere
+	 */
+	private void handleUnknownThrowables(Throwable e) {
+		if (e != null) {
+
+			StringWriter esw = new StringWriter();
+			PrintWriter epw = new PrintWriter(esw);
+			e.printStackTrace(epw);
+			String eStack = esw.toString();
+
+			String message = "Blocklinks uncaught exception: " + e.toString() + " " + e.getMessage() + " at \n"
+					+ eStack;
+
+			if (e.getCause() != null) {
+				StringWriter csw = new StringWriter();
+				PrintWriter cpw = new PrintWriter(csw);
+				Throwable c = e.getCause();
+				c.printStackTrace(cpw);
+				String cStack = csw.toString();
+
+				message += "\n CAUSE: " + c.toString() + " " + c.getMessage() + " at \n" + cStack;
+			}
+
+			logger.error(message);
+		}
 	}
 
 	/**
@@ -156,7 +245,11 @@ public class EthereumService {
 
 					@Override
 					public void run() {
-						callable.call(performBlockingRpcAction(rpcAction));
+						try {
+							callable.call(performBlockingRpcAction(rpcAction));
+						} catch (Throwable t) {
+							handleUnknownThrowables(t);
+						}
 					}
 				});
 			} catch (Exception ex) {

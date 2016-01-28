@@ -21,6 +21,7 @@ import com.googlecode.jsonrpc4j.ProxyUtil;
  *
  */
 public class EthRpcClient {
+
 	/**
 	 * Ethereum rpc Interface
 	 */
