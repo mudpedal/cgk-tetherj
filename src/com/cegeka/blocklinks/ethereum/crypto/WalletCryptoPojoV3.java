@@ -1,6 +1,16 @@
 package com.cegeka.blocklinks.ethereum.crypto;
 
+/**
+ * Pojo to store wallet crypto
+ * 
+ * @author Andrei Grigoriu
+ *
+ */
 public class WalletCryptoPojoV3 {
+
+	/**
+	 * Internal pojo for iv
+	 */
 	public class CipherParams {
 		@Override
 		public String toString() {
@@ -18,6 +28,10 @@ public class WalletCryptoPojoV3 {
 		}
 	}
 
+	/**
+	 * Internal pojo for KDF params
+	 *
+	 */
 	public class KdfParams {
 
 		@Override

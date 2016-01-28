@@ -25,6 +25,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Wallet v3 storage pojo and manager.
+ * 
+ * @author Andrei Grigoriu
+ *
+ */
 public class WalletStoragePojoV3 {
 
 	public static final int storageVersion = 3;
@@ -80,6 +86,13 @@ public class WalletStoragePojoV3 {
 		return "EthWallet [address=" + address + ", crypto=" + crypto + ", id=" + id + ", version=" + version + "]";
 	}
 
+	/**
+	 * Create a random wallet (new keys pairs)
+	 * 
+	 * @param passphrase
+	 *            to encrypt private key with
+	 * @return storage
+	 */
 	public static WalletStoragePojoV3 createWallet(String passphrase) {
 		WalletStoragePojoV3 wallet = new WalletStoragePojoV3();
 		wallet.version = storageVersion;
@@ -157,6 +170,13 @@ public class WalletStoragePojoV3 {
 		return wallet;
 	}
 
+	/**
+	 * Create storage from json string
+	 * 
+	 * @param json
+	 *            to create storage from
+	 * @return storage object
+	 */
 	public static WalletStoragePojoV3 loadWalletFromString(String json) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -172,6 +192,13 @@ public class WalletStoragePojoV3 {
 		return null;
 	}
 
+	/**
+	 * Create storage from file
+	 * 
+	 * @param file
+	 *            to read and deserialize storage from
+	 * @return storage object
+	 */
 	public static WalletStoragePojoV3 loadWalletFromFile(File wallet) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -185,6 +212,13 @@ public class WalletStoragePojoV3 {
 		return null;
 	}
 
+	/**
+	 * Serialize to file
+	 * 
+	 * @param file
+	 *            to write to
+	 * @throws IOException
+	 */
 	public void writeToFile(File file) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -196,6 +230,11 @@ public class WalletStoragePojoV3 {
 		}
 	}
 
+	/**
+	 * Serialize to String
+	 * 
+	 * @return serialized json
+	 */
 	public String toJsonString() {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -207,8 +246,12 @@ public class WalletStoragePojoV3 {
 		return null;
 	}
 
-	/*
-	 * Use this to "unlock" and store the private key somewhere
+	/**
+	 * Decrypt private key
+	 * 
+	 * @param passphrase
+	 *            to decrypt
+	 * @return private key data
 	 */
 	public byte[] getPrivateKey(String passphrase) {
 		if (crypto.cipher.equals(cipher) && crypto.kdf.equals(kdf)) {

@@ -14,6 +14,12 @@ import com.cegeka.blocklinks.ethereum.crypto.WalletStoragePojoV3;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+/**
+ * Wallet container.
+ * 
+ * @author Andrei Grigoriu
+ *
+ */
 public class EthWallet {
 
 	WalletStoragePojoV3 storage;
@@ -21,19 +27,36 @@ public class EthWallet {
 
 	private static final Logger logger = LogManager.getLogger(EthWallet.class);
 
+	/**
+	 * Create wallet from storage pojo
+	 * 
+	 * @param v3
+	 *            storage pojo
+	 */
 	private EthWallet(WalletStoragePojoV3 storage) {
 		privateKey = null;
 		this.storage = storage;
 	}
 
+	/**
+	 * Generate a random key pair wallet
+	 * 
+	 * @param passphrase
+	 *            to encrypt private key with
+	 * @return the new wallet
+	 */
 	public static EthWallet createWallet(String passphrase) {
 		EthWallet wallet = new EthWallet(WalletStoragePojoV3.createWallet(passphrase));
 		logger.info("Generated wallet " + wallet.getStorage().toString());
 		return wallet;
 	}
 
-	/*
-	 * Accepts only version 3 storage wallets
+	/**
+	 * Load wallet from v3 storage json
+	 * 
+	 * @param json
+	 *            in v3 format
+	 * @return the wallet
 	 */
 	public static EthWallet loadWalletFromString(String json) {
 		EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromString(json));
@@ -41,8 +64,13 @@ public class EthWallet {
 		return wallet;
 	}
 
-	/*
-	 * Accepts only version 3 storage wallets
+	/**
+	 * Load wallet from file containing v3 json
+	 * 
+	 * @param file
+	 *            to load from
+	 * @return the wallet
+	 * @throws IOException
 	 */
 	public static EthWallet loadWalletFromFile(File file) throws IOException {
 		EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromFile(file));
@@ -50,27 +78,33 @@ public class EthWallet {
 		return wallet;
 	}
 
-	/*
-	 * Writes the wallet to disk in version 3 format.
+	/**
+	 * Write v3 storage to disk
+	 * 
+	 * @param file
+	 *            to write to
+	 * @throws IOException
 	 */
 	public void writeToFile(File file) throws IOException {
 		logger.debug("Write wallet to file " + file.getAbsolutePath() + " " + storage.toString());
 		storage.writeToFile(file);
 	}
 
-	/*
-	 * Is the private key available? If true then this wallet can be used to
-	 * sign transactions
+	/**
+	 * Is private key available in memory
+	 * 
+	 * @return true if private key is decrypted
 	 */
 	public boolean isUnlocked() {
 		return privateKey != null;
 	}
 
-	/*
-	 * Uncrypt and store private key(temporarily). May be locked to prevent
-	 * further signing.
+	/**
+	 * Decrypt private key and store it in memory
 	 * 
-	 * @return Returns true if passphrase was correct.
+	 * @param passphrase
+	 *            to decrypt
+	 * @return true if succeeded
 	 */
 	public boolean unlock(String passphrase) {
 		privateKey = storage.getPrivateKey(passphrase);
@@ -83,8 +117,10 @@ public class EthWallet {
 		return true;
 	}
 
-	/*
-	 * Returns hex privateKey, be careful with it, don't expose it.
+	/**
+	 * Works if unlocked, otherwise returns null
+	 * 
+	 * @return null if locked, hex private key otherwise
 	 */
 	public String getPrivateKey() {
 		if (privateKey != null) {
@@ -94,30 +130,38 @@ public class EthWallet {
 		return null;
 	}
 
-	/*
-	 * Delete private key from temporary storage, further signing won't be
-	 * possible.
+	/**
+	 * delete private key from memory
 	 */
 	public void lock() {
 		logger.debug("Locked wallet " + storage.toString());
 		storage = null;
 	}
 
-	/*
-	 * Get the wallet storage, may be used to get storage information
+	/**
+	 * 
+	 * @return the complete storage v3
 	 */
 	public WalletStoragePojoV3 getStorage() {
 		return storage;
 	}
-	
+
+	/**
+	 * @return wallet address
+	 */
 	public String getAddress() {
 		if (storage != null) {
 			return storage.getAddress();
 		}
-		
+
 		return null;
 	}
 
+	/**
+	 * Generate ethereum client standard filename (uses now date)
+	 * 
+	 * @return file name
+	 */
 	public String generateStandardFilename() {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-DD'T'HH-mm-ss'.'SS");
 		DateTime now = DateTime.now(DateTimeZone.UTC);

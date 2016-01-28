@@ -5,10 +5,10 @@ import java.util.HashMap;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
-public class Contracts {
+public class CompileOutput {
 	private HashMap<String, ContractData> contractData;
 	
-	public Contracts() {
+	public CompileOutput() {
 		contractData = new HashMap<>();
 	}
 	

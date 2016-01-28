@@ -10,17 +10,41 @@ import org.ethereum.core.CallTransaction.Function;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionCall;
 
+/**
+ * Instance to control a contract on the ethereum chain.
+ * 
+ * @author Andrei Grigoriu
+ *
+ */
 public class EthSmartContract {
 	private EthSmartContractFactory factory;
 	private String contractAddress;
 
 	private static final Logger logger = LogManager.getLogger(EthSmartContract.class);
 
+	/**
+	 *
+	 * @param factory
+	 *            to use for method calling
+	 * @param contractAddress
+	 *            from chain
+	 */
 	public EthSmartContract(EthSmartContractFactory factory, String contractAddress) {
 		this.factory = factory;
 		this.contractAddress = contractAddress;
 	}
 
+	/**
+	 * Return a call that will call a constant method on this contract
+	 * 
+	 * @param method
+	 *            to call
+	 * @param args
+	 *            contract arguments
+	 * @return the call to submit to your service
+	 * @throws NoSuchContractMethod
+	 *             (if no such constant method exists)
+	 */
 	public EthCall callConstantMethod(String method, Object... args) throws NoSuchContractMethod {
 		Function methodFunction = factory.getConstantFunction(method);
 
@@ -42,6 +66,17 @@ public class EthSmartContract {
 		return new EthCall(callPojo);
 	}
 
+	/**
+	 * Return a call that will dry call a modifier method on this contract
+	 * 
+	 * @param method
+	 *            to call
+	 * @param args
+	 *            contract arguments
+	 * @return the call to submit to your service
+	 * @throws NoSuchContractMethod
+	 *             (if no such modifier method exists)
+	 */
 	public EthCall dryCallModMethod(String from, String method, Object... args) throws NoSuchContractMethod {
 		Function methodFunction = factory.getModFunction(method);
 
@@ -63,7 +98,18 @@ public class EthSmartContract {
 		return new EthCall(callPojo);
 	}
 
-	public EthTransaction callModMethod(EthWallet from, String method, Object... args) throws NoSuchContractMethod {
+	/**
+	 * Returns a transaction that will call a modifier method on the contract.
+	 * 
+	 * @param method
+	 *            modifier method to call
+	 * @param args
+	 *            contract arguments
+	 * @return transaction
+	 * @throws NoSuchContractMethod
+	 *             (if no such modifier method exists)
+	 */
+	public EthTransaction callModMethod(String method, Object... args) throws NoSuchContractMethod {
 		Function methodFunction = factory.getModFunction(method);
 
 		if (methodFunction == null) {

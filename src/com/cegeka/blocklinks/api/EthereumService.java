@@ -11,7 +11,7 @@ import com.cegeka.blocklinks.ethereum.EthCall;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
-import com.cegeka.blocklinks.ethereum.pojo.Contracts;
+import com.cegeka.blocklinks.ethereum.pojo.CompileOutput;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
 import com.googlecode.jsonrpc4j.HttpException;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
@@ -21,17 +21,27 @@ import org.apache.logging.log4j.LogManager;
 
 /**
  * Implementation for an Ethereum service api
+ * 
+ * @author Andrei Grigoriu
  *
  */
 public class EthereumService {
 
 	/**
 	 * A generic wrapper for a rpc call.
+	 * 
 	 * @author Andrei Grigoriu
 	 *
-	 * @param <T> return type of rpc call
+	 * @param <T>
+	 *            return type of rpc call
 	 */
 	public interface RpcAction<T> {
+
+		/**
+		 * Execute rpc call here
+		 * 
+		 * @return rpc response
+		 */
 		public T call();
 	}
 
@@ -39,7 +49,7 @@ public class EthereumService {
 	 * Interval between receipt check polls
 	 */
 	public static final int receiptCheckIntervalMillis = 1000;
-	
+
 	/**
 	 * Max receipt checks to do
 	 */
@@ -50,13 +60,10 @@ public class EthereumService {
 
 	private static final Logger logger = LogManager.getLogger(EthereumService.class);
 
-	/** Constructors
-	 * 
-	 */
-	
 	/**
 	 * 
-	 * @param executor - to use for async and future calls, also for polling
+	 * @param executor
+	 *            to use for async and future calls, also for polling
 	 */
 	public EthereumService(ScheduledExecutorService executor) {
 		this(executor, EthRpcClient.defaultHostname, EthRpcClient.defaultPort);
@@ -64,8 +71,10 @@ public class EthereumService {
 
 	/**
 	 * 
-	 * @param executor - to use for async and future calls, also for polling
-	 * @param rpcHostname - ethereum client hostname
+	 * @param executor
+	 *            to use for async and future calls, also for polling
+	 * @param rpcHostname
+	 *            ethereum client hostname
 	 */
 	public EthereumService(ScheduledExecutorService executor, String rpcHostname) {
 		this(executor, rpcHostname, EthRpcClient.defaultPort);
@@ -73,9 +82,12 @@ public class EthereumService {
 
 	/**
 	 * 
-	 * @param executor - to use for async and future calls, also for polling
-	 * @param rpcHostname - ethereum client hostname
-	 * @param port - ethereum client port
+	 * @param executor
+	 *            to use for async and future calls, also for polling
+	 * @param rpcHostname
+	 *            ethereum client hostname
+	 * @param port
+	 *            ethereum client port
 	 */
 	public EthereumService(ScheduledExecutorService executor, String rpcHostname, int port) {
 		this.executor = executor;
@@ -85,6 +97,7 @@ public class EthereumService {
 
 	/**
 	 * Generate wallet with a random key pair.
+	 * 
 	 * @param passphrase
 	 * @return
 	 */
@@ -94,16 +107,19 @@ public class EthereumService {
 
 	/**
 	 * Get internal rpc client used to communicate with the ethereum client
-	 * @return
+	 * 
+	 * @return rpc client
 	 */
 	public EthRpcClient getRpcClient() {
 		return rpc;
 	}
 
-	/* controlled rpc executions (async, future, blocking)
+	/**
+	 * Blocking execute of rpc action. Wraps errors into a blocklinks response.
 	 * 
+	 * @param rpcAction
+	 * @return response
 	 */
-	
 	private <T> BlocklinksResponse<T> performBlockingRpcAction(RpcAction<T> rpcAction) {
 		ErrorType err = null;
 		Exception e = null;
@@ -125,6 +141,14 @@ public class EthereumService {
 		return new BlocklinksResponse<T>(err, e, rpcResponse);
 	}
 
+	/**
+	 * Async execute of rpc action. Runs callable handle when done.
+	 * 
+	 * @param rpcAction
+	 *            to execute
+	 * @param callable
+	 *            to execute after rpcAction operation ends
+	 */
 	private <T> void performAsyncRpcAction(RpcAction<T> rpcAction, BlocklinksCallable<T> callable) {
 		synchronized (executor) {
 			try {
@@ -140,7 +164,13 @@ public class EthereumService {
 			}
 		}
 	}
-	
+
+	/**
+	 * Async execute of rpc action. Returns a future to get when operation ends.
+	 * 
+	 * @param rpcAction
+	 *            to execute
+	 */
 	private <T> Future<BlocklinksResponse<T>> performFutureRpcAction(RpcAction<T> rpcAction) {
 		synchronized (executor) {
 			try {
@@ -158,13 +188,11 @@ public class EthereumService {
 		}
 	}
 
-	/*
-	 * getAccounts implementations
-	 */
-	
 	/**
 	 * Async get accounts registered in the ethereum client.
-	 * @param callable to call after the accounts are fetched
+	 * 
+	 * @param callable
+	 *            to call after the accounts are fetched
 	 */
 	public void getAccounts(BlocklinksCallable<String[]> callable) {
 		performAsyncRpcAction(new RpcAction<String[]>() {
@@ -179,6 +207,7 @@ public class EthereumService {
 
 	/**
 	 * Blocking get accounts registered in the ethereum client.
+	 * 
 	 * @return rpc accounts response
 	 */
 	public BlocklinksResponse<String[]> getAccounts() {
@@ -190,9 +219,10 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
 	/**
 	 * Future get accounts registered in the ethereum client.
+	 * 
 	 * @return Future for the accounts response.
 	 */
 	public Future<BlocklinksResponse<String[]>> getAccountsFuture() {
@@ -205,10 +235,14 @@ public class EthereumService {
 		});
 	}
 
-	/*
-	 * getBalance implementations
+	/**
+	 * Async get balance of an account.
+	 * 
+	 * @param address
+	 *            to get balance of.
+	 * @param callable
+	 *            to execute when balance is fetched
 	 */
-	
 	public void getBalance(final String address, BlocklinksCallable<BigInteger> callable) {
 		performAsyncRpcAction(new RpcAction<BigInteger>() {
 
@@ -220,6 +254,13 @@ public class EthereumService {
 		}, callable);
 	}
 
+	/**
+	 * Blocking get balance of an account
+	 * 
+	 * @param address
+	 *            to get balance of
+	 * @return response with balance
+	 */
 	public BlocklinksResponse<BigInteger> getBalance(final String address) {
 		return performBlockingRpcAction(new RpcAction<BigInteger>() {
 
@@ -229,7 +270,14 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
+	/**
+	 * Future get balance of an account
+	 * 
+	 * @param address
+	 *            to get balance of
+	 * @return future to get balance response.
+	 */
 	public Future<BlocklinksResponse<BigInteger>> getBalanceFuture(final String address) {
 		return performFutureRpcAction(new RpcAction<BigInteger>() {
 
@@ -240,10 +288,15 @@ public class EthereumService {
 		});
 	}
 
-	/*
-	 * getAccountNonce implementations
+	/**
+	 * Async get account nonce of address (does not currently count pending
+	 * executions)
+	 * 
+	 * @param address
+	 *            to get account nonce of.
+	 * @param callable
+	 *            to execute with nonce response
 	 */
-	
 	public void getAccountNonce(final String address, BlocklinksCallable<BigInteger> callable) {
 		performAsyncRpcAction(new RpcAction<BigInteger>() {
 
@@ -255,6 +308,14 @@ public class EthereumService {
 		}, callable);
 	}
 
+	/**
+	 * Blocking get account nonce of address (does not currently count pending
+	 * executions)
+	 * 
+	 * @param address
+	 *            to get account nonce of.
+	 * @return nonce response
+	 */
 	public BlocklinksResponse<BigInteger> getAccountNonce(final String address) {
 		return performBlockingRpcAction(new RpcAction<BigInteger>() {
 
@@ -264,7 +325,14 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
+	/**
+	 * Future get account nonce of address (does not currently count pending
+	 * executions)
+	 * 
+	 * @param address
+	 * @return future to get nonce response
+	 */
 	public Future<BlocklinksResponse<BigInteger>> getAccountNonceFuture(final String address) {
 		return performFutureRpcAction(new RpcAction<BigInteger>() {
 
@@ -275,6 +343,16 @@ public class EthereumService {
 		});
 	}
 
+	/**
+	 * Blocking send transaction. Generates nonce automatically (by rpc)
+	 * 
+	 * @param from
+	 *            wallet to sign transaction with
+	 * @param transaction
+	 *            to send
+	 * @return response for transaction hash
+	 * @throws WalletLockedException
+	 */
 	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction)
 			throws WalletLockedException {
 		BlocklinksResponse<BigInteger> nonceResponse = getAccountNonce(from.getAddress());
@@ -286,6 +364,18 @@ public class EthereumService {
 		return new BlocklinksResponse<String>(nonceResponse);
 	}
 
+	/**
+	 * Blocking send transaction.
+	 * 
+	 * @param from
+	 *            wallet to sign transaction with
+	 * @param transaction
+	 *            to send
+	 * @param nonce
+	 *            to sign transaction with
+	 * @return response for transaction hash
+	 * @throws WalletLockedException
+	 */
 	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce)
 			throws WalletLockedException {
 		byte[] rawEncoded = transaction.signWithWallet(from, nonce);
@@ -300,9 +390,21 @@ public class EthereumService {
 			}
 		});
 	}
-	
-	public Future<BlocklinksResponse<String>> sendTransactionFuture(EthWallet from, EthTransaction transaction, BigInteger nonce)
-			throws WalletLockedException {
+
+	/**
+	 * Future send transaction.
+	 * 
+	 * @param from
+	 *            wallet to sign transaction with
+	 * @param transaction
+	 *            to send
+	 * @param nonce
+	 *            to sign transaction with
+	 * @return future to get response for transaction hash.
+	 * @throws WalletLockedException
+	 */
+	public Future<BlocklinksResponse<String>> sendTransactionFuture(EthWallet from, EthTransaction transaction,
+			BigInteger nonce) throws WalletLockedException {
 		byte[] rawEncoded = transaction.signWithWallet(from, nonce);
 
 		return performFutureRpcAction(new RpcAction<String>() {
@@ -316,6 +418,16 @@ public class EthereumService {
 		});
 	}
 
+	/**
+	 * Async send transaction. Nonce gets generated automatically via rpc.
+	 * 
+	 * @param from
+	 *            wallet to sign transaction with
+	 * @param transaction
+	 *            to send
+	 * @param callable
+	 *            to execute when transaction was submitted.
+	 */
 	public void sendTransaction(EthWallet from, EthTransaction transaction, BlocklinksCallable<String> callable) {
 		String address = from.getAddress();
 		getAccountNonce(address, new BlocklinksCallable<BigInteger>() {
@@ -331,6 +443,18 @@ public class EthereumService {
 		});
 	}
 
+	/**
+	 * Async send transaction.
+	 * 
+	 * @param from
+	 *            wallet to sign transaction with
+	 * @param transaction
+	 *            to send
+	 * @param nonce
+	 *            to sign transaction with
+	 * @param callable
+	 *            to execute when transaction was submitted.
+	 */
 	public void sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce,
 			BlocklinksCallable<String> callable) {
 		try {
@@ -350,8 +474,14 @@ public class EthereumService {
 		}
 	}
 
-	/* 
-	 * Calls callable when tx is mined (or is already mined)
+	/**
+	 * Async listen for tx receipt. Will call when transaction is mined or was
+	 * already mined.
+	 * 
+	 * @param txHash
+	 *            transaction hash to listen for
+	 * @param callable
+	 *            to execute when transaction is mined
 	 */
 	public void listenForTxReceipt(final String txHash, final BlocklinksCallable<TransactionReceipt> callable) {
 		listenForTxReceipt(txHash, receiptCheckIntervalMillis, receiptMaxChecks, callable);
@@ -396,11 +526,15 @@ public class EthereumService {
 			}
 		});
 	}
-	
-	/*
-	 * makeCall implementations
-	 */
 
+	/**
+	 * Async calls and fetches the output of an ethereum function.
+	 * 
+	 * @param call
+	 *            to execute on the ethereum chain
+	 * @param callable
+	 *            to execute with output data.
+	 */
 	public void makeCall(final EthCall call, BlocklinksCallable<Object[]> callable) {
 		performAsyncRpcAction(new RpcAction<Object[]>() {
 
@@ -412,6 +546,13 @@ public class EthereumService {
 		}, callable);
 	}
 
+	/**
+	 * Blocking calls and fetches the output of an ethereum function.
+	 * 
+	 * @param call
+	 *            to execute on the ethereum chain
+	 * @return output response
+	 */
 	public BlocklinksResponse<Object[]> makeCall(final EthCall call) {
 		return performBlockingRpcAction(new RpcAction<Object[]>() {
 
@@ -421,7 +562,14 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
+	/**
+	 * Future calls and fetches the output of an ethereum function.
+	 * 
+	 * @param call
+	 *            to execute on the ethereum chain
+	 * @return future to get output response
+	 */
 	public Future<BlocklinksResponse<Object[]>> makeCallFuture(final EthCall call) {
 		return performFutureRpcAction(new RpcAction<Object[]>() {
 
@@ -431,37 +579,55 @@ public class EthereumService {
 			}
 		});
 	}
-	
-	/*
-	 * compiledSolidity implementations
-	 */
 
-	public void compileSolidity(String sourceCode, BlocklinksCallable<Contracts> callable) {
-		performAsyncRpcAction(new RpcAction<Contracts>() {
+	/**
+	 * Async compile solidity.
+	 * 
+	 * @param sourceCode
+	 *            to compiled
+	 * @param callable
+	 *            with compile ouput response
+	 */
+	public void compileSolidity(String sourceCode, BlocklinksCallable<CompileOutput> callable) {
+		performAsyncRpcAction(new RpcAction<CompileOutput>() {
 
 			@Override
-			public Contracts call() {
+			public CompileOutput call() {
 				return rpc.compileSolidity(sourceCode);
 			}
 
 		}, callable);
 	}
 
-	public BlocklinksResponse<Contracts> compileSolidity(String sourceCode) {
-		return performBlockingRpcAction(new RpcAction<Contracts>() {
+	/**
+	 * Blocking compile solidity.
+	 * 
+	 * @param sourceCode
+	 *            to compile
+	 * @return compile output response
+	 */
+	public BlocklinksResponse<CompileOutput> compileSolidity(String sourceCode) {
+		return performBlockingRpcAction(new RpcAction<CompileOutput>() {
 
 			@Override
-			public Contracts call() {
+			public CompileOutput call() {
 				return rpc.compileSolidity(sourceCode);
 			}
 		});
 	}
-	
-	public Future<BlocklinksResponse<Contracts>> compileSolidityFuture(String sourceCode) {
-		return performFutureRpcAction(new RpcAction<Contracts>() {
+
+	/**
+	 * Future compile solidity.
+	 * 
+	 * @param sourceCode
+	 *            to compile
+	 * @return future for compile output response
+	 */
+	public Future<BlocklinksResponse<CompileOutput>> compileSolidityFuture(String sourceCode) {
+		return performFutureRpcAction(new RpcAction<CompileOutput>() {
 
 			@Override
-			public Contracts call() {
+			public CompileOutput call() {
 				return rpc.compileSolidity(sourceCode);
 			}
 		});

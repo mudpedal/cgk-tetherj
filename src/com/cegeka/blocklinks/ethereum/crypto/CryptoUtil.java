@@ -3,15 +3,35 @@ package com.cegeka.blocklinks.ethereum.crypto;
 import java.math.BigInteger;
 import java.util.Formatter;
 
+/**
+ * Util for both crypto and decoding
+ * 
+ * @author Andrei Grigoriu
+ *
+ */
 public class CryptoUtil {
 
-	public static String byteToHexWithPrefix(final byte[] hash) {
-		return "0x" + byteToHex(hash);
+	/**
+	 * Convert bytes to hex + 0x in front
+	 * 
+	 * @param data
+	 *            to convert
+	 * @return hex string
+	 */
+	public static String byteToHexWithPrefix(final byte[] data) {
+		return "0x" + byteToHex(data);
 	}
 
-	public static String byteToHex(final byte[] hash) {
+	/**
+	 * Convert bytes to hex without (no 0x in front)
+	 * 
+	 * @param data
+	 *            to convert
+	 * @return hex strng
+	 */
+	public static String byteToHex(final byte[] data) {
 		Formatter formatter = new Formatter();
-		for (byte b : hash) {
+		for (byte b : data) {
 			formatter.format("%02x", b);
 		}
 		String result = formatter.toString();
@@ -19,6 +39,13 @@ public class CryptoUtil {
 		return result;
 	}
 
+	/**
+	 * Converts hex to bytes
+	 * 
+	 * @param hex
+	 *            to decoded (may have 0x in front)
+	 * @return byte data
+	 */
 	public static byte[] hexToBytes(String hex) {
 		if (hex.startsWith("0x")) {
 			hex = hex.substring(2);
@@ -26,6 +53,13 @@ public class CryptoUtil {
 		return hexToBytes(hex.toCharArray());
 	}
 
+	/**
+	 * Convert hex to BigInteger
+	 * 
+	 * @param hex
+	 *            to convert
+	 * @return biginteger from hex
+	 */
 	public static BigInteger hexToBigInteger(String hex) {
 		if (hex == null) {
 			return null;
@@ -43,6 +77,13 @@ public class CryptoUtil {
 		return new BigInteger(hex, 16);
 	}
 
+	/**
+	 * Converts hex to bytes
+	 * 
+	 * @param hex
+	 *            to decoded (may have 0x in front)
+	 * @return byte data
+	 */
 	public static byte[] hexToBytes(char[] hex) {
 		if (hex.length % 2 != 0) {
 			throw new IllegalArgumentException("Must pass an even number of characters.");

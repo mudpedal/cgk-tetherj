@@ -8,6 +8,11 @@ import org.ethereum.core.Transaction;
 import com.cegeka.blocklinks.api.WalletLockedException;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 
+/**
+ * 
+ * @author Andrei Grigoriu Container for data for a future transaction.
+ *
+ */
 public class EthTransaction {
 	public static final BigInteger defaultGasPrice = BigInteger.valueOf(50000000000L);
 	public static final BigInteger defaultGasLimit = BigInteger.valueOf(90000L);
@@ -70,7 +75,7 @@ public class EthTransaction {
 	public static BigInteger getDefaultgasprice() {
 		return defaultGasPrice;
 	}
-	
+
 	public static BigInteger getMaximumGasLimit() {
 		return maximumGasLimit;
 	}
@@ -79,11 +84,31 @@ public class EthTransaction {
 		return defaultGasLimit;
 	}
 
+	/**
+	 * 
+	 * @param to
+	 *            receiver (may be contract)
+	 * @param weiValue
+	 *            wei to send
+	 */
 	public EthTransaction(String to, BigInteger weiValue) {
 		this.to = to;
 		this.weiValue = weiValue;
 	}
 
+	/**
+	 * 
+	 * @param to
+	 *            receiver (may be contract)
+	 * @param weiValue
+	 *            wei to send
+	 * @param gasPrice
+	 *            gas price
+	 * @param gasLimit
+	 *            gas limit
+	 * @param data
+	 *            any transaction data
+	 */
 	public EthTransaction(String to, BigInteger weiValue, BigInteger gasPrice, BigInteger gasLimit, byte[] data) {
 		this.to = to;
 		this.weiValue = weiValue;
@@ -92,6 +117,16 @@ public class EthTransaction {
 		this.data = data;
 	}
 
+	/**
+	 * Sign and return encoded transaction data
+	 * 
+	 * @param wallet
+	 *            to sign with (has to be unlocked)
+	 * @param nonce
+	 *            to sign with
+	 * @return encoded transaction data
+	 * @throws WalletLockedException
+	 */
 	public byte[] signWithWallet(EthWallet wallet, BigInteger nonce) throws WalletLockedException {
 		System.out.println(nonce);
 		String privateKey = wallet.getPrivateKey();
@@ -111,6 +146,18 @@ public class EthTransaction {
 		return tx.getEncoded();
 	}
 
+	/**
+	 * Sign and return encoded transaction data
+	 * 
+	 * @param wallet
+	 *            to sign with
+	 * @param nonce
+	 *            to sign with
+	 * @param passphrase
+	 *            to unlock wallet with in case its locked
+	 * @return encoded transaction data
+	 * @throws WalletLockedException
+	 */
 	public byte[] signWithWallet(EthWallet wallet, BigInteger nonce, String passphrase) throws WalletLockedException {
 		if (!wallet.isUnlocked()) {
 			wallet.unlock(passphrase);
