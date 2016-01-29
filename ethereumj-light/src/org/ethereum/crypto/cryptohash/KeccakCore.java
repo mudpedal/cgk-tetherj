@@ -116,7 +116,7 @@ abstract class KeccakCore extends DigestEngine {
 			A[i >>> 3] ^= decodeLELong(data, i);
 
 		long t0, t1, t2, t3, t4;
-		long tt0, tt1, tt2, tt3, tt4;
+		long tt0, tt1, tt2, tt3;
 		long t, kt;
 		long c0, c1, c2, c3, c4, bnn;
 

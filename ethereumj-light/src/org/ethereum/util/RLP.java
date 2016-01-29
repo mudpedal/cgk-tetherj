@@ -151,7 +151,8 @@ public class RLP {
         return value;
     }
 
-    private static short decodeShort(byte[] data, int index) {
+    @SuppressWarnings("unused")
+	private static short decodeShort(byte[] data, int index) {
         if ((data[index] & 0xFF) > OFFSET_SHORT_ITEM
                 && (data[index] & 0xFF) < OFFSET_LONG_ITEM) {
             byte length = (byte) (data[index] - OFFSET_SHORT_ITEM);
@@ -161,7 +162,8 @@ public class RLP {
         }
     }
 
-    private static long decodeLong(byte[] data, int index) {
+    @SuppressWarnings("unused")
+	private static long decodeLong(byte[] data, int index) {
 
         long value = 0;
 
@@ -180,7 +182,8 @@ public class RLP {
         return value;
     }
 
-    private static String decodeStringItem(byte[] data, int index) {
+    @SuppressWarnings("unused")
+	private static String decodeStringItem(byte[] data, int index) {
 
         if ((data[index] & 0xFF) >= OFFSET_LONG_ITEM
                 && (data[index] & 0xFF) < OFFSET_SHORT_LIST) {
@@ -200,7 +203,8 @@ public class RLP {
         }
     }
 
-    private static byte[] decodeItemBytes(byte[] data, int index) {
+    @SuppressWarnings("unused")
+	private static byte[] decodeItemBytes(byte[] data, int index) {
 
         final int length = calculateLength(data, index);
         byte[] valueBytes = new byte[length];
@@ -216,7 +220,8 @@ public class RLP {
         return new BigInteger(1, valueBytes);
     }
 
-    private static byte[] decodeByteArray(byte[] data, int index) {
+    @SuppressWarnings("unused")
+	private static byte[] decodeByteArray(byte[] data, int index) {
 
         final int length = calculateLength(data, index);
         byte[] valueBytes = new byte[length];
@@ -224,7 +229,8 @@ public class RLP {
         return valueBytes;
     }
 
-    private static int nextItemLength(byte[] data, int index) {
+    @SuppressWarnings("unused")
+	private static int nextItemLength(byte[] data, int index) {
 
         if (index >= data.length)
             return -1;

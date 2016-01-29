@@ -248,7 +248,8 @@ public class ECKey implements Serializable {
      *
      * @return  -
      */
-    public ECKey decompress() {
+    @SuppressWarnings("deprecation")
+	public ECKey decompress() {
         if (!pub.isCompressed())
             return this;
         else
@@ -319,7 +320,8 @@ public class ECKey implements Serializable {
      *
      * @return  -
      */
-    public byte[] getPubKey() {
+    @SuppressWarnings("deprecation")
+	public byte[] getPubKey() {
         return pub.getEncoded();
     }
 
@@ -353,7 +355,8 @@ public class ECKey implements Serializable {
      *
      * @return  -
      */
-    public boolean isCompressed() {
+    @SuppressWarnings("deprecation")
+	public boolean isCompressed() {
         return pub.isCompressed();
     }
 
@@ -679,7 +682,8 @@ public class ECKey implements Serializable {
      *
      * @return -
      */
-    public boolean isPubKeyCanonical() {
+    @SuppressWarnings("deprecation")
+	public boolean isPubKeyCanonical() {
         return isPubKeyCanonical(pub.getEncoded());
     }
 

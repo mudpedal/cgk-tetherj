@@ -6,7 +6,11 @@ package org.ethereum.util;
  */
 public class RLPItem implements RLPElement {
 
-    private final byte[] rlpData;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4570267401757053497L;
+	private final byte[] rlpData;
 
     public RLPItem(byte[] rlpData) {
         this.rlpData = rlpData;

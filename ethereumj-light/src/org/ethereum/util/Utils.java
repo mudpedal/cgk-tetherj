@@ -148,7 +148,8 @@ public class Utils {
         return javaTime / 1000;
     }
 
-    public static <T> T[] mergeArrays(T[] ... arr) {
+    @SuppressWarnings("unchecked")
+	public static <T> T[] mergeArrays(T[] ... arr) {
         int size = 0;
         for (T[] ts : arr) {
             size += ts.length;

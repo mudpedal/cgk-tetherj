@@ -18,7 +18,6 @@ import static org.ethereum.util.ByteUtil.EMPTY_BYTE_ARRAY;
 
 public class HashUtil {
 
-    private static final int MAX_ENTRIES = 100; // Should contain most commonly hashed values
     public static final byte[] EMPTY_DATA_HASH = sha3(EMPTY_BYTE_ARRAY);
     public static final byte[] EMPTY_LIST_HASH = sha3(RLP.encodeList());
     public static final byte[] EMPTY_TRIE_HASH = sha3(RLP.encodeElement(EMPTY_BYTE_ARRAY));
