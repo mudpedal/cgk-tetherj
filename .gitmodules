@@ -1,3 +1,4 @@
 [submodule "ripple-lj"]
 	path = ripple-lj
-	url = ./ripple-lj
+	url = git@github.com:crazyquark/ripple-lj.git
+
