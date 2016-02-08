@@ -1,0 +1,3 @@
+[submodule "ripple-lj"]
+	path = ripple-lj
+	url = ./ripple-lj
