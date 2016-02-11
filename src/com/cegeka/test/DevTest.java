@@ -16,7 +16,7 @@ import org.ethereum.util.RLP;
 import org.ethereum.util.RLPElement;
 import org.ethereum.util.RLPList;
 
-import com.cegeka.blocklinks.api.BlocklinksCallable;
+import com.cegeka.blocklinks.api.BlocklinksHandle;
 import com.cegeka.blocklinks.api.BlocklinksResponse;
 import com.cegeka.blocklinks.api.EthereumService;
 import com.cegeka.blocklinks.api.WalletLockedException;
@@ -171,7 +171,7 @@ public class DevTest {
 			String txHash = txHashResponse.getValue();
 			System.out.println("Sent transaction " + txHash);
 
-			service.listenForTxReceipt(txHash, new BlocklinksCallable<TransactionReceipt>() {
+			service.listenForTxReceipt(txHash, new BlocklinksHandle<TransactionReceipt>() {
 
 				@Override
 				public void call(BlocklinksResponse<TransactionReceipt> response) {
@@ -212,7 +212,7 @@ public class DevTest {
 								BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 								System.out.println("Sending transaction " + txHashResponse.getValue());
 								service.listenForTxReceipt(txHashResponse.getValue(),
-										new BlocklinksCallable<TransactionReceipt>() {
+										new BlocklinksHandle<TransactionReceipt>() {
 
 									@Override
 									public void call(BlocklinksResponse<TransactionReceipt> response) {

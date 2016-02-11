@@ -237,7 +237,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute after rpcAction operation ends
 	 */
-	private <T> void performAsyncRpcAction(RpcAction<T> rpcAction, BlocklinksCallable<T> callable) {
+	private <T> void performAsyncRpcAction(RpcAction<T> rpcAction, BlocklinksHandle<T> callable) {
 		synchronized (executor) {
 			try {
 				executor.submit(new Runnable() {
@@ -286,7 +286,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to call after the accounts are fetched
 	 */
-	public void getAccounts(BlocklinksCallable<String[]> callable) {
+	public void getAccounts(BlocklinksHandle<String[]> callable) {
 		performAsyncRpcAction(new RpcAction<String[]>() {
 
 			@Override
@@ -335,7 +335,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute when balance is fetched
 	 */
-	public void getBalance(final String address, BlocklinksCallable<BigInteger> callable) {
+	public void getBalance(final String address, BlocklinksHandle<BigInteger> callable) {
 		performAsyncRpcAction(new RpcAction<BigInteger>() {
 
 			@Override
@@ -389,7 +389,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute with nonce response
 	 */
-	public void getAccountNonce(final String address, BlocklinksCallable<BigInteger> callable) {
+	public void getAccountNonce(final String address, BlocklinksHandle<BigInteger> callable) {
 		performAsyncRpcAction(new RpcAction<BigInteger>() {
 
 			@Override
@@ -520,9 +520,9 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute when transaction was submitted.
 	 */
-	public void sendTransaction(EthWallet from, EthTransaction transaction, BlocklinksCallable<String> callable) {
+	public void sendTransaction(EthWallet from, EthTransaction transaction, BlocklinksHandle<String> callable) {
 		String address = from.getAddress();
-		getAccountNonce(address, new BlocklinksCallable<BigInteger>() {
+		getAccountNonce(address, new BlocklinksHandle<BigInteger>() {
 
 			@Override
 			public void call(BlocklinksResponse<BigInteger> response) {
@@ -548,7 +548,7 @@ public class EthereumService {
 	 *            to execute when transaction was submitted.
 	 */
 	public void sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce,
-			BlocklinksCallable<String> callable) {
+			BlocklinksHandle<String> callable) {
 		try {
 			byte[] rawEncoded = transaction.signWithWallet(from, nonce);
 
@@ -575,12 +575,12 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute when transaction is mined
 	 */
-	public void listenForTxReceipt(final String txHash, final BlocklinksCallable<TransactionReceipt> callable) {
+	public void listenForTxReceipt(final String txHash, final BlocklinksHandle<TransactionReceipt> callable) {
 		listenForTxReceipt(txHash, receiptCheckIntervalMillis, receiptMaxChecks, callable);
 	}
 
 	private void listenForTxReceipt(final String txHash, final int checkIntervalMillis, final int checks,
-			final BlocklinksCallable<TransactionReceipt> callable) {
+			final BlocklinksHandle<TransactionReceipt> callable) {
 
 		performAsyncRpcAction(new RpcAction<TransactionReceipt>() {
 
@@ -589,7 +589,7 @@ public class EthereumService {
 				TransactionReceipt receipt = rpc.getTransactionReceipt(txHash);
 				return receipt;
 			}
-		}, new BlocklinksCallable<TransactionReceipt>() {
+		}, new BlocklinksHandle<TransactionReceipt>() {
 
 			@Override
 			public void call(BlocklinksResponse<TransactionReceipt> response) {
@@ -627,7 +627,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute with output data.
 	 */
-	public void makeCall(final EthCall call, BlocklinksCallable<Object[]> callable) {
+	public void makeCall(final EthCall call, BlocklinksHandle<Object[]> callable) {
 		performAsyncRpcAction(new RpcAction<Object[]>() {
 
 			@Override
@@ -680,7 +680,7 @@ public class EthereumService {
 	 * @param callable
 	 *            with compile ouput response
 	 */
-	public void compileSolidity(String sourceCode, BlocklinksCallable<CompileOutput> callable) {
+	public void compileSolidity(String sourceCode, BlocklinksHandle<CompileOutput> callable) {
 		performAsyncRpcAction(new RpcAction<CompileOutput>() {
 
 			@Override
