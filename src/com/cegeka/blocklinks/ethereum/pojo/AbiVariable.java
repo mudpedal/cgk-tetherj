@@ -1,6 +1,12 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
-public class AbiVariable {
+import java.io.Serializable;
+
+public class AbiVariable implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5713661826032273529L;
 	public String getName() {
 		return name;
 	}

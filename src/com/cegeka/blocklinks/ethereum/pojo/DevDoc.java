@@ -1,24 +1,16 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
-import java.util.HashMap;
+import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-
-public class DevDoc {
-	private HashMap<String, DevDocMethod> methods;
-
-	public DevDoc() {
-		methods = new HashMap<>();
-	}
-
-	@JsonAnySetter
-	public void setDevDocMethod(String name, DevDocMethod method) {
-		methods.put(name, method);
-	}
-
-	@JsonAnyGetter
-	public HashMap<String, DevDocMethod> getMethods() {
+public class DevDoc implements Serializable {
+	
+	private static final long serialVersionUID = 297037653570409555L;
+	private DevDocMethods methods;
+	
+	public DevDocMethods getMethods() {
 		return methods;
+	}
+	public void setMethods(DevDocMethods methods) {
+		this.methods = methods;
 	}
 }

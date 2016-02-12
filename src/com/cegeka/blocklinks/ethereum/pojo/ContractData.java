@@ -1,6 +1,12 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
-public class ContractData {
+import java.io.Serializable;
+
+public class ContractData implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2719743504739845186L;
 	public String getCode() {
 		return code;
 	}

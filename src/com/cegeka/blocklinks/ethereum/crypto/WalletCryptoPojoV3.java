@@ -1,17 +1,24 @@
 package com.cegeka.blocklinks.ethereum.crypto;
 
+import java.io.Serializable;
+
 /**
  * Pojo to store wallet crypto
  * 
  * @author Andrei Grigoriu
  *
  */
-public class WalletCryptoPojoV3 {
+public class WalletCryptoPojoV3 implements Serializable {
+
+	private static final long serialVersionUID = 3895065516835152955L;
 
 	/**
 	 * Internal pojo for iv
 	 */
-	public class CipherParams {
+	public class CipherParams implements Serializable {
+
+		private static final long serialVersionUID = -5809750321955639194L;
+
 		@Override
 		public String toString() {
 			return "CipherParams [iv=" + iv + "]";
@@ -32,8 +39,10 @@ public class WalletCryptoPojoV3 {
 	 * Internal pojo for KDF params
 	 *
 	 */
-	public class KdfParams {
+	public class KdfParams implements Serializable {
 
+		private static final long serialVersionUID = 4851325137367204904L;
+		
 		@Override
 		public String toString() {
 			return "KdfParams [prf=" + prf + ", c=" + c + ", salt=" + salt + ", dklen=" + dklen + "]";
