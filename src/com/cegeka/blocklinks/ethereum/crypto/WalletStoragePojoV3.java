@@ -2,6 +2,7 @@ package com.cegeka.blocklinks.ethereum.crypto;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -31,7 +32,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Andrei Grigoriu
  *
  */
-public class WalletStoragePojoV3 {
+public class WalletStoragePojoV3 implements Serializable {
+
+	private static final long serialVersionUID = 4140390043976265580L;
 
 	public static final int storageVersion = 3;
 	public static final String kdf = "pbkdf2";

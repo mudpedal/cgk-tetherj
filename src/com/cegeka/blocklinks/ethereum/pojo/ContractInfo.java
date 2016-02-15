@@ -1,6 +1,13 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
-public class ContractInfo {
+import java.io.Serializable;
+
+public class ContractInfo implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9058606692051266438L;
+	
 	public String getLanguage() {
 		return language;
 	}
@@ -41,19 +48,19 @@ public class ContractInfo {
 		this.source = source;
 	}
 
-	public Object getUserDoc() {
+	public UserDoc getUserDoc() {
 		return userDoc;
 	}
 
-	public void setUserDoc(Object userDoc) {
+	public void setUserDoc(UserDoc userDoc) {
 		this.userDoc = userDoc;
 	}
 
-	public Object getDeveloperDoc() {
+	public DevDoc getDeveloperDoc() {
 		return developerDoc;
 	}
 
-	public void setDeveloperDoc(Object developerDoc) {
+	public void setDeveloperDoc(DevDoc developerDoc) {
 		this.developerDoc = developerDoc;
 	}
 
@@ -71,6 +78,6 @@ public class ContractInfo {
 	String compilerOptions;
 	ContractAbiMethod[] abiDefinition;
 	String source;
-	Object userDoc;
-	Object developerDoc;
+	UserDoc userDoc;
+	DevDoc developerDoc;
 }

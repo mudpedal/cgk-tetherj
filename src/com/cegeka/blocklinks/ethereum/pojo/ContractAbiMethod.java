@@ -1,6 +1,12 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
-public class ContractAbiMethod {
+import java.io.Serializable;
+
+public class ContractAbiMethod implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5008090255193587747L;
 	public boolean isConstant() {
 		return constant;
 	}

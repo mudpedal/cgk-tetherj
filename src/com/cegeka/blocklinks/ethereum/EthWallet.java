@@ -2,6 +2,7 @@ package com.cegeka.blocklinks.ethereum;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -20,8 +21,12 @@ import org.apache.logging.log4j.LogManager;
  * @author Andrei Grigoriu
  *
  */
-public class EthWallet {
+public class EthWallet implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4893684742909372607L;
 	WalletStoragePojoV3 storage;
 	private byte[] privateKey;
 
@@ -144,6 +149,14 @@ public class EthWallet {
 	 */
 	public WalletStoragePojoV3 getStorage() {
 		return storage;
+	}
+	
+	/**
+	 * Set storage
+	 * @param storage
+	 */
+	public void setStorage(WalletStoragePojoV3 storage) {
+		this.storage = storage;
 	}
 
 	/**

@@ -1,6 +1,12 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
-public class DevDocMethod {
+import java.io.Serializable;
+
+public class DevDocMethod implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6621194127186336761L;
 	public String getDetails() {
 		return details;
 	}

@@ -1,7 +1,5 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
-import java.math.BigInteger;
-
 public class Transaction {
 
 	@Override

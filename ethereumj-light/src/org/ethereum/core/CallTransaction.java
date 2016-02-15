@@ -1,12 +1,13 @@
 package org.ethereum.core;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.ethereum.util.ByteUtil;
-import org.spongycastle.util.encoders.Hex;
+import static java.lang.String.format;
+import static org.apache.commons.lang3.ArrayUtils.subarray;
+import static org.apache.commons.lang3.StringUtils.stripEnd;
+import static org.ethereum.crypto.HashUtil.sha3;
+import static org.ethereum.util.ByteUtil.longToBytesNoLeadZeroes;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -14,11 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.String.format;
-import static org.apache.commons.lang3.ArrayUtils.subarray;
-import static org.apache.commons.lang3.StringUtils.stripEnd;
-import static org.ethereum.crypto.HashUtil.sha3;
-import static org.ethereum.util.ByteUtil.longToBytesNoLeadZeroes;
+import org.ethereum.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Creates a contract function call transaction. Serializes arguments according
@@ -46,7 +47,10 @@ public class CallTransaction {
 	/**
 	 * Generic ABI type
 	 */
-	public static abstract class Type {
+	public static abstract class Type implements Serializable {
+		
+		private static final long serialVersionUID = 2587268561151462949L;
+		
 		protected String name;
 
 		public Type(String name) {
@@ -120,6 +124,9 @@ public class CallTransaction {
 	}
 
 	public static abstract class ArrayType extends Type {
+		
+		private static final long serialVersionUID = 9006784067322999908L;
+
 		public static ArrayType getType(String typeName) {
 			int idx1 = typeName.indexOf("[");
 			int idx2 = typeName.indexOf("]", idx1);
@@ -161,6 +168,8 @@ public class CallTransaction {
 	}
 
 	public static class StaticArrayType extends ArrayType {
+		
+		private static final long serialVersionUID = 2576085181269405949L;
 		int size;
 
 		public StaticArrayType(String name) {
@@ -205,6 +214,9 @@ public class CallTransaction {
 	}
 
 	public static class DynamicArrayType extends ArrayType {
+		
+		private static final long serialVersionUID = -7274297395594415606L;
+
 		public DynamicArrayType(String name) {
 			super(name);
 		}
@@ -263,6 +275,9 @@ public class CallTransaction {
 	}
 
 	public static class BytesType extends Type {
+		
+		private static final long serialVersionUID = 8489116343379988526L;
+
 		protected BytesType(String name) {
 			super(name);
 		}
@@ -297,6 +312,11 @@ public class CallTransaction {
 	}
 
 	public static class StringType extends BytesType {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2421274211203157882L;
+
 		public StringType() {
 			super("string");
 		}
@@ -315,6 +335,9 @@ public class CallTransaction {
 	}
 
 	public static class Bytes32Type extends Type {
+		
+		private static final long serialVersionUID = 3908573608891803814L;
+
 		public Bytes32Type(String s) {
 			super(s);
 		}
@@ -341,6 +364,9 @@ public class CallTransaction {
 	}
 
 	public static class AddressType extends IntType {
+		
+		private static final long serialVersionUID = 1254245166090033814L;
+
 		public AddressType() {
 			super("address");
 		}
@@ -362,6 +388,9 @@ public class CallTransaction {
 	}
 
 	public static class IntType extends Type {
+		
+		private static final long serialVersionUID = 4407969986588268441L;
+
 		public IntType(String name) {
 			super(name);
 		}
@@ -424,6 +453,9 @@ public class CallTransaction {
 	}
 
 	public static class BoolType extends IntType {
+		
+		private static final long serialVersionUID = -1212987255068749131L;
+
 		public BoolType() {
 			super("bool");
 		}
@@ -441,7 +473,10 @@ public class CallTransaction {
 		}
 	}
 
-	public static class Param {
+	public static class Param implements Serializable {
+		
+		private static final long serialVersionUID = -3362354539571316426L;
+		
 		public String name;
 		public Type type;
 	}
@@ -450,7 +485,10 @@ public class CallTransaction {
 		constructor, function
 	}
 
-	public static class Function {
+	public static class Function implements Serializable {
+
+		private static final long serialVersionUID = -8368831893056514382L;
+		
 		public boolean constant;
 		public String name;
 		public Param[] inputs;

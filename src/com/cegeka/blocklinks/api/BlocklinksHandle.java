@@ -9,7 +9,7 @@ package com.cegeka.blocklinks.api;
  * @param <T> type of the valued returned.
  */
 @FunctionalInterface
-public interface BlocklinksCallable<T> {
+public interface BlocklinksHandle<T> {
 	
 	/**
 	 * This method will be called when the async operation finishes.

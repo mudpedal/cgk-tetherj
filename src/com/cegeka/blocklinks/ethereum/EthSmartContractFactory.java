@@ -1,6 +1,7 @@
 package com.cegeka.blocklinks.ethereum;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.HashMap;
 
@@ -19,12 +20,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Andrei Grigoriu
  *
  */
-public class EthSmartContractFactory {
+public class EthSmartContractFactory implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8576482271936503680L;
 	private ContractData contract;
+
 	private HashMap<String, Function> modFunctions;
 	private HashMap<String, Function> constFunctions;
 	private Function constructor;
-
+	
 	/**
 	 * 
 	 * @param contract
@@ -35,6 +41,12 @@ public class EthSmartContractFactory {
 		this.modFunctions = new HashMap<>();
 		this.constFunctions = new HashMap<>();
 		indexMethods();
+	}
+	
+	/**
+	 * Simple constructor
+	 */
+	public EthSmartContractFactory() {
 	}
 	
 	/**
@@ -85,6 +97,14 @@ public class EthSmartContractFactory {
 	 */
 	public ContractData getContract() {
 		return contract;
+	}
+	
+	/**
+	 * Set contract data
+	 * @param contract
+	 */
+	public void setContract(ContractData contract) {
+		this.contract = contract;
 	}
 
 	/**
