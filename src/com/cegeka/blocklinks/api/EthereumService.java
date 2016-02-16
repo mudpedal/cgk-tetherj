@@ -11,17 +11,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.cegeka.blocklinks.ethereum.EthCall;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.pojo.CompileOutput;
+import com.cegeka.blocklinks.ethereum.pojo.Transaction;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
 import com.googlecode.jsonrpc4j.HttpException;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Implementation for an Ethereum service api
@@ -678,7 +679,7 @@ public class EthereumService {
 	 * @param sourceCode
 	 *            to compiled
 	 * @param callable
-	 *            with compile ouput response
+	 *            with compile output response
 	 */
 	public void compileSolidity(String sourceCode, BlocklinksHandle<CompileOutput> callable) {
 		performAsyncRpcAction(new RpcAction<CompileOutput>() {
@@ -721,6 +722,59 @@ public class EthereumService {
 			@Override
 			public CompileOutput call() {
 				return rpc.compileSolidity(sourceCode);
+			}
+		});
+	}
+	
+	/**
+	 * Async get a transaction by transaction hash.
+	 * 
+	 * @param txHash
+	 *            to get data by.
+	 * @param callable
+	 *            with Transaction response
+	 */
+	public void getTransaction(String txHash, BlocklinksHandle<Transaction> callable) {
+		performAsyncRpcAction(new RpcAction<Transaction>() {
+
+			@Override
+			public Transaction call() {
+				return rpc.getTransaction(txHash);
+			}
+
+		}, callable);
+	}
+	
+	/**
+	 * Blocking get a transaction by transaction hash.
+	 * 
+	 * @param txHash
+	 *            to get data by.
+	 * @return with Transaction response
+	 */
+	public BlocklinksResponse<Transaction> getTransaction(String txHash) {
+		return performBlockingRpcAction(new RpcAction<Transaction>() {
+
+			@Override
+			public Transaction call() {
+				return rpc.getTransaction(txHash);
+			}
+		});
+	}
+
+	/**
+	 * Future get a transaction by transaction hash.
+	 * 
+	 * @param sourceCode
+	 *            to get data by.
+	 * @return future for Transaction response
+	 */
+	public Future<BlocklinksResponse<Transaction>> getTransactionFuture(String txHash) {
+		return performFutureRpcAction(new RpcAction<Transaction>() {
+
+			@Override
+			public Transaction call() {
+				return rpc.getTransaction(txHash);
 			}
 		});
 	}
