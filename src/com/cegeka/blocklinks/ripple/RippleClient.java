@@ -1,11 +1,6 @@
 package com.cegeka.blocklinks.ripple;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
-import com.googlecode.jsonrpc4j.ProxyUtil;
-import com.ripple.client.rpc.RippleService;
+import com.ripple.client.BaseRippleClient;
 import com.ripple.client.rpc.model.AccountInfo;
 import com.ripple.client.rpc.model.AccountInfoRequest;
 import com.ripple.client.rpc.model.AccountTxInfo;
@@ -21,36 +16,21 @@ import com.ripple.client.rpc.model.TxAddress;
  * @author Cristian Sandu
  *
  */
-public class RippleClient {
-	public static final String rootAccount = "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh";
-	
-	private RippleService rippleService;
-	
-	public RippleClient(String host, int port) {
-		URL rippledRpcHost = null;
-		JsonRpcHttpClient jsonRpcClient = null;
-		try {
-			rippledRpcHost = new URL("http://" + host + ":" + Integer.toString(port) + "/");
-
-			jsonRpcClient = new JsonRpcHttpClient(rippledRpcHost);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		this.rippleService = ProxyUtil.createClientProxy(getClass().getClassLoader(), RippleService.class, jsonRpcClient);
-	}
-
+public class RippleClient extends BaseRippleClient {
 	public RippleClient() {
-		this("localhost", 5005);
+		super();
+	}
+	
+	public RippleClient(String hostname, int port) {
+		super(hostname, port);
 	}
 	
 	public CurrentLedgerInfo getCurrentLedger() {
-		return this.rippleService.ledger_current();
+		return this.rippleServiceProxy.ledger_current();
 	}
 	
 	public AccountInfo getAccountInfo(String account) {
-		return this.rippleService.account_info(new AccountInfoRequest(account));
+		return this.rippleServiceProxy.account_info(new AccountInfoRequest(account));
 	}
 	
 	public AccountInfo getRootAccountInfo() {
@@ -58,7 +38,7 @@ public class RippleClient {
 	}
 	
 	public ServerInfo getServerInfo() {
-		return this.rippleService.server_info();
+		return this.rippleServiceProxy.server_info();
 	}
 
 	public AccountTxInfo getRootAccountTxs() {
@@ -66,10 +46,10 @@ public class RippleClient {
 	}
 	
 	public AccountTxInfo getAccountTxs(String account) {
-		return this.rippleService.account_tx(new AccountTxRequest(account));
+		return this.rippleServiceProxy.account_tx(new AccountTxRequest(account));
 	}
 	
 	public Transaction getTransactionInfo(TxAddress transaction) {
-		return this.rippleService.tx(transaction);
+		return this.rippleServiceProxy.tx(transaction);
 	}
 }
