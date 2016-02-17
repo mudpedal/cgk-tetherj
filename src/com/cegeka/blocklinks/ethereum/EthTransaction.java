@@ -127,7 +127,7 @@ public class EthTransaction {
 	 * @return encoded transaction data
 	 * @throws WalletLockedException
 	 */
-	public byte[] signWithWallet(EthWallet wallet, BigInteger nonce) throws WalletLockedException {
+	public EthSignedTransaction signWithWallet(EthWallet wallet, BigInteger nonce) throws WalletLockedException {
 		System.out.println(nonce);
 		String privateKey = wallet.getPrivateKey();
 
@@ -143,7 +143,8 @@ public class EthTransaction {
 
 		Transaction tx = Transaction.create(to, weiValue, nonce, gasPrice, gasLimit, data);
 		tx.sign(CryptoUtil.hexToBytes(privateKey));
-		return tx.getEncoded();
+		
+		return new EthSignedTransaction(this, wallet.getAddress(), nonce, tx.getEncoded());
 	}
 
 	/**
@@ -158,7 +159,7 @@ public class EthTransaction {
 	 * @return encoded transaction data
 	 * @throws WalletLockedException
 	 */
-	public byte[] signWithWallet(EthWallet wallet, BigInteger nonce, String passphrase) throws WalletLockedException {
+	public EthSignedTransaction signWithWallet(EthWallet wallet, BigInteger nonce, String passphrase) throws WalletLockedException {
 		if (!wallet.isUnlocked()) {
 			wallet.unlock(passphrase);
 		}

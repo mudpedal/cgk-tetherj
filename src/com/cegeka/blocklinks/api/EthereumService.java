@@ -472,7 +472,8 @@ public class EthereumService {
 	 */
 	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce)
 			throws WalletLockedException {
-		byte[] rawEncoded = transaction.signWithWallet(from, nonce);
+		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
+		byte[] rawEncoded = txSigned.getSignature();
 
 		return performBlockingRpcAction(new RpcAction<String>() {
 
@@ -499,7 +500,8 @@ public class EthereumService {
 	 */
 	public Future<BlocklinksResponse<String>> sendTransactionFuture(EthWallet from, EthTransaction transaction,
 			BigInteger nonce) throws WalletLockedException {
-		byte[] rawEncoded = transaction.signWithWallet(from, nonce);
+		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
+		byte[] rawEncoded = txSigned.getSignature();
 
 		return performFutureRpcAction(new RpcAction<String>() {
 
@@ -552,7 +554,8 @@ public class EthereumService {
 	public void sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce,
 			BlocklinksHandle<String> callable) {
 		try {
-			byte[] rawEncoded = transaction.signWithWallet(from, nonce);
+			EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
+			byte[] rawEncoded = txSigned.getSignature();
 
 			performAsyncRpcAction(new RpcAction<String>() {
 
