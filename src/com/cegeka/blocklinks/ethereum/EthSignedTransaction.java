@@ -2,7 +2,9 @@ package com.cegeka.blocklinks.ethereum;
 
 import java.math.BigInteger;
 
-import org.ethereum.crypto.SHA3Helper;
+import org.ethereum.crypto.HashUtil;
+
+import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 
 /**
  * Immutable Holds transaction data
@@ -31,7 +33,7 @@ public class EthSignedTransaction {
 	}
 
 	public EthSignedTransaction(EthTransaction transaction, String from, BigInteger nonce, byte[] signedEcodedData) {
-		this.hash = SHA3Helper.sha3String(signedEcodedData);
+		this.hash = CryptoUtil.byteToHexWithPrefix(HashUtil.sha3(signedEcodedData));
 		this.from = from;
 		this.nonce = nonce;
 		this.value = transaction.getWeiValue();
@@ -39,7 +41,7 @@ public class EthSignedTransaction {
 		this.signedEcodedData = signedEcodedData;
 	}
 
-	public String getTransactionHash() {
+	public String getHash() {
 		return hash;
 	}
 
