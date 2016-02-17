@@ -162,7 +162,7 @@ public class DevTest {
 			tx.setGasLimit(EthTransaction.maximumGasLimit);
 
 			BlocklinksResponse<BigInteger> response = responseFuture.get();
-			byte[] encoded = tx.signWithWallet(wallet, response.getValue());
+			byte[] encoded = tx.signWithWallet(wallet, response.getValue()).getSignature();
 			System.out.println(CryptoUtil.byteToHex(encoded));
 			BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 
@@ -205,7 +205,7 @@ public class DevTest {
 
 								BlocklinksResponse<BigInteger> newNonce = service
 										.getAccountNonce(wallet.getStorage().getAddress());
-								byte[] encoded = tx.signWithWallet(wallet, newNonce.getValue());
+								byte[] encoded = tx.signWithWallet(wallet, newNonce.getValue()).getSignature();
 								System.out.println(CryptoUtil.byteToHex(encoded));
 								BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 								System.out.println("Sending transaction " + txHashResponse.getValue());
