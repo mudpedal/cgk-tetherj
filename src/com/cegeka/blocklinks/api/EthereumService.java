@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.cegeka.blocklinks.ethereum.EthCall;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
+import com.cegeka.blocklinks.ethereum.EthSignedTransaction;
 import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.pojo.CompileOutput;
@@ -568,6 +569,67 @@ public class EthereumService {
 	}
 
 	/**
+	 * Blocking send signed transaction.
+	 * 
+	 * @param transaction
+	 *            signed transaction to send
+	 * @return response for transaction hash
+	 * @throws WalletLockedException
+	 */
+	public BlocklinksResponse<String> sendSignedTransaction(EthSignedTransaction transaction) {
+
+		return performBlockingRpcAction(new RpcAction<String>() {
+
+			@Override
+			public String call() {
+				logger.debug(
+						"Sending transaction {from:" + transaction.getAddressFrom() + " " + transaction.toString());
+				return rpc.sendRawTransaction(transaction.getSignature());
+			}
+		});
+	}
+
+	/**
+	 * Async send signed transaction.
+	 * 
+	 * @param transaction
+	 *            signed transaction to send
+	 * @param callable
+	 *            to execute when transaction was submitted.
+	 */
+	public void sendSignedTransaction(EthSignedTransaction transaction, BlocklinksHandle<String> callable) {
+
+		performAsyncRpcAction(new RpcAction<String>() {
+
+			@Override
+			public String call() {
+				return rpc.sendRawTransaction(transaction.getSignature());
+			}
+
+		}, callable);
+	}
+	
+	/**
+	 * Future send signed transaction.
+	 * 
+	 * @param transaction
+	 *            signed transaction to send
+	 * @param callable
+	 *            to execute when transaction was submitted.
+	 */
+	public Future<BlocklinksResponse<String>> sendSignedTransactionFuture(EthSignedTransaction transaction) {
+
+		return performFutureRpcAction(new RpcAction<String>() {
+
+			@Override
+			public String call() {
+				return rpc.sendRawTransaction(transaction.getSignature());
+			}
+
+		});
+	}
+
+	/**
 	 * Async listen for tx receipt. Will call when transaction is mined or was
 	 * already mined.
 	 * 
@@ -725,7 +787,7 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
 	/**
 	 * Async get a transaction by transaction hash.
 	 * 
@@ -744,7 +806,7 @@ public class EthereumService {
 
 		}, callable);
 	}
-	
+
 	/**
 	 * Blocking get a transaction by transaction hash.
 	 * 
