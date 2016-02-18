@@ -128,7 +128,6 @@ public class EthTransaction {
 	 * @throws WalletLockedException
 	 */
 	public EthSignedTransaction signWithWallet(EthWallet wallet, BigInteger nonce) throws WalletLockedException {
-		System.out.println(nonce);
 		String privateKey = wallet.getPrivateKey();
 
 		if (privateKey == null) {

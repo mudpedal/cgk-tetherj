@@ -472,7 +472,7 @@ public class EthereumService {
 	 */
 	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce)
 			throws WalletLockedException {
-		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
+		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce);
 		byte[] rawEncoded = txSigned.getSignedEcodedData();
 
 		return performBlockingRpcAction(new RpcAction<String>() {
@@ -500,7 +500,7 @@ public class EthereumService {
 	 */
 	public Future<BlocklinksResponse<String>> sendTransactionFuture(EthWallet from, EthTransaction transaction,
 			BigInteger nonce) throws WalletLockedException {
-		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
+		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce);
 		byte[] rawEncoded = txSigned.getSignedEcodedData();
 
 		return performFutureRpcAction(new RpcAction<String>() {
@@ -554,7 +554,7 @@ public class EthereumService {
 	public void sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce,
 			BlocklinksHandle<String> callable) {
 		try {
-			EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
+			EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce);
 			byte[] rawEncoded = txSigned.getSignedEcodedData();
 
 			performAsyncRpcAction(new RpcAction<String>() {
@@ -572,6 +572,40 @@ public class EthereumService {
 	}
 
 	/**
+	 * Blocking sign transaction
+	 * 
+	 * @param transaction
+	 *            signed transaction to send
+	 * @return response for signed transaction
+	 * @throws WalletLockedException
+	 */
+	public BlocklinksResponse<EthSignedTransaction> signTransaction(EthTransaction transaction, EthWallet wallet)
+			throws WalletLockedException {
+		String from = wallet.getAddress();
+		BlocklinksResponse<BigInteger> nonceResponse = getAccountNonce(from);
+
+		if (nonceResponse.getErrorType() != null) {
+			return new BlocklinksResponse<EthSignedTransaction>(nonceResponse);
+		}
+
+		EthSignedTransaction txSigned = transaction.signWithWallet(wallet, nonceResponse.getValue());
+		return new BlocklinksResponse<EthSignedTransaction>(null, null, txSigned);
+	}
+	
+	/**
+	 * Sign transaction
+	 * 
+	 * @param transaction
+	 *            signed transaction to send
+	 * @return the signed transaction
+	 * @throws WalletLockedException
+	 */
+	public EthSignedTransaction signTransaction(EthTransaction transaction, EthWallet wallet, BigInteger nonce)
+			throws WalletLockedException {
+		return transaction.signWithWallet(wallet, nonce);
+	}
+
+	/**
 	 * Blocking send signed transaction.
 	 * 
 	 * @param transaction
@@ -585,8 +619,7 @@ public class EthereumService {
 
 			@Override
 			public String call() {
-				logger.debug(
-						"Sending transaction {from:" + transaction.getFrom() + " " + transaction.toString());
+				logger.debug("Sending transaction {from:" + transaction.getFrom() + " " + transaction.toString());
 				return rpc.sendRawTransaction(transaction.getSignedEcodedData());
 			}
 		});
@@ -611,7 +644,7 @@ public class EthereumService {
 
 		}, callable);
 	}
-	
+
 	/**
 	 * Future send signed transaction.
 	 * 
@@ -630,6 +663,22 @@ public class EthereumService {
 			}
 
 		});
+	}
+	
+	/**
+	 * Async listen for tx receipt. Will call when transaction is mined or was
+	 * already mined.
+	 * 
+	 * @param txHash
+	 *            transaction hash to listen for
+	 * @param secondsTimeout
+	 * 			seconds until you want give up listening
+	 * @param callable
+	 *            to execute when transaction is mined
+	 */
+	public void listenForTxReceipt(final String txHash, int secondsTimeout, final BlocklinksHandle<TransactionReceipt> callable) {
+		int checks = secondsTimeout * 1000 / receiptCheckIntervalMillis;
+		listenForTxReceipt(txHash, receiptCheckIntervalMillis, checks, callable);
 	}
 
 	/**
