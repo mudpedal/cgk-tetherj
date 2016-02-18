@@ -14,6 +14,7 @@ import com.cegeka.blocklinks.api.EthereumService;
 import com.cegeka.blocklinks.api.WalletLockedException;
 import com.cegeka.blocklinks.ethereum.EthCall;
 import com.cegeka.blocklinks.ethereum.EthRpcClient;
+import com.cegeka.blocklinks.ethereum.EthSignedTransaction;
 import com.cegeka.blocklinks.ethereum.EthSmartContract;
 import com.cegeka.blocklinks.ethereum.EthSmartContractFactory;
 import com.cegeka.blocklinks.ethereum.EthTransaction;
@@ -161,12 +162,15 @@ public class DevTest {
 			tx.setGasLimit(EthTransaction.maximumGasLimit);
 
 			BlocklinksResponse<BigInteger> response = responseFuture.get();
-			byte[] encoded = tx.signWithWallet(wallet, response.getValue()).getSignature();
+			EthSignedTransaction txSigned = tx.signWithWallet(wallet, response.getValue()); 
+			byte[] encoded = txSigned.getSignedEcodedData();
+			
 			System.out.println(CryptoUtil.byteToHex(encoded));
 			BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 
 			String txHash = txHashResponse.getValue();
 			System.out.println("Sent transaction " + txHash);
+			System.out.println("My hash " + txSigned.getHash());
 
 			service.listenForTxReceipt(txHash, new BlocklinksHandle<TransactionReceipt>() {
 
@@ -204,7 +208,7 @@ public class DevTest {
 
 								BlocklinksResponse<BigInteger> newNonce = service
 										.getAccountNonce(wallet.getStorage().getAddress());
-								byte[] encoded = tx.signWithWallet(wallet, newNonce.getValue()).getSignature();
+								byte[] encoded = tx.signWithWallet(wallet, newNonce.getValue()).getSignedEcodedData();
 								System.out.println(CryptoUtil.byteToHex(encoded));
 								BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 								System.out.println("Sending transaction " + txHashResponse.getValue());

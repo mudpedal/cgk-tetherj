@@ -473,7 +473,7 @@ public class EthereumService {
 	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce)
 			throws WalletLockedException {
 		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
-		byte[] rawEncoded = txSigned.getSignature();
+		byte[] rawEncoded = txSigned.getSignedEcodedData();
 
 		return performBlockingRpcAction(new RpcAction<String>() {
 
@@ -501,7 +501,7 @@ public class EthereumService {
 	public Future<BlocklinksResponse<String>> sendTransactionFuture(EthWallet from, EthTransaction transaction,
 			BigInteger nonce) throws WalletLockedException {
 		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
-		byte[] rawEncoded = txSigned.getSignature();
+		byte[] rawEncoded = txSigned.getSignedEcodedData();
 
 		return performFutureRpcAction(new RpcAction<String>() {
 
@@ -555,7 +555,7 @@ public class EthereumService {
 			BlocklinksHandle<String> callable) {
 		try {
 			EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce); 
-			byte[] rawEncoded = txSigned.getSignature();
+			byte[] rawEncoded = txSigned.getSignedEcodedData();
 
 			performAsyncRpcAction(new RpcAction<String>() {
 
@@ -586,8 +586,8 @@ public class EthereumService {
 			@Override
 			public String call() {
 				logger.debug(
-						"Sending transaction {from:" + transaction.getAddressFrom() + " " + transaction.toString());
-				return rpc.sendRawTransaction(transaction.getSignature());
+						"Sending transaction {from:" + transaction.getFrom() + " " + transaction.toString());
+				return rpc.sendRawTransaction(transaction.getSignedEcodedData());
 			}
 		});
 	}
@@ -606,7 +606,7 @@ public class EthereumService {
 
 			@Override
 			public String call() {
-				return rpc.sendRawTransaction(transaction.getSignature());
+				return rpc.sendRawTransaction(transaction.getSignedEcodedData());
 			}
 
 		}, callable);
@@ -626,7 +626,7 @@ public class EthereumService {
 
 			@Override
 			public String call() {
-				return rpc.sendRawTransaction(transaction.getSignature());
+				return rpc.sendRawTransaction(transaction.getSignedEcodedData());
 			}
 
 		});
