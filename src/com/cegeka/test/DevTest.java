@@ -24,7 +24,6 @@ import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 import com.cegeka.blocklinks.ethereum.pojo.CompileOutput;
 import com.cegeka.blocklinks.ethereum.pojo.ContractData;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
-import com.cegeka.blocklinks.ripple.RippleClient;
 
 public class DevTest {
 
@@ -272,16 +271,5 @@ public class DevTest {
 		// String encoded =
 		// "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c48656c6c6f20576f726c64210000000000000000000000000000000000000000";
 		// CallTransaction tx = new CallTransaction();
-		
-		rippleTests();
-	}
-	
-	private static void rippleTests() {
-		RippleClient client = new RippleClient("localhost", 5105);
-		
-		System.out.println(client.getRootAccountInfo().toString());
-		System.out.println(client.getServerInfo());
-		System.out.println(client.getRootAccountTxs());
-		System.out.println(client.getCurrentLedger());
 	}
 }
