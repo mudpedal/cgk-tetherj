@@ -15,12 +15,12 @@ import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
  */
 public class EthSignedTransaction {
 
-	private final String hash;
-	private final String from;
-	private final String to;
-	private final BigInteger value;
-	private final BigInteger nonce;
-	private final byte[] signedEcodedData;
+	private String hash;
+	private String from;
+	private String to;
+	private BigInteger value;
+	private BigInteger nonce;
+	private byte[] signedEcodedData;
 	
 	// This is because this is used as a field in EthereumTransactionEntry and it needs to be instantiated with no args constr
 	public EthSignedTransaction() {
@@ -46,7 +46,21 @@ public class EthSignedTransaction {
 		this.to = transaction.getTo();
 		this.signedEcodedData = signedEcodedData;
 	}
-
+	
+	/**
+	 * Do an object copy
+	 * 
+	 * @param other
+	 */
+	public void copyFrom(EthSignedTransaction other) {
+		this.hash = other.hash;
+		this.from = other.from;
+		this.to = other.to;
+		this.value = other.value;
+		this.nonce = other.nonce;
+		this.signedEcodedData = other.signedEcodedData;
+	}
+	
 	public String getHash() {
 		return hash;
 	}
