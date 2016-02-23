@@ -10,8 +10,6 @@
 		<module>ethereumj-light</module>
 	</modules>
 	<build>
-		<!-- todo: challenge this ? -->
-		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
