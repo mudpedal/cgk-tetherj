@@ -21,7 +21,12 @@ public class EthSignedTransaction {
 	private final BigInteger value;
 	private final BigInteger nonce;
 	private final byte[] signedEcodedData;
-
+	
+	// This is because this is used as a field in EthereumTransactionEntry and it needs to be instantiated with no args constr
+	public EthSignedTransaction() {
+		this("", "", "", new BigInteger("0"), new BigInteger("0"), null);
+	}
+	
 	public EthSignedTransaction(String transactionHash, String from, String to, BigInteger value, BigInteger nonce,
 			byte[] signedEcodedData) {
 
