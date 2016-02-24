@@ -943,4 +943,57 @@ public class EthereumService {
 			}
 		});
 	}
+	
+	/**
+	 * Async get the transaction receipt.
+	 * 
+	 * @param txHash
+	 *            to receipt transaction by.
+	 * @param callable
+	 *            with TransactionReceipt response
+	 */
+	public void getTransactionReceipt(String txHash, BlocklinksHandle<TransactionReceipt> callable) {
+		performAsyncRpcAction(new RpcAction<TransactionReceipt>() {
+
+			@Override
+			public TransactionReceipt call() {
+				return rpc.getTransactionReceipt(txHash);
+			}
+
+		}, callable);
+	}
+
+	/**
+	 * Blocking get the transaction receipt.
+	 * 
+	 * @param txHash
+	 *            to receipt transaction by.
+	 */
+	public BlocklinksResponse<TransactionReceipt> getTransactionReceipt(String txHash) {
+		return performBlockingRpcAction(new RpcAction<TransactionReceipt>() {
+
+			@Override
+			public TransactionReceipt call() {
+				return rpc.getTransactionReceipt(txHash);
+			}
+		});
+	}
+
+	/**
+	 * Future get the transaction receipt.
+	 * 
+	 * @param txHash
+	 *            to receipt transaction by.
+	 * @param callable
+	 *            with TransactionReceipt response
+	 */
+	public Future<BlocklinksResponse<TransactionReceipt>> getTransactionReceiptFuture(String txHash) {
+		return performFutureRpcAction(new RpcAction<TransactionReceipt>() {
+
+			@Override
+			public TransactionReceipt call() {
+				return rpc.getTransactionReceipt(txHash);
+			}
+		});
+	}
 }
