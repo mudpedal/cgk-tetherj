@@ -1,6 +1,16 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
 public class Block {
+	
+	public int getNumberAsDecimal() {
+		
+		// remove "0x"
+		String s = number.substring(2);
+		
+		// convert to decimal
+		return Integer.parseInt(s, 16);
+	}
+	
 	public String getNumber() {
 		return number;
 	}

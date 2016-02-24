@@ -19,6 +19,7 @@ import com.cegeka.blocklinks.ethereum.EthRpcClient;
 import com.cegeka.blocklinks.ethereum.EthSignedTransaction;
 import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
+import com.cegeka.blocklinks.ethereum.pojo.Block;
 import com.cegeka.blocklinks.ethereum.pojo.CompileOutput;
 import com.cegeka.blocklinks.ethereum.pojo.Transaction;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
@@ -591,7 +592,7 @@ public class EthereumService {
 		EthSignedTransaction txSigned = transaction.signWithWallet(wallet, nonceResponse.getValue());
 		return new BlocklinksResponse<EthSignedTransaction>(null, null, txSigned);
 	}
-	
+
 	/**
 	 * Sign transaction
 	 * 
@@ -664,7 +665,7 @@ public class EthereumService {
 
 		});
 	}
-	
+
 	/**
 	 * Async listen for tx receipt. Will call when transaction is mined or was
 	 * already mined.
@@ -672,11 +673,12 @@ public class EthereumService {
 	 * @param txHash
 	 *            transaction hash to listen for
 	 * @param secondsTimeout
-	 * 			seconds until you want give up listening
+	 *            seconds until you want give up listening
 	 * @param callable
 	 *            to execute when transaction is mined
 	 */
-	public void listenForTxReceipt(final String txHash, int secondsTimeout, final BlocklinksHandle<TransactionReceipt> callable) {
+	public void listenForTxReceipt(final String txHash, int secondsTimeout,
+			final BlocklinksHandle<TransactionReceipt> callable) {
 		int checks = secondsTimeout * 1000 / receiptCheckIntervalMillis;
 		listenForTxReceipt(txHash, receiptCheckIntervalMillis, checks, callable);
 	}
@@ -893,4 +895,52 @@ public class EthereumService {
 		});
 	}
 
+	/**
+	 * Async get the latest block.
+	 * 
+	 * @param callable
+	 *            with Block response
+	 */
+	public void getLatestBlock(BlocklinksHandle<Block> callable) {
+		performAsyncRpcAction(new RpcAction<Block>() {
+
+			@Override
+			public Block call() {
+				return rpc.getLatestBlock();
+			}
+
+		}, callable);
+	}
+
+	/**
+	 * Blocking get the latest block.
+	 * 
+	 * @param callable
+	 *            with Block response
+	 */
+	public BlocklinksResponse<Block> getLatestBlock() {
+		return performBlockingRpcAction(new RpcAction<Block>() {
+
+			@Override
+			public Block call() {
+				return rpc.getLatestBlock();
+			}
+		});
+	}
+
+	/**
+	 * Future get the latest block.
+	 * 
+	 * @param callable
+	 *            with Block response
+	 */
+	public Future<BlocklinksResponse<Block>> getLatestBlockFuture() {
+		return performFutureRpcAction(new RpcAction<Block>() {
+
+			@Override
+			public Block call() {
+				return rpc.getLatestBlock();
+			}
+		});
+	}
 }
