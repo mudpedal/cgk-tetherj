@@ -984,8 +984,6 @@ public class EthereumService {
 	 * 
 	 * @param txHash
 	 *            to receipt transaction by.
-	 * @param callable
-	 *            with TransactionReceipt response
 	 */
 	public Future<BlocklinksResponse<TransactionReceipt>> getTransactionReceiptFuture(String txHash) {
 		return performFutureRpcAction(new RpcAction<TransactionReceipt>() {
