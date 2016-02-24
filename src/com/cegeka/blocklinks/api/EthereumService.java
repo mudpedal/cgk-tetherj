@@ -447,12 +447,12 @@ public class EthereumService {
 	 * @return response for transaction hash
 	 * @throws WalletLockedException
 	 */
-	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, EthSignedTransaction outSignedTx)
+	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction)
 			throws WalletLockedException {
 		BlocklinksResponse<BigInteger> nonceResponse = getAccountNonce(from.getAddress());
 
 		if (nonceResponse.getErrorType() == null) {
-			return sendTransaction(from, transaction, nonceResponse.getValue(), outSignedTx);
+			return sendTransaction(from, transaction, nonceResponse.getValue());
 		}
 
 		return new BlocklinksResponse<String>(nonceResponse);
@@ -470,15 +470,9 @@ public class EthereumService {
 	 * @return response for transaction hash
 	 * @throws WalletLockedException
 	 */
-	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce, EthSignedTransaction outSignedTx)
+	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce)
 			throws WalletLockedException {
 		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce);
-		
-		// Simulate pass by ref
-		if (outSignedTx != null) {
-			outSignedTx.copyFrom(txSigned);
-		}
-		
 		byte[] rawEncoded = txSigned.getSignedEcodedData();
 
 		return performBlockingRpcAction(new RpcAction<String>() {

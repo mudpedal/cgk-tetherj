@@ -166,7 +166,7 @@ public class DevTest {
 			byte[] encoded = txSigned.getSignedEcodedData();
 			
 			System.out.println(CryptoUtil.byteToHex(encoded));
-			BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx, new EthSignedTransaction());
+			BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 
 			String txHash = txHashResponse.getValue();
 			System.out.println("Sent transaction " + txHash);
@@ -210,7 +210,7 @@ public class DevTest {
 										.getAccountNonce(wallet.getStorage().getAddress());
 								byte[] encoded = tx.signWithWallet(wallet, newNonce.getValue()).getSignedEcodedData();
 								System.out.println(CryptoUtil.byteToHex(encoded));
-								BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx, new EthSignedTransaction());
+								BlocklinksResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 								System.out.println("Sending transaction " + txHashResponse.getValue());
 								service.listenForTxReceipt(txHashResponse.getValue(),
 										new BlocklinksHandle<TransactionReceipt>() {
