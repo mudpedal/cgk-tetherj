@@ -4,10 +4,14 @@ The project consists of two subprojects:
 - ethereumj-light: slimmed down + updated fork of the ethereumj repo
 - blocklinks: todo 
 
-# Build prerequisites
+# Build the project
+
+##### Build prerequisites
 jdk8
 
-# Build command
-run "mvn clean install" in top level directory
-
+##### Build command
+project is build with maven: run the following command in the root directory:
+```
+> mvn clean install"
+```
 
