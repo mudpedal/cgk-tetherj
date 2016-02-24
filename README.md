@@ -12,6 +12,6 @@ jdk8
 ##### Build command
 project is build with maven: run the following command in the root directory:
 ```
-> mvn clean install"
+> mvn clean install
 ```
 
