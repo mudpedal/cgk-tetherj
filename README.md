@@ -1,5 +1,5 @@
 # About
-Java API for Blockchain Systems. Ethereum and Ripple api's will be developed first.
+Java API for Blockchain Systems. Ethereum and Ripple api's will be developed first.  
 The project consists of two subprojects:
 - ethereumj-light: slimmed down + updated fork of the ethereumj repo
 - blocklinks: todo 
