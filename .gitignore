@@ -1,3 +1,9 @@
+# ignore all hidden files, except this one
 .*
-bin/
+!.gitignore
+
+# mvn build output
 target/
+
+# eclipse build output
+bin/
