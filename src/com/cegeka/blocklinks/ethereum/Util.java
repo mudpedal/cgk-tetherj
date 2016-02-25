@@ -27,12 +27,23 @@ public class Util {
 	/**
 	 * Converts ether to wei.
 	 * 
-	 * @param ether
+	 * @param ether as BigDecimal
 	 *            to convert
 	 * @return wei
 	 */
 	public static BigInteger fromEtherToWei(BigDecimal ether) {
 		return ether.multiply(etherValue).toBigInteger();
+	}
+	
+	/**
+	 * Converts ether to wei.
+	 * 
+	 * @param ether as float 
+	 *            to convert
+	 * @return wei
+	 */
+	public static BigInteger fromEtherToWei(float ether) {
+		return fromEtherToWei(new BigDecimal(ether));
 	}
 
 	/**
