@@ -1,9 +1,6 @@
-# ignore all hidden files, except this one
-.*
-!.gitignore
-
-# mvn build output
-target/
-
-# eclipse build output
-bin/
+/bin/
+/target/
+/.settings/
+/ethereumj-light/bin/
+/ethereumj-light/target/
+/ethereumj-light/.settings/
