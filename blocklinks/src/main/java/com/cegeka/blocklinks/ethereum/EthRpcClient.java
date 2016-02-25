@@ -228,6 +228,15 @@ public class EthRpcClient {
 	}
 
 	/**
+	 * Get latest block from on ethereum client
+	 * 
+	 * @return latest block object
+	 */
+	public Block getLatestBlock() {
+		return rpc.eth_getBlockByNumber("latest", true);
+	}
+	
+	/**
 	 * Get latest block gas limit
 	 * 
 	 * @return gas limit of latest block on ethereum client

@@ -1,6 +1,7 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
 public class Block {
+		
 	public String getNumber() {
 		return number;
 	}

@@ -8,20 +8,23 @@ import org.ethereum.crypto.HashUtil;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
 
 /**
- * Immutable Holds transaction data
+ * Holds transaction data
  * 
  * @author andreicg
  *
  */
 public class EthSignedTransaction {
 
-	private final String hash;
-	private final String from;
-	private final String to;
-	private final BigInteger value;
-	private final BigInteger nonce;
-	private final byte[] signedEcodedData;
+	private String hash;
+	private String from;
+	private String to;
+	private BigInteger value;
+	private BigInteger nonce;
+	private byte[] signedEcodedData;
 
+	public EthSignedTransaction() {
+	}
+	
 	public EthSignedTransaction(String transactionHash, String from, String to, BigInteger value, BigInteger nonce,
 			byte[] signedEcodedData) {
 
@@ -40,30 +43,6 @@ public class EthSignedTransaction {
 		this.value = transaction.getWeiValue();
 		this.to = transaction.getTo();
 		this.signedEcodedData = signedEcodedData;
-	}
-
-	public String getHash() {
-		return hash;
-	}
-
-	public String getFrom() {
-		return from;
-	}
-
-	public BigInteger getNonce() {
-		return nonce;
-	}
-
-	public byte[] getSignedEcodedData() {
-		return signedEcodedData;
-	}
-
-	public String getTo() {
-		return to;
-	}
-
-	public BigInteger getValue() {
-		return value;
 	}
 	
 	@Override
@@ -116,6 +95,54 @@ public class EthSignedTransaction {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
+	}
+	
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	public String getFrom() {
+		return from;
+	}
+
+	public void setFrom(String from) {
+		this.from = from;
+	}
+
+	public String getTo() {
+		return to;
+	}
+
+	public void setTo(String to) {
+		this.to = to;
+	}
+
+	public BigInteger getValue() {
+		return value;
+	}
+
+	public void setValue(BigInteger value) {
+		this.value = value;
+	}
+
+	public BigInteger getNonce() {
+		return nonce;
+	}
+
+	public void setNonce(BigInteger nonce) {
+		this.nonce = nonce;
+	}
+
+	public byte[] getSignedEcodedData() {
+		return signedEcodedData;
+	}
+
+	public void setSignedEcodedData(byte[] signedEcodedData) {
+		this.signedEcodedData = signedEcodedData;
 	}
 	
 }
