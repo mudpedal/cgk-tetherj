@@ -8,9 +8,10 @@ The project consists of two subprojects:
 
 ##### Build prerequisites
 jdk8
+recent maven
 
 ##### Build command
-project is build with maven: run the following command in the root directory:
+Run the following command in the root directory:
 ```
 > mvn clean install
 ```
