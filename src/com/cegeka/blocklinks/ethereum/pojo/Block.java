@@ -1,18 +1,7 @@
 package com.cegeka.blocklinks.ethereum.pojo;
 
-import java.math.BigInteger;
-
 public class Block {
-	
-	public BigInteger getNumberAsDecimal() {
 		
-		// remove "0x"
-		String s = number.substring(2);
-		
-		// convert to decimal
-		return new BigInteger(s, 16);
-	}
-	
 	public String getNumber() {
 		return number;
 	}

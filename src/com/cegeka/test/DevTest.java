@@ -38,11 +38,10 @@ public class DevTest {
 		// if (response.getErrorType() != null) {
 		// // fail
 		// System.out.println(response.getErrorType());
-		// }
-		// else {
+		// } else {
 		// // success
 		// Block latestBlock = response.getValue();
-		// System.out.println(latestBlock.getNumberAsDecimal());
+		// System.out.println(CryptoUtil.hexToBigInteger(latestBlock.getNumber()));
 		// }
 
 		/* async */
@@ -56,7 +55,7 @@ public class DevTest {
 		// } else {
 		// // success
 		// Block latestBlock = response.getValue();
-		// System.out.println(latestBlock.getNumberAsDecimal());
+		// System.out.println(CryptoUtil.hexToBigInteger(latestBlock.getNumber()));
 		// }
 		// }
 		// });
@@ -73,7 +72,7 @@ public class DevTest {
 		// } else {
 		// // success
 		// Block latestBlock = response.getValue();
-		// System.out.println(latestBlock.getNumberAsDecimal());
+		// System.out.println(CryptoUtil.hexToBigInteger(latestBlock.getNumber()));
 		// }
 		// } catch (InterruptedException e) {
 		// e.printStackTrace();
