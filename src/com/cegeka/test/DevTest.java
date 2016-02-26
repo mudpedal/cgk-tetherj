@@ -21,7 +21,6 @@ import com.cegeka.blocklinks.ethereum.EthTransaction;
 import com.cegeka.blocklinks.ethereum.EthWallet;
 import com.cegeka.blocklinks.ethereum.NoSuchContractMethod;
 import com.cegeka.blocklinks.ethereum.crypto.CryptoUtil;
-import com.cegeka.blocklinks.ethereum.pojo.Block;
 import com.cegeka.blocklinks.ethereum.pojo.CompileOutput;
 import com.cegeka.blocklinks.ethereum.pojo.ContractData;
 import com.cegeka.blocklinks.ethereum.pojo.TransactionReceipt;
@@ -31,7 +30,7 @@ public class DevTest {
 	public static EthRpcClient c = new EthRpcClient();
 
 	public static void TestGetTheLatestBlock() {
-		EthereumService ethService = new EthereumService();
+		// EthereumService ethService = new EthereumService();
 
 		/* blocking */
 		// BlocklinksResponse<Block> response = ethService.getLatestBlock();
