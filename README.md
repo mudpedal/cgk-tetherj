@@ -1,10 +1,5 @@
 # About
-Java API for Blockchain Systems. Ethereum and Ripple api's will be developed first.  
-The project consists of two subprojects:
-- ethereumj-light: slimmed down + updated fork of the ethereumj repo
-- blocklinks: todo 
-
-# Build the project
+Java API for Ethereum Blockchain Systems.
 
 ##### Build prerequisites
 jdk8
@@ -15,4 +10,7 @@ Run the following command in the root directory:
 ```
 > mvn clean install
 ```
+##### Usage
+
+TODO
 
