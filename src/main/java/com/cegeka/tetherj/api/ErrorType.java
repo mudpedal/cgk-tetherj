@@ -1,7 +1,7 @@
 package com.cegeka.tetherj.api;
 
 /**
- * Blocklinks errors
+ * tetherj errors
  * 
  * @author Andrei Grigoriu
  *

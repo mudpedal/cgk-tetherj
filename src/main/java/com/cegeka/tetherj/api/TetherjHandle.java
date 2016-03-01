@@ -9,11 +9,11 @@ package com.cegeka.tetherj.api;
  * @param <T> type of the valued returned.
  */
 @FunctionalInterface
-public interface BlocklinksHandle<T> {
+public interface TetherjHandle<T> {
 	
 	/**
 	 * This method will be called when the async operation finishes.
 	 * @param response is the result of the async operation.
 	 */
-	public void call(BlocklinksResponse<T> response);
+	public void call(TetherjResponse<T> response);
 }

@@ -169,7 +169,7 @@ public class EthereumService {
 			e.printStackTrace(epw);
 			String eStack = esw.toString();
 
-			String message = "Blocklinks uncaught exception: " + e.toString() + " " + e.getMessage() + " at \n"
+			String message = "Tetherj uncaught exception: " + e.toString() + " " + e.getMessage() + " at \n"
 					+ eStack;
 
 			if (e.getCause() != null) {
@@ -206,12 +206,12 @@ public class EthereumService {
 	}
 
 	/**
-	 * Blocking execute of rpc action. Wraps errors into a blocklinks response.
+	 * Blocking execute of rpc action. Wraps errors into a tetherj response.
 	 * 
 	 * @param rpcAction
 	 * @return response
 	 */
-	private <T> BlocklinksResponse<T> performBlockingRpcAction(RpcAction<T> rpcAction) {
+	private <T> TetherjResponse<T> performBlockingRpcAction(RpcAction<T> rpcAction) {
 		ErrorType err = null;
 		Exception e = null;
 		T rpcResponse = null;
@@ -229,7 +229,7 @@ public class EthereumService {
 			e = generalException;
 		}
 
-		return new BlocklinksResponse<T>(err, e, rpcResponse);
+		return new TetherjResponse<T>(err, e, rpcResponse);
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute after rpcAction operation ends
 	 */
-	private <T> void performAsyncRpcAction(RpcAction<T> rpcAction, BlocklinksHandle<T> callable) {
+	private <T> void performAsyncRpcAction(RpcAction<T> rpcAction, TetherjHandle<T> callable) {
 		synchronized (executor) {
 			try {
 				executor.submit(new Runnable() {
@@ -266,13 +266,13 @@ public class EthereumService {
 	 * @param rpcAction
 	 *            to execute
 	 */
-	private <T> Future<BlocklinksResponse<T>> performFutureRpcAction(RpcAction<T> rpcAction) {
+	private <T> Future<TetherjResponse<T>> performFutureRpcAction(RpcAction<T> rpcAction) {
 		synchronized (executor) {
 			try {
-				return executor.submit(new Callable<BlocklinksResponse<T>>() {
+				return executor.submit(new Callable<TetherjResponse<T>>() {
 
 					@Override
-					public BlocklinksResponse<T> call() throws Exception {
+					public TetherjResponse<T> call() throws Exception {
 						return performBlockingRpcAction(rpcAction);
 					}
 				});
@@ -289,7 +289,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to call after the accounts are fetched
 	 */
-	public void getAccounts(BlocklinksHandle<String[]> callable) {
+	public void getAccounts(TetherjHandle<String[]> callable) {
 		performAsyncRpcAction(new RpcAction<String[]>() {
 
 			@Override
@@ -305,7 +305,7 @@ public class EthereumService {
 	 * 
 	 * @return rpc accounts response
 	 */
-	public BlocklinksResponse<String[]> getAccounts() {
+	public TetherjResponse<String[]> getAccounts() {
 		return performBlockingRpcAction(new RpcAction<String[]>() {
 
 			@Override
@@ -320,7 +320,7 @@ public class EthereumService {
 	 * 
 	 * @return Future for the accounts response.
 	 */
-	public Future<BlocklinksResponse<String[]>> getAccountsFuture() {
+	public Future<TetherjResponse<String[]>> getAccountsFuture() {
 		return performFutureRpcAction(new RpcAction<String[]>() {
 
 			@Override
@@ -338,7 +338,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute when balance is fetched
 	 */
-	public void getBalance(final String address, BlocklinksHandle<BigInteger> callable) {
+	public void getBalance(final String address, TetherjHandle<BigInteger> callable) {
 		performAsyncRpcAction(new RpcAction<BigInteger>() {
 
 			@Override
@@ -356,7 +356,7 @@ public class EthereumService {
 	 *            to get balance of
 	 * @return response with balance
 	 */
-	public BlocklinksResponse<BigInteger> getBalance(final String address) {
+	public TetherjResponse<BigInteger> getBalance(final String address) {
 		return performBlockingRpcAction(new RpcAction<BigInteger>() {
 
 			@Override
@@ -373,7 +373,7 @@ public class EthereumService {
 	 *            to get balance of
 	 * @return future to get balance response.
 	 */
-	public Future<BlocklinksResponse<BigInteger>> getBalanceFuture(final String address) {
+	public Future<TetherjResponse<BigInteger>> getBalanceFuture(final String address) {
 		return performFutureRpcAction(new RpcAction<BigInteger>() {
 
 			@Override
@@ -392,7 +392,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute with nonce response
 	 */
-	public void getAccountNonce(final String address, BlocklinksHandle<BigInteger> callable) {
+	public void getAccountNonce(final String address, TetherjHandle<BigInteger> callable) {
 		performAsyncRpcAction(new RpcAction<BigInteger>() {
 
 			@Override
@@ -411,7 +411,7 @@ public class EthereumService {
 	 *            to get account nonce of.
 	 * @return nonce response
 	 */
-	public BlocklinksResponse<BigInteger> getAccountNonce(final String address) {
+	public TetherjResponse<BigInteger> getAccountNonce(final String address) {
 		return performBlockingRpcAction(new RpcAction<BigInteger>() {
 
 			@Override
@@ -428,7 +428,7 @@ public class EthereumService {
 	 * @param address
 	 * @return future to get nonce response
 	 */
-	public Future<BlocklinksResponse<BigInteger>> getAccountNonceFuture(final String address) {
+	public Future<TetherjResponse<BigInteger>> getAccountNonceFuture(final String address) {
 		return performFutureRpcAction(new RpcAction<BigInteger>() {
 
 			@Override
@@ -448,15 +448,15 @@ public class EthereumService {
 	 * @return response for transaction hash
 	 * @throws WalletLockedException
 	 */
-	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction)
+	public TetherjResponse<String> sendTransaction(EthWallet from, EthTransaction transaction)
 			throws WalletLockedException {
-		BlocklinksResponse<BigInteger> nonceResponse = getAccountNonce(from.getAddress());
+		TetherjResponse<BigInteger> nonceResponse = getAccountNonce(from.getAddress());
 
 		if (nonceResponse.getErrorType() == null) {
 			return sendTransaction(from, transaction, nonceResponse.getValue());
 		}
 
-		return new BlocklinksResponse<String>(nonceResponse);
+		return new TetherjResponse<String>(nonceResponse);
 	}
 
 	/**
@@ -471,7 +471,7 @@ public class EthereumService {
 	 * @return response for transaction hash
 	 * @throws WalletLockedException
 	 */
-	public BlocklinksResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce)
+	public TetherjResponse<String> sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce)
 			throws WalletLockedException {
 		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce);
 		byte[] rawEncoded = txSigned.getSignedEcodedData();
@@ -499,7 +499,7 @@ public class EthereumService {
 	 * @return future to get response for transaction hash.
 	 * @throws WalletLockedException
 	 */
-	public Future<BlocklinksResponse<String>> sendTransactionFuture(EthWallet from, EthTransaction transaction,
+	public Future<TetherjResponse<String>> sendTransactionFuture(EthWallet from, EthTransaction transaction,
 			BigInteger nonce) throws WalletLockedException {
 		EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce);
 		byte[] rawEncoded = txSigned.getSignedEcodedData();
@@ -525,16 +525,16 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute when transaction was submitted.
 	 */
-	public void sendTransaction(EthWallet from, EthTransaction transaction, BlocklinksHandle<String> callable) {
+	public void sendTransaction(EthWallet from, EthTransaction transaction, TetherjHandle<String> callable) {
 		String address = from.getAddress();
-		getAccountNonce(address, new BlocklinksHandle<BigInteger>() {
+		getAccountNonce(address, new TetherjHandle<BigInteger>() {
 
 			@Override
-			public void call(BlocklinksResponse<BigInteger> response) {
+			public void call(TetherjResponse<BigInteger> response) {
 				if (response.getErrorType() == null) {
 					sendTransaction(from, transaction, response.getValue(), callable);
 				} else {
-					callable.call(new BlocklinksResponse<>(response));
+					callable.call(new TetherjResponse<>(response));
 				}
 			}
 		});
@@ -553,7 +553,7 @@ public class EthereumService {
 	 *            to execute when transaction was submitted.
 	 */
 	public void sendTransaction(EthWallet from, EthTransaction transaction, BigInteger nonce,
-			BlocklinksHandle<String> callable) {
+			TetherjHandle<String> callable) {
 		try {
 			EthSignedTransaction txSigned = transaction.signWithWallet(from, nonce);
 			byte[] rawEncoded = txSigned.getSignedEcodedData();
@@ -568,7 +568,7 @@ public class EthereumService {
 			}, callable);
 
 		} catch (WalletLockedException e) {
-			callable.call(new BlocklinksResponse<String>(ErrorType.BAD_STATE, e));
+			callable.call(new TetherjResponse<String>(ErrorType.BAD_STATE, e));
 		}
 	}
 
@@ -580,17 +580,17 @@ public class EthereumService {
 	 * @return response for signed transaction
 	 * @throws WalletLockedException
 	 */
-	public BlocklinksResponse<EthSignedTransaction> signTransaction(EthTransaction transaction, EthWallet wallet)
+	public TetherjResponse<EthSignedTransaction> signTransaction(EthTransaction transaction, EthWallet wallet)
 			throws WalletLockedException {
 		String from = wallet.getAddress();
-		BlocklinksResponse<BigInteger> nonceResponse = getAccountNonce(from);
+		TetherjResponse<BigInteger> nonceResponse = getAccountNonce(from);
 
 		if (nonceResponse.getErrorType() != null) {
-			return new BlocklinksResponse<EthSignedTransaction>(nonceResponse);
+			return new TetherjResponse<EthSignedTransaction>(nonceResponse);
 		}
 
 		EthSignedTransaction txSigned = transaction.signWithWallet(wallet, nonceResponse.getValue());
-		return new BlocklinksResponse<EthSignedTransaction>(null, null, txSigned);
+		return new TetherjResponse<EthSignedTransaction>(null, null, txSigned);
 	}
 
 	/**
@@ -614,7 +614,7 @@ public class EthereumService {
 	 * @return response for transaction hash
 	 * @throws WalletLockedException
 	 */
-	public BlocklinksResponse<String> sendSignedTransaction(EthSignedTransaction transaction) {
+	public TetherjResponse<String> sendSignedTransaction(EthSignedTransaction transaction) {
 
 		return performBlockingRpcAction(new RpcAction<String>() {
 
@@ -634,7 +634,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute when transaction was submitted.
 	 */
-	public void sendSignedTransaction(EthSignedTransaction transaction, BlocklinksHandle<String> callable) {
+	public void sendSignedTransaction(EthSignedTransaction transaction, TetherjHandle<String> callable) {
 
 		performAsyncRpcAction(new RpcAction<String>() {
 
@@ -654,7 +654,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute when transaction was submitted.
 	 */
-	public Future<BlocklinksResponse<String>> sendSignedTransactionFuture(EthSignedTransaction transaction) {
+	public Future<TetherjResponse<String>> sendSignedTransactionFuture(EthSignedTransaction transaction) {
 
 		return performFutureRpcAction(new RpcAction<String>() {
 
@@ -678,7 +678,7 @@ public class EthereumService {
 	 *            to execute when transaction is mined
 	 */
 	public void listenForTxReceipt(final String txHash, int secondsTimeout,
-			final BlocklinksHandle<TransactionReceipt> callable) {
+			final TetherjHandle<TransactionReceipt> callable) {
 		int checks = secondsTimeout * 1000 / receiptCheckIntervalMillis;
 		listenForTxReceipt(txHash, receiptCheckIntervalMillis, checks, callable);
 	}
@@ -692,12 +692,12 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute when transaction is mined
 	 */
-	public void listenForTxReceipt(final String txHash, final BlocklinksHandle<TransactionReceipt> callable) {
+	public void listenForTxReceipt(final String txHash, final TetherjHandle<TransactionReceipt> callable) {
 		listenForTxReceipt(txHash, receiptCheckIntervalMillis, receiptMaxChecks, callable);
 	}
 
 	private void listenForTxReceipt(final String txHash, final int checkIntervalMillis, final int checks,
-			final BlocklinksHandle<TransactionReceipt> callable) {
+			final TetherjHandle<TransactionReceipt> callable) {
 
 		performAsyncRpcAction(new RpcAction<TransactionReceipt>() {
 
@@ -706,10 +706,10 @@ public class EthereumService {
 				TransactionReceipt receipt = rpc.getTransactionReceipt(txHash);
 				return receipt;
 			}
-		}, new BlocklinksHandle<TransactionReceipt>() {
+		}, new TetherjHandle<TransactionReceipt>() {
 
 			@Override
-			public void call(BlocklinksResponse<TransactionReceipt> response) {
+			public void call(TetherjResponse<TransactionReceipt> response) {
 				if (response.getErrorType() != null) {
 					callable.call(response);
 				} else {
@@ -718,7 +718,7 @@ public class EthereumService {
 					if (receipt != null && receipt.getBlockNumber() != null) {
 						callable.call(response);
 					} else if (checks <= 0) {
-						callable.call(new BlocklinksResponse<TransactionReceipt>(ErrorType.OPERATION_TIMEOUT,
+						callable.call(new TetherjResponse<TransactionReceipt>(ErrorType.OPERATION_TIMEOUT,
 								new TxReceiptTimeoutException()));
 					} else {
 						synchronized (executor) {
@@ -744,7 +744,7 @@ public class EthereumService {
 	 * @param callable
 	 *            to execute with output data.
 	 */
-	public void makeCall(final EthCall call, BlocklinksHandle<Object[]> callable) {
+	public void makeCall(final EthCall call, TetherjHandle<Object[]> callable) {
 		performAsyncRpcAction(new RpcAction<Object[]>() {
 
 			@Override
@@ -762,7 +762,7 @@ public class EthereumService {
 	 *            to execute on the ethereum chain
 	 * @return output response
 	 */
-	public BlocklinksResponse<Object[]> makeCall(final EthCall call) {
+	public TetherjResponse<Object[]> makeCall(final EthCall call) {
 		return performBlockingRpcAction(new RpcAction<Object[]>() {
 
 			@Override
@@ -779,7 +779,7 @@ public class EthereumService {
 	 *            to execute on the ethereum chain
 	 * @return future to get output response
 	 */
-	public Future<BlocklinksResponse<Object[]>> makeCallFuture(final EthCall call) {
+	public Future<TetherjResponse<Object[]>> makeCallFuture(final EthCall call) {
 		return performFutureRpcAction(new RpcAction<Object[]>() {
 
 			@Override
@@ -797,7 +797,7 @@ public class EthereumService {
 	 * @param callable
 	 *            with compile output response
 	 */
-	public void compileSolidity(String sourceCode, BlocklinksHandle<CompileOutput> callable) {
+	public void compileSolidity(String sourceCode, TetherjHandle<CompileOutput> callable) {
 		performAsyncRpcAction(new RpcAction<CompileOutput>() {
 
 			@Override
@@ -815,7 +815,7 @@ public class EthereumService {
 	 *            to compile
 	 * @return compile output response
 	 */
-	public BlocklinksResponse<CompileOutput> compileSolidity(String sourceCode) {
+	public TetherjResponse<CompileOutput> compileSolidity(String sourceCode) {
 		return performBlockingRpcAction(new RpcAction<CompileOutput>() {
 
 			@Override
@@ -832,7 +832,7 @@ public class EthereumService {
 	 *            to compile
 	 * @return future for compile output response
 	 */
-	public Future<BlocklinksResponse<CompileOutput>> compileSolidityFuture(String sourceCode) {
+	public Future<TetherjResponse<CompileOutput>> compileSolidityFuture(String sourceCode) {
 		return performFutureRpcAction(new RpcAction<CompileOutput>() {
 
 			@Override
@@ -850,7 +850,7 @@ public class EthereumService {
 	 * @param callable
 	 *            with Transaction response
 	 */
-	public void getTransaction(String txHash, BlocklinksHandle<Transaction> callable) {
+	public void getTransaction(String txHash, TetherjHandle<Transaction> callable) {
 		performAsyncRpcAction(new RpcAction<Transaction>() {
 
 			@Override
@@ -868,7 +868,7 @@ public class EthereumService {
 	 *            to get data by.
 	 * @return with Transaction response
 	 */
-	public BlocklinksResponse<Transaction> getTransaction(String txHash) {
+	public TetherjResponse<Transaction> getTransaction(String txHash) {
 		return performBlockingRpcAction(new RpcAction<Transaction>() {
 
 			@Override
@@ -885,7 +885,7 @@ public class EthereumService {
 	 *            to get data by.
 	 * @return future for Transaction response
 	 */
-	public Future<BlocklinksResponse<Transaction>> getTransactionFuture(String txHash) {
+	public Future<TetherjResponse<Transaction>> getTransactionFuture(String txHash) {
 		return performFutureRpcAction(new RpcAction<Transaction>() {
 
 			@Override
@@ -901,7 +901,7 @@ public class EthereumService {
 	 * @param callable
 	 *            with Block response
 	 */
-	public void getLatestBlock(BlocklinksHandle<Block> callable) {
+	public void getLatestBlock(TetherjHandle<Block> callable) {
 		performAsyncRpcAction(new RpcAction<Block>() {
 
 			@Override
@@ -918,7 +918,7 @@ public class EthereumService {
 	 * @param callable
 	 *            with Block response
 	 */
-	public BlocklinksResponse<Block> getLatestBlock() {
+	public TetherjResponse<Block> getLatestBlock() {
 		return performBlockingRpcAction(new RpcAction<Block>() {
 
 			@Override
@@ -934,7 +934,7 @@ public class EthereumService {
 	 * @param callable
 	 *            with Block response
 	 */
-	public Future<BlocklinksResponse<Block>> getLatestBlockFuture() {
+	public Future<TetherjResponse<Block>> getLatestBlockFuture() {
 		return performFutureRpcAction(new RpcAction<Block>() {
 
 			@Override
@@ -952,7 +952,7 @@ public class EthereumService {
 	 * @param callable
 	 *            with TransactionReceipt response
 	 */
-	public void getTransactionReceipt(String txHash, BlocklinksHandle<TransactionReceipt> callable) {
+	public void getTransactionReceipt(String txHash, TetherjHandle<TransactionReceipt> callable) {
 		performAsyncRpcAction(new RpcAction<TransactionReceipt>() {
 
 			@Override
@@ -969,7 +969,7 @@ public class EthereumService {
 	 * @param txHash
 	 *            to receipt transaction by.
 	 */
-	public BlocklinksResponse<TransactionReceipt> getTransactionReceipt(String txHash) {
+	public TetherjResponse<TransactionReceipt> getTransactionReceipt(String txHash) {
 		return performBlockingRpcAction(new RpcAction<TransactionReceipt>() {
 
 			@Override
@@ -985,7 +985,7 @@ public class EthereumService {
 	 * @param txHash
 	 *            to receipt transaction by.
 	 */
-	public Future<BlocklinksResponse<TransactionReceipt>> getTransactionReceiptFuture(String txHash) {
+	public Future<TetherjResponse<TransactionReceipt>> getTransactionReceiptFuture(String txHash) {
 		return performFutureRpcAction(new RpcAction<TransactionReceipt>() {
 
 			@Override

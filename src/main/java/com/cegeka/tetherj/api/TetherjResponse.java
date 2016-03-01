@@ -1,16 +1,16 @@
 package com.cegeka.tetherj.api;
 
 /**
- * Returned after a blocklinks operation finishes.
+ * Returned after a tetherj operation finishes.
  * 
  * @author Andrei Grigoriu
  *
  * @param <T>
  *            type of the valued returned.
  */
-public class BlocklinksResponse<T> {
+public class TetherjResponse<T> {
 	/**
-	 * Blocklinks defined ErrorType that has occured
+	 * Tetherj defined ErrorType that has occured
 	 * 
 	 * @return null if no error, check for this first.
 	 */
@@ -46,7 +46,7 @@ public class BlocklinksResponse<T> {
 	 * @param exception
 	 * @param resp
 	 */
-	public BlocklinksResponse(ErrorType errorType, Exception exception, T resp) {
+	public TetherjResponse(ErrorType errorType, Exception exception, T resp) {
 		this.errorType = errorType;
 		this.exception = exception;
 		this.value = resp;
@@ -57,7 +57,7 @@ public class BlocklinksResponse<T> {
 	 * @param errorType
 	 * @param exception
 	 */
-	public BlocklinksResponse(ErrorType errorType, Exception exception) {
+	public TetherjResponse(ErrorType errorType, Exception exception) {
 		this.errorType = errorType;
 		this.exception = exception;
 		this.value = null;
@@ -67,7 +67,7 @@ public class BlocklinksResponse<T> {
 	 * Create error response from other response copying only errorType and exception.
 	 * @param otherResponse
 	 */
-	public <V> BlocklinksResponse(BlocklinksResponse<V> otherResponse) {
+	public <V> TetherjResponse(TetherjResponse<V> otherResponse) {
 		this.errorType = otherResponse.errorType;
 		this.exception = otherResponse.exception;
 		this.value = null;
