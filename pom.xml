@@ -3,7 +3,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cegeka</groupId>
 	<artifactId>tetherj</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>cgk-nexus-blockchain</id>
+			<name>blockchain snapshots</name>
+			<url>http://nexus.cegeka.be/nexus/content/repositories/blockchain-snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>cgk-nexus-blockchain</id>
+			<name>blockchain releases</name>
+			<url>http://nexus.cegeka.be/nexus/content/repositories/blockchain-releases</url>
+		</repository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>
@@ -13,6 +25,19 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.1</version>
+				<executions>
+					<execution>
+						<id>default-deploy</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
