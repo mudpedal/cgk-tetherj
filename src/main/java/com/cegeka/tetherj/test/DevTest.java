@@ -219,7 +219,7 @@ public class DevTest {
 
 			TetherjResponse<BigInteger> response = responseFuture.get();
 			EthSignedTransaction txSigned = tx.signWithWallet(wallet, response.getValue());
-			byte[] encoded = txSigned.getSignedEcodedData();
+			byte[] encoded = txSigned.getSignedEncodedData();
 
 			System.out.println(CryptoUtil.byteToHex(encoded));
 			TetherjResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
@@ -264,7 +264,7 @@ public class DevTest {
 
 								TetherjResponse<BigInteger> newNonce = service
 										.getAccountNonce(wallet.getStorage().getAddress());
-								byte[] encoded = tx.signWithWallet(wallet, newNonce.getValue()).getSignedEcodedData();
+								byte[] encoded = tx.signWithWallet(wallet, newNonce.getValue()).getSignedEncodedData();
 								System.out.println(CryptoUtil.byteToHex(encoded));
 								TetherjResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 								System.out.println("Sending transaction " + txHashResponse.getValue());

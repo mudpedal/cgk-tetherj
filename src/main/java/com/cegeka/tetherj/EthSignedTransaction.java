@@ -137,7 +137,7 @@ public class EthSignedTransaction implements Comparable<EthSignedTransaction> {
 		this.nonce = nonce;
 	}
 
-	public byte[] getSignedEcodedData() {
+	public byte[] getSignedEncodedData() {
 		return signedEcodedData;
 	}
 

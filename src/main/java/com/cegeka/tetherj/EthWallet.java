@@ -32,13 +32,17 @@ public class EthWallet implements Serializable {
 
 	private static final Logger logger = LogManager.getLogger(EthWallet.class);
 
+	public EthWallet() {
+		privateKey = null;
+	}
+	
 	/**
 	 * Create wallet from storage pojo
 	 * 
 	 * @param v3
 	 *            storage pojo
 	 */
-	private EthWallet(WalletStoragePojoV3 storage) {
+	public EthWallet(WalletStoragePojoV3 storage) {
 		privateKey = null;
 		this.storage = storage;
 	}
