@@ -13,7 +13,7 @@ import com.cegeka.tetherj.crypto.CryptoUtil;
  * @author andreicg
  *
  */
-public class EthSignedTransaction {
+public class EthSignedTransaction implements Comparable<EthSignedTransaction> {
 
 	private String hash;
 	private String from;
@@ -24,7 +24,7 @@ public class EthSignedTransaction {
 
 	public EthSignedTransaction() {
 	}
-	
+
 	public EthSignedTransaction(String transactionHash, String from, String to, BigInteger value, BigInteger nonce,
 			byte[] signedEcodedData) {
 
@@ -44,7 +44,7 @@ public class EthSignedTransaction {
 		this.to = transaction.getTo();
 		this.signedEcodedData = signedEcodedData;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -96,7 +96,7 @@ public class EthSignedTransaction {
 			return false;
 		return true;
 	}
-	
+
 	public String getHash() {
 		return hash;
 	}
@@ -144,5 +144,14 @@ public class EthSignedTransaction {
 	public void setSignedEcodedData(byte[] signedEcodedData) {
 		this.signedEcodedData = signedEcodedData;
 	}
-	
+
+	/**
+	 * Compares by nonce. Compare only signed transactions from the same wallet
+	 * to actually make sense.
+	 */
+	@Override
+	public int compareTo(EthSignedTransaction o) {
+		return this.nonce.compareTo(o.getNonce());
+	}
+
 }
