@@ -11,6 +11,4 @@ Run the following command in the root directory:
 > mvn clean install
 ```
 ##### Usage
-
 TODO
-
