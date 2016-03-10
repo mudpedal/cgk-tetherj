@@ -1,5 +1,6 @@
 package org.ethereum.util;
 
+import org.ethereum.crypto.HashUtil;
 import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
@@ -179,5 +180,13 @@ public class Utils {
             for (int i = 0; i < n; i++) ret.append(s);
             return ret.toString();
         }
+    }
+    
+    public static byte[] addressStringToEthereumType(String hexAddress) {
+    	byte[] decodedAddress = addressStringToBytes(hexAddress);
+    	if (decodedAddress == null)
+    		return null;
+    	
+    	return HashUtil.sha3omit12(Arrays.copyOfRange(decodedAddress, 1, decodedAddress.length));
     }
 }
