@@ -4,6 +4,9 @@
 	<groupId>com.cegeka</groupId>
 	<artifactId>tetherj</artifactId>
 	<version>1.0.4-SNAPSHOT</version>
+	<properties>
+		<scm.url>scm:git:https://github.com/cegeka/tether</scm.url>
+	</properties>	
 	<distributionManagement>
 		<snapshotRepository>
 			<id>cgk-nexus-blockchain</id>
@@ -16,6 +19,12 @@
 			<url>http://nexus.cegeka.be/nexus/content/repositories/blockchain-releases</url>
 		</repository>
 	</distributionManagement>
+	<scm>
+		<url>${scm.url}</url>
+		<connection>${scm.url}</connection>
+		<developerConnection>${scm.url}</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>
