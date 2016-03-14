@@ -43,18 +43,39 @@ public class Utils {
     }
 
     /**
+     * Return the Date object from an Unix's time() input in seconds
+     *
+     * @param timestamp seconds since start of Unix-time
+     * @return Date object
+     */
+    public static Date longToDateTime(long timestamp) {
+        return new Date(timestamp * 1000);
+    }
+
+    /**
+     * Return the Unix's time() in seconds from a date
+     *
+     * @param date input date object
+     * @return seconds since start of Unix-time
+     */
+    public static long dateTimetoLong(Date date) {
+        return (long) date.getTime()/1000;
+    }    
+    
+    /**
      * Return formatted Date String: yyyy.MM.dd HH:mm:ss
      * Based on Unix's time() input in seconds
      *
      * @param timestamp seconds since start of Unix-time
      * @return String formatted as - yyyy.MM.dd HH:mm:ss
      */
-    public static String longToDateTime(long timestamp) {
-        Date date = new Date(timestamp * 1000);
+    public static String longToDateTimeString(long timestamp) {
+        Date date = longToDateTime(timestamp);
         DateFormat formatter = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
         return formatter.format(date);
     }
-
+    
+    
     public static ImageIcon getImageIcon(String resource) {
         URL imageURL = ClassLoader.getSystemResource(resource);
         ImageIcon image = new ImageIcon(imageURL);
