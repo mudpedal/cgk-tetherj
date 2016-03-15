@@ -85,6 +85,12 @@ public class EthTransaction {
 	}
 
 	/**
+	 * Default empty constructor
+	 */
+	public EthTransaction () {
+	}
+	
+	/**
 	 * 
 	 * @param to
 	 *            receiver (may be contract)
