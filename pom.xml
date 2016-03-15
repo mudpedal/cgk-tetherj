@@ -26,6 +26,14 @@
 		<tag>HEAD</tag>
 	</scm>
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+		            <artifactId>maven-release-plugin</artifactId>
+		            <version>2.5.3</version>
+		        </plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -48,10 +56,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-		            <artifactId>maven-release-plugin</artifactId>
-		            <version>2.5.3</version>
-		        </plugin>
 		</plugins>
 	</build>
 	<dependencies>
