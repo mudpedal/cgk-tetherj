@@ -4,10 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cegeka</groupId>
   <artifactId>tetherj</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
   <scm>
     <connection>scm:git:https://github.com/cegeka/tether</connection>
     <developerConnection>scm:git:https://github.com/cegeka/tether</developerConnection>
+    <tag>tetherj-1.0.5</tag>
     <url>scm:git:https://github.com/cegeka/tether</url>
   </scm>
   <distributionManagement>
@@ -175,7 +176,7 @@
       </testResource>
     </testResources>
     <directory>target</directory>
-    <finalName>tetherj-1.0.5</finalName>
+    <finalName>tetherj-1.0.6</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
