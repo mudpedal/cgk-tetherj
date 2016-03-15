@@ -1,16 +1,13 @@
 package org.ethereum.vm;
 
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+
 import org.ethereum.db.ByteArrayWrapper;
 import org.ethereum.util.ByteUtil;
 import org.ethereum.util.FastByteComparisons;
-
 import org.spongycastle.util.Arrays;
 import org.spongycastle.util.encoders.Hex;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import java.nio.ByteBuffer;
 
 /**
  * DataWord is the 32-byte array representation of a 256-bit number

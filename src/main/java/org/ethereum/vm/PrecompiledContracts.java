@@ -3,7 +3,6 @@ package org.ethereum.vm;
 import org.ethereum.crypto.ECKey;
 import org.ethereum.crypto.HashUtil;
 import org.ethereum.util.ByteUtil;
-import org.spongycastle.util.encoders.Hex;
 
 /**
  * @author Roman Mandeleil
