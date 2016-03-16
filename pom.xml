@@ -1,9 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cegeka</groupId>
 	<artifactId>tetherj</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.8-SNAPSHOT</version>
+	<properties>
+		<scm.url>scm:git:https://github.com/cegeka/tether</scm.url>
+	</properties>	
 	<distributionManagement>
 		<snapshotRepository>
 			<id>cgk-nexus-blockchain</id>
@@ -16,7 +18,21 @@
 			<url>http://nexus.cegeka.be/nexus/content/repositories/blockchain-releases</url>
 		</repository>
 	</distributionManagement>
+	<scm>
+		<url>${scm.url}</url>
+		<connection>${scm.url}</connection>
+		<developerConnection>${scm.url}</developerConnection>
+		<tag>tetherj-1.0.6</tag>
+	</scm>
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+		            <artifactId>maven-release-plugin</artifactId>
+		            <version>2.5.3</version>
+		        </plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
