@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cegeka</groupId>
 	<artifactId>tetherj</artifactId>
-	<version>1.0.9-SNAPSHOT</version>
+	<version>1.0.9</version>
 	<properties>
 		<scm.url>scm:git:https://github.com/cegeka/tether</scm.url>
 	</properties>	
@@ -22,7 +22,7 @@
 		<url>${scm.url}</url>
 		<connection>${scm.url}</connection>
 		<developerConnection>${scm.url}</developerConnection>
-		<tag>tetherj-1.0.6</tag>
+		<tag>tetherj-1.0.9</tag>
 	</scm>
 	<build>
 		<pluginManagement>
