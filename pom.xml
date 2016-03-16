@@ -5,6 +5,7 @@
 	<version>1.0.8-SNAPSHOT</version>
 	<properties>
 		<scm.url>scm:git:https://github.com/cegeka/tether</scm.url>
+		<geth.address>127.0.0.1</geth.address>
 	</properties>	
 	<distributionManagement>
 		<snapshotRepository>

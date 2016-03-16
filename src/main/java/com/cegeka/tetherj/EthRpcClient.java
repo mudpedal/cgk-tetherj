@@ -26,7 +26,7 @@ public class EthRpcClient {
 	 * Ethereum rpc Interface
 	 */
 	private EthRpcInterface rpc;
-	public final static String defaultHostname = "localhost";
+	public final static String defaultHostname = System.getProperty("geth.address");
 	public final static int defaultPort = 8545;
 
 	public EthRpcClient() {
