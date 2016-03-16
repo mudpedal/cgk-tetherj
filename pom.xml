@@ -4,6 +4,7 @@
 	<artifactId>tetherj</artifactId>
 	<version>1.0.8-SNAPSHOT</version>
 	<properties>
+		<project.scm.id>github</project.scm.id>
 		<scm.url>scm:git:https://github.com/cegeka/tether</scm.url>
 	</properties>	
 	<distributionManagement>
