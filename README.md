@@ -1,12 +1,3 @@
-# About
-Java API for Ethereum Blockchain Systems.
+# Moved repository
 
-##### Build prerequisites
-jdk8  
-recent maven
-
-##### Build command
-Run the following command in the root directory:
-```
-> mvn clean install
-```
+`https://github.com/cegeka/tether`
