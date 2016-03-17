@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -23,6 +24,7 @@ import com.cegeka.tetherj.EthWallet;
 import com.cegeka.tetherj.crypto.CryptoUtil;
 import com.cegeka.tetherj.pojo.Block;
 import com.cegeka.tetherj.pojo.CompileOutput;
+import com.cegeka.tetherj.pojo.FilterLogObject;
 import com.cegeka.tetherj.pojo.FilterLogRequest;
 import com.cegeka.tetherj.pojo.Transaction;
 import com.cegeka.tetherj.pojo.TransactionReceipt;
@@ -1220,6 +1222,108 @@ public class EthereumService {
 			@Override
 			public Boolean call() {
 				return rpc.uninstallFilter(filterId);
+			}
+		});
+	}
+	
+	/**
+	 * Async get filter changes
+	 * 
+	 * @param filter id
+	 * @param callable
+	 *            with Block response
+	 */
+	public void getFilterChanges(BigInteger filterId, TetherjHandle<List<FilterLogObject>> callable) {
+		performAsyncRpcAction(new RpcAction<List<FilterLogObject>>() {
+
+			@Override
+			public List<FilterLogObject> call() {
+				return rpc.getFilterChanges(filterId);
+			}
+
+		}, callable);
+	}
+
+
+	/**
+	 * Blocking get filter changes
+	 * 
+	 * @param filter id
+	 * @return response for change objects
+	 */
+	public TetherjResponse<List<FilterLogObject>> getFilterChanges(BigInteger filterId) {
+		return performBlockingRpcAction(new RpcAction<List<FilterLogObject>>() {
+
+			@Override
+			public List<FilterLogObject> call() {
+				return rpc.getFilterChanges(filterId);
+			}
+		});
+	}
+
+	/**
+	 *  Future get filter changes
+	 * 
+	 * @param filter id
+	 * @return future to get uninstall success
+	 */
+	public Future<TetherjResponse<List<FilterLogObject>>> getFilterChangesFuture(BigInteger filterId) {
+		return performFutureRpcAction(new RpcAction<List<FilterLogObject>>() {
+
+			@Override
+			public List<FilterLogObject> call() {
+				return rpc.getFilterChanges(filterId);
+			}
+		});
+	}
+	
+	/**
+	 * Async get filter changes for pending transactions
+	 * 
+	 * @param filter id
+	 * @param callable
+	 *            with Block response
+	 */
+	public void getPendingTransactionFilterChanges(BigInteger filterId, TetherjHandle<List<String>> callable) {
+		performAsyncRpcAction(new RpcAction<List<String>>() {
+
+			@Override
+			public List<String> call() {
+				return rpc.getPendingTransactionFilterChanges(filterId);
+			}
+
+		}, callable);
+	}
+
+
+	/**
+	 * Blocking get filter changes for pending transactions
+	 * 
+	 * @param filter id
+	 * @return response for change objects
+	 */
+	public TetherjResponse<List<String>> getPendingTransactionFilterChanges(BigInteger filterId) {
+		return performBlockingRpcAction(new RpcAction<List<String>>() {
+
+			@Override
+			public List<String> call() {
+				return rpc.getPendingTransactionFilterChanges(filterId);
+			}
+		});
+	}
+
+	/**
+	 *  Future get filter changes for pending transactions
+	 * 
+	 * @param filter id
+	 * @return future to get uninstall success
+	 */
+	public Future<TetherjResponse<List<String>>> getPendingTransactionFilterChangesFuture(BigInteger filterId) {
+		return performFutureRpcAction(new RpcAction<List<String>>() {
+
+			@Override
+			public List<String> call() {
+				return rpc.getPendingTransactionFilterChanges(filterId);
 			}
 		});
 	}

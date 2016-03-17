@@ -3,6 +3,7 @@ package com.cegeka.tetherj;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -317,8 +318,9 @@ public class EthRpcClient {
 	 *            id to fetch changes of
 	 * @return a filter log object
 	 */
-	public FilterLogObject[] getFilterChanges(BigInteger filterId) {
-		return (FilterLogObject[]) rpc.eth_getFilterChanges(filterId);
+	@SuppressWarnings("unchecked")
+	public List<FilterLogObject> getFilterChanges(String filterId) {
+		return (List<FilterLogObject>) rpc.eth_getFilterChanges(CryptoUtil.hexToBigInteger(filterId));
 	}
 
 	/**
@@ -328,29 +330,32 @@ public class EthRpcClient {
 	 *            id to fetch changes of
 	 * @return a filter log object
 	 */
-	public FilterLogObject[] getFilterChanges(String filterId) {
-		return getFilterChanges(CryptoUtil.hexToBigInteger(filterId));
-	}
-
-	/**
-	 * Get ethereum filter changes
-	 * 
-	 * @param filter
-	 *            id to fetch changes of
-	 * @return a filter log object
-	 */
-	public String[] getPendingTransactionFilterChanges(BigInteger filterId) {
-		return (String[]) rpc.eth_getFilterChanges(filterId);
-	}
-
-	/**
-	 * Get ethereum filter changes
-	 * 
-	 * @param filter
-	 *            id to fetch changes of
-	 * @return a filter log object
-	 */
+	@SuppressWarnings("unchecked")
 	public List<String> getPendingTransactionFilterChanges(String filterId) {
 		return (List<String>) rpc.eth_getFilterChanges(CryptoUtil.hexToBigInteger(filterId));
+	}
+	
+	/**
+	 * Get ethereum filter changes
+	 * 
+	 * @param filter
+	 *            id to fetch changes of
+	 * @return a filter log object
+	 */
+	@SuppressWarnings("unchecked")
+	public List<FilterLogObject> getFilterChanges(BigInteger filterId) {
+		return (List<FilterLogObject>) rpc.eth_getFilterChanges(filterId);
+	}
+
+	/**
+	 * Get ethereum filter changes
+	 * 
+	 * @param filter
+	 *            id to fetch changes of
+	 * @return a filter log object
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getPendingTransactionFilterChanges(BigInteger filterId) {
+		return (List<String>) rpc.eth_getFilterChanges(filterId);
 	}
 }

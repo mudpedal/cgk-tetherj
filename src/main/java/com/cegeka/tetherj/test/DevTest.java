@@ -32,7 +32,7 @@ public class DevTest {
 
 	public static void main(String[] args) {
 
-		EthereumService service = new EthereumService(0);
+		EthereumService service = new EthereumService(2);
 		
 		String filterId = service.getRpcClient().newPendingTransactionFilter();
 		EthWallet wallet = EthWallet.loadWalletFromString(
