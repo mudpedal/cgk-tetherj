@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -16,9 +17,9 @@ import com.cegeka.tetherj.EthSmartContractFactory;
 import com.cegeka.tetherj.EthTransaction;
 import com.cegeka.tetherj.EthWallet;
 import com.cegeka.tetherj.NoSuchContractMethod;
+import com.cegeka.tetherj.api.EthereumService;
 import com.cegeka.tetherj.api.TetherjHandle;
 import com.cegeka.tetherj.api.TetherjResponse;
-import com.cegeka.tetherj.api.EthereumService;
 import com.cegeka.tetherj.api.WalletLockedException;
 import com.cegeka.tetherj.crypto.CryptoUtil;
 import com.cegeka.tetherj.pojo.CompileOutput;
@@ -29,145 +30,11 @@ public class DevTest {
 
 	public static EthRpcClient c = new EthRpcClient();
 
-	public static void TestGetTheLatestBlock() {
-		// EthereumService ethService = new EthereumService();
-
-		/* blocking */
-		// TetherjResponse<Block> response = ethService.getLatestBlock();
-		// if (response.getErrorType() != null) {
-		// // fail
-		// System.out.println(response.getErrorType());
-		// } else {
-		// // success
-		// Block latestBlock = response.getValue();
-		// System.out.println(CryptoUtil.hexToBigInteger(latestBlock.getNumber()));
-		// }
-
-		/* async */
-		// ethService.getLatestBlock(new TetherjHandle<Block>() {
-		//
-		// @Override
-		// public void call(TetherjResponse<Block> response) {
-		// if (response.getErrorType() != null) {
-		// // fail
-		// System.out.println(response.getErrorType());
-		// } else {
-		// // success
-		// Block latestBlock = response.getValue();
-		// System.out.println(CryptoUtil.hexToBigInteger(latestBlock.getNumber()));
-		// }
-		// }
-		// });
-
-		/* future */
-		// Future<TetherjResponse<Block>> latestBlockFuture =
-		// ethService.getLatestBlockFuture();
-		// try {
-		// TetherjResponse<Block> response = latestBlockFuture.get();
-		//
-		// if (response.getErrorType() != null) {
-		// // fail
-		// System.out.println(response.getErrorType());
-		// } else {
-		// // success
-		// Block latestBlock = response.getValue();
-		// System.out.println(CryptoUtil.hexToBigInteger(latestBlock.getNumber()));
-		// }
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// } catch (ExecutionException e) {
-		// e.printStackTrace();
-		// }
-	}
-
 	public static void main(String[] args) {
 
-		// TestGetTheLatestBlock();
-
-		/*
-		 * c.unlockAccount(c.getCoinbase(), "secret");
-		 * //System.out.println(c.getTransaction(
-		 * "0x19945f66caa2b830dac6e479114b10bce11637bace3e131c5c69db77dea0e561")
-		 * );
-		 * 
-		 * String[] acc = c.getAccounts();
-		 * System.out.println(Arrays.toString(acc));
-		 * 
-		 * String tx = c.sendTransaction(acc[0], acc[1],
-		 * Util.fromEtherToWei(BigDecimal.ONE));
-		 * 
-		 * if (tx != null) { System.out.println("Sent transaction " + tx); }
-		 * 
-		 * System.out.println(c.getTransaction(tx));
-		 * 
-		 * System.out.println(c.getTransactionReceipt(
-		 * "0x19945f66caa2b830dac6e479114b10bce11637bace3e131c5c69db77dea0e561")
-		 * );
-		 */
-
-		/*
-		 * EthWallet wallet = EthWallet.createWallet("secret");
-		 * System.out.println("Created wallet " +
-		 * wallet.getStorage().toString()); try { String filename =
-		 * wallet.generateStandardFilename(); wallet.writeToFile(new
-		 * File("/home/andreicg/.ethereum/keystore/" + filename)); } catch
-		 * (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } if (!wallet.isUnlocked()) {
-		 * System.out.println("Wallet is locked!"); }
-		 * 
-		 * boolean unlockHandle = wallet.unlock("secret"); if (unlockHandle &&
-		 * wallet.isUnlocked()) { System.out.println("Wallet is now unlocked!");
-		 * }
-		 * 
-		 * System.out.println("Private key from unlock is " +
-		 * wallet.getPrivateKey());
-		 */
-
-		/*
-		 * File keystore = new File("/home/andreicg/.ethereum/keystore");
-		 * ScheduledExecutorService exec = Executors.newScheduledThreadPool(2);
-		 * EthereumService service = new EthereumService(exec, keystore);
-		 * 
-		 * EthWallet wallet = EthWallet.loadWalletFromString(
-		 * "{\"address\":\"3b4277a7d0314fb70a2afab8c1f94bc20375f33f\",\"crypto\":{\"cipher\":\"aes-128-ctr\",\"ciphertext\":\"d5999ea5d1d81fa0c3218a7b02b93db18c7394ca6ecab4e96a9bee4c82573db9\",\"cipherparams\":{\"iv\":\"fb31d04c24a3dee4c31db9271d65f6c4\"},\"kdf\":\"pbkdf2\",\"kdfparams\":{\"prf\":\"hmac-sha256\",\"c\":262144,\"salt\":\"22896ce41107899bf960547affd091ee3101bd242219956ba4331e574faffeea\",\"dklen\":32},\"mac\":\"2bb16bb444159e743b3fde61bf09d9ba8f10c38c1fa15f934fa2046ad2f67c29\"},\"id\":\"ad94ca92-1dbe-457d-ba10-9aeadbd96e26\",\"version\":3}"
-		 * );
-		 * 
-		 * wallet.unlock("secret"); String to =
-		 * "0x5cc3a427f9c91781625ea36fa3b2f71baa8467bb"; BigInteger wei =
-		 * Util.fromEtherToWei(BigDecimal.valueOf(1.2));
-		 * 
-		 * EthTransaction tx = new EthTransaction(to, wei);
-		 * service.sendTransaction(wallet, tx, new BlocklinksCallable<String> ()
-		 * {
-		 * 
-		 * @Override public void call(BlocklinksResponse<String> response) { if
-		 * (response.getErrType() == null) { String txHash = response.getResp();
-		 * System.out.println("Sent transaction " + txHash);
-		 * 
-		 * service.listenForTxReceipt(txHash, new
-		 * BlocklinksCallable<TransactionReceipt>() {
-		 * 
-		 * @Override public void call(BlocklinksResponse<TransactionReceipt>
-		 * response) { if (response.getErrType() != null) { System.out.println(
-		 * "Error waiting for tx receipt " + response.getEx().getMessage() +
-		 * " error " + response.getErrType().name()); } else {
-		 * System.out.println("Tx mined, receipt: " +
-		 * response.getResp().toString()); } } }); } else { System.out.println(
-		 * "Failed to send, error " + response.getErrType().name() + " ex " +
-		 * response.getEx().getMessage()); } }
-		 * 
-		 * });
-		 * 
-		 * service.getAccounts(new BlocklinksCallable<String[]>() {
-		 * 
-		 * @Override public void call(BlocklinksResponse<String[]> response) {
-		 * if (response.getErrType() != null) { System.out.println("GOT ERROR "
-		 * + response.getErrType().name()); } else { System.out.println(
-		 * "GOT response " + Arrays.toString(response.getResp())); } } });
-		 */
-
-		EthereumService service = new EthereumService();
-
+		EthereumService service = new EthereumService(0);
+		
+		String filterId = service.getRpcClient().newPendingTransactionFilter();
 		EthWallet wallet = EthWallet.loadWalletFromString(
 				"{\"address\":\"3b4277a7d0314fb70a2afab8c1f94bc20375f33f\",\"crypto\":{\"cipher\":\"aes-128-ctr\",\"ciphertext\":\"d5999ea5d1d81fa0c3218a7b02b93db18c7394ca6ecab4e96a9bee4c82573db9\",\"cipherparams\":{\"iv\":\"fb31d04c24a3dee4c31db9271d65f6c4\"},\"kdf\":\"pbkdf2\",\"kdfparams\":{\"prf\":\"hmac-sha256\",\"c\":262144,\"salt\":\"22896ce41107899bf960547affd091ee3101bd242219956ba4331e574faffeea\",\"dklen\":32},\"mac\":\"2bb16bb444159e743b3fde61bf09d9ba8f10c38c1fa15f934fa2046ad2f67c29\"},\"id\":\"ad94ca92-1dbe-457d-ba10-9aeadbd96e26\",\"version\":3}");
 
@@ -222,6 +89,7 @@ public class DevTest {
 			byte[] encoded = txSigned.getSignedEncodedData();
 
 			System.out.println(CryptoUtil.byteToHex(encoded));
+			TetherjResponse<BigInteger> nonceResp = service.getAccountNonce(wallet.getAddress());
 			TetherjResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 
 			String txHash = txHashResponse.getValue();
@@ -236,7 +104,9 @@ public class DevTest {
 						System.out.println("Error waiting for tx receipt " + response.getException().getMessage()
 								+ " error " + response.getErrorType().name());
 					} else {
-
+						
+						List<String> logs = service.getRpcClient().getPendingTransactionFilterChanges(filterId);
+						System.out.println(Arrays.toString(logs.toArray()));
 						System.out.println("Tx mined, receipt: " + response.getValue().toString());
 						EthSmartContract contract = factory.getContract(response.getValue().getContractAddress());
 
@@ -278,7 +148,9 @@ public class DevTest {
 													+ response.getException().getMessage() + " error "
 													+ response.getErrorType().name());
 										} else {
-
+											
+											List<String> logs = service.getRpcClient().getPendingTransactionFilterChanges(filterId);
+											System.out.println(Arrays.toString(logs.toArray()));
 											System.out.println("Tx mined for set greeting, receipt: "
 													+ response.getValue().toString());
 											Object[] greeting;
@@ -323,6 +195,10 @@ public class DevTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		System.out.println(filterId);
+		List<String> logs = service.getRpcClient().getPendingTransactionFilterChanges(filterId);
+		System.out.println(Arrays.toString(logs.toArray()));
 
 		// String encoded =
 		// "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c48656c6c6f20576f726c64210000000000000000000000000000000000000000";

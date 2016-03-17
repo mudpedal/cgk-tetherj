@@ -26,12 +26,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Data;
+
 /**
  * Wallet v3 storage pojo and manager.
  * 
  * @author Andrei Grigoriu
  *
  */
+@Data
 public class WalletStoragePojoV3 implements Serializable {
 
 	private static final long serialVersionUID = 4140390043976265580L;
@@ -43,50 +46,12 @@ public class WalletStoragePojoV3 implements Serializable {
 	public static final String prf = "hmac-sha256";
 	public static final String cipher = "aes-128-ctr";
 
-	/* Getters Setters */
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public WalletCryptoPojoV3 getCrypto() {
-		return crypto;
-	}
-
-	public void setCrypto(WalletCryptoPojoV3 crypto) {
-		this.crypto = crypto;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
 	String address;
 	WalletCryptoPojoV3 crypto;
 	String id;
 	int version;
 
 	private WalletStoragePojoV3() {
-	}
-
-	@Override
-	public String toString() {
-		return "EthWallet [address=" + address + ", crypto=" + crypto + ", id=" + id + ", version=" + version + "]";
 	}
 
 	/**

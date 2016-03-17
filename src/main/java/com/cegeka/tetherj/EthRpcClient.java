@@ -3,11 +3,14 @@ package com.cegeka.tetherj;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 
 import com.cegeka.tetherj.crypto.CryptoUtil;
 import com.cegeka.tetherj.pojo.Block;
 import com.cegeka.tetherj.pojo.CompileOutput;
+import com.cegeka.tetherj.pojo.FilterLogObject;
+import com.cegeka.tetherj.pojo.FilterLogRequest;
 import com.cegeka.tetherj.pojo.Transaction;
 import com.cegeka.tetherj.pojo.TransactionCall;
 import com.cegeka.tetherj.pojo.TransactionReceipt;
@@ -27,7 +30,8 @@ public class EthRpcClient {
 	 * Ethereum rpc Interface
 	 */
 	private EthRpcInterface rpc;
-	public final static String defaultHostname = Optional.ofNullable(System.getProperty("geth.address")).orElse("127.0.0.1");
+	public final static String defaultHostname = Optional.ofNullable(System.getProperty("geth.address"))
+			.orElse("127.0.0.1");
 	public final static int defaultPort = 8545;
 
 	public EthRpcClient() {
@@ -236,7 +240,7 @@ public class EthRpcClient {
 	public Block getLatestBlock() {
 		return rpc.eth_getBlockByNumber("latest", true);
 	}
-	
+
 	/**
 	 * Get latest block gas limit
 	 * 
@@ -259,5 +263,89 @@ public class EthRpcClient {
 	 */
 	public CompileOutput compileSolidity(String sourceCode) {
 		return rpc.eth_compileSolidity(sourceCode);
+	}
+
+	/**
+	 * Create an ethereum filter
+	 * 
+	 * @return filter id
+	 */
+	public String newFilter() {
+		return rpc.eth_newFilter(FilterLogRequest.DEFAULT);
+	}
+
+	/**
+	 * Create an ethereum filter
+	 * 
+	 * @param Request
+	 * @return filter id
+	 */
+	public String newFilter(FilterLogRequest filterLogRequest) {
+		return rpc.eth_newFilter(filterLogRequest);
+	}
+
+	/**
+	 * Create an ethereum filter for pending Transactions
+	 * 
+	 * @param Request
+	 * @return filter id
+	 */
+	public String newPendingTransactionFilter() {
+		return rpc.eth_newPendingTransactionFilter();
+	}
+
+	/**
+	 * Remove ethereum filter
+	 * 
+	 * @param filter
+	 *            id to remove
+	 * @return true if success
+	 */
+	public Boolean uninstallFilter(BigInteger filterId) {
+		return rpc.eth_uninstallFilter(filterId);
+	}
+
+	/**
+	 * Get ethereum filter changes
+	 * 
+	 * @param filter
+	 *            id to fetch changes of
+	 * @return a filter log object
+	 */
+	public FilterLogObject[] getFilterChanges(BigInteger filterId) {
+		return (FilterLogObject[]) rpc.eth_getFilterChanges(filterId);
+	}
+
+	/**
+	 * Get ethereum filter changes
+	 * 
+	 * @param filter
+	 *            id to fetch changes of
+	 * @return a filter log object
+	 */
+	public FilterLogObject[] getFilterChanges(String filterId) {
+		return getFilterChanges(CryptoUtil.hexToBigInteger(filterId));
+	}
+
+	/**
+	 * Get ethereum filter changes
+	 * 
+	 * @param filter
+	 *            id to fetch changes of
+	 * @return a filter log object
+	 */
+	public String[] getPendingTransactionFilterChanges(BigInteger filterId) {
+		return (String[]) rpc.eth_getFilterChanges(filterId);
+	}
+
+	/**
+	 * Get ethereum filter changes
+	 * 
+	 * @param filter
+	 *            id to fetch changes of
+	 * @return a filter log object
+	 */
+	public List<String> getPendingTransactionFilterChanges(String filterId) {
+		return (List<String>) rpc.eth_getFilterChanges(CryptoUtil.hexToBigInteger(filterId));
 	}
 }

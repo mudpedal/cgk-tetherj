@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -80,7 +81,7 @@ public class EthereumService {
 	 * Creates executor with custom number of threads.
 	 * 
 	 * @param executorThreads
-	 *            to spawn
+	 *            to spawn, 0 to disable async support
 	 */
 	public EthereumService(int executorThreads) {
 		this(executorThreads, EthRpcClient.defaultHostname, EthRpcClient.defaultPort);
@@ -91,31 +92,40 @@ public class EthereumService {
 	 * info.
 	 * 
 	 * @param executorThreads
-	 *            to spawn
+	 *            to spawn, 0 to disable async support
 	 * @param rpcHostname
 	 *            of the ethereum client
 	 * @param port
 	 *            of the ethereum client
 	 */
 	public EthereumService(int executorThreads, String rpcHostname, int port) {
-		ScheduledExecutorService executor = Executors.newScheduledThreadPool(executorThreads, new ThreadFactory() {
 
-			@Override
-			public Thread newThread(Runnable r) {
-				Thread t = new Thread(r);
+		if (executorThreads > 0) {
+			ScheduledExecutorService executor = Executors.newScheduledThreadPool(executorThreads, new ThreadFactory() {
 
-				t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-					@Override
-					public void uncaughtException(Thread t, Throwable e) {
-						handleUnknownThrowables(e);
-					}
-				});
+				@Override
+				public Thread newThread(Runnable r) {
+					Thread t = new Thread(r);
 
-				return t;
-			}
-		});
+					t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+						@Override
+						public void uncaughtException(Thread t, Throwable e) {
+							handleUnknownThrowables(e);
+						}
+					});
 
-		this.executor = executor;
+					return t;
+				}
+			});
+
+			this.executor = executor;
+			logger.info("Created ethereum service with async support on " + executorThreads + " threads!");
+		} else {
+			/* when 0 threads specified, service is always blocking */
+			this.executor = null;
+			logger.info("Created ethereum service with no async support!");
+		}
+
 		rpc = new EthRpcClient(rpcHostname, port);
 		logger.info("Created ethereum service");
 	}
@@ -123,7 +133,8 @@ public class EthereumService {
 	/**
 	 * 
 	 * @param executor
-	 *            to use for async and future calls, also for polling
+	 *            to use for async and future calls, also for polling, null to
+	 *            disable async support
 	 */
 	public EthereumService(ScheduledExecutorService executor) {
 		this(executor, EthRpcClient.defaultHostname, EthRpcClient.defaultPort);
@@ -132,7 +143,8 @@ public class EthereumService {
 	/**
 	 * 
 	 * @param executor
-	 *            to use for async and future calls, also for polling
+	 *            to use for async and future calls, also for polling, null to
+	 *            disable async support
 	 * @param rpcHostname
 	 *            ethereum client hostname
 	 */
@@ -152,7 +164,12 @@ public class EthereumService {
 	public EthereumService(ScheduledExecutorService executor, String rpcHostname, int port) {
 		this.executor = executor;
 		rpc = new EthRpcClient(rpcHostname, port);
-		logger.info("Created ethereum service");
+
+		if (this.executor != null) {
+			logger.info("Created ethereum service with async support on custom executor!");
+		} else {
+			logger.info("Created ethereum service with no async support!");
+		}
 	}
 
 	/**
@@ -169,8 +186,7 @@ public class EthereumService {
 			e.printStackTrace(epw);
 			String eStack = esw.toString();
 
-			String message = "Tetherj uncaught exception: " + e.toString() + " " + e.getMessage() + " at \n"
-					+ eStack;
+			String message = "Tetherj uncaught exception: " + e.toString() + " " + e.getMessage() + " at \n" + eStack;
 
 			if (e.getCause() != null) {
 				StringWriter csw = new StringWriter();
@@ -241,22 +257,27 @@ public class EthereumService {
 	 *            to execute after rpcAction operation ends
 	 */
 	private <T> void performAsyncRpcAction(RpcAction<T> rpcAction, TetherjHandle<T> callable) {
-		synchronized (executor) {
-			try {
-				executor.submit(new Runnable() {
+		if (executor != null && !executor.isShutdown()) {
+			synchronized (executor) {
+				try {
+					executor.submit(new Runnable() {
 
-					@Override
-					public void run() {
-						try {
-							callable.call(performBlockingRpcAction(rpcAction));
-						} catch (Throwable t) {
-							handleUnknownThrowables(t);
+						@Override
+						public void run() {
+							try {
+								callable.call(performBlockingRpcAction(rpcAction));
+							} catch (Throwable t) {
+								handleUnknownThrowables(t);
+							}
 						}
-					}
-				});
-			} catch (Exception ex) {
-				ex.printStackTrace();
+					});
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
+		} else {
+			// sync actually
+			callable.call(performBlockingRpcAction(rpcAction));
 		}
 	}
 
@@ -267,19 +288,23 @@ public class EthereumService {
 	 *            to execute
 	 */
 	private <T> Future<TetherjResponse<T>> performFutureRpcAction(RpcAction<T> rpcAction) {
-		synchronized (executor) {
-			try {
-				return executor.submit(new Callable<TetherjResponse<T>>() {
+		if (executor != null && !executor.isShutdown()) {
+			synchronized (executor) {
+				try {
+					return executor.submit(new Callable<TetherjResponse<T>>() {
 
-					@Override
-					public TetherjResponse<T> call() throws Exception {
-						return performBlockingRpcAction(rpcAction);
-					}
-				});
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				return null;
+						@Override
+						public TetherjResponse<T> call() throws Exception {
+							return performBlockingRpcAction(rpcAction);
+						}
+					});
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					return null;
+				}
 			}
+		} else {
+			return CompletableFuture.completedFuture(performBlockingRpcAction(rpcAction));
 		}
 	}
 
@@ -721,14 +746,19 @@ public class EthereumService {
 						callable.call(new TetherjResponse<TransactionReceipt>(ErrorType.OPERATION_TIMEOUT,
 								new TxReceiptTimeoutException()));
 					} else {
-						synchronized (executor) {
-							executor.schedule(new Runnable() {
+						if (executor != null && !executor.isShutdown()) {
+							synchronized (executor) {
+								executor.schedule(new Runnable() {
 
-								@Override
-								public void run() {
-									listenForTxReceipt(txHash, checkIntervalMillis, checks - 1, callable);
-								}
-							}, checkIntervalMillis, TimeUnit.MILLISECONDS);
+									@Override
+									public void run() {
+										listenForTxReceipt(txHash, checkIntervalMillis, checks - 1, callable);
+									}
+								}, checkIntervalMillis, TimeUnit.MILLISECONDS);
+							}
+						} else {
+							callable.call(new TetherjResponse<TransactionReceipt>(ErrorType.OPERATION_TIMEOUT,
+									new TxReceiptTimeoutException()));
 						}
 					}
 				}
@@ -943,7 +973,7 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
 	/**
 	 * Async get the transaction receipt.
 	 * 
