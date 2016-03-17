@@ -1172,4 +1172,55 @@ public class EthereumService {
 			}
 		});
 	}
+	
+	/**
+	 * Async remove filter
+	 * 
+	 * @param filter id
+	 * @param callable
+	 *            with Block response
+	 */
+	public void uninstallFilter(BigInteger filterId, TetherjHandle<Boolean> callable) {
+		performAsyncRpcAction(new RpcAction<Boolean>() {
+
+			@Override
+			public Boolean call() {
+				return rpc.uninstallFilter(filterId);
+			}
+
+		}, callable);
+	}
+
+
+	/**
+	 * Blocking remove filter
+	 * 
+	 * @param filter id
+	 * @return response for uninstall success
+	 */
+	public TetherjResponse<Boolean> uninstallFilter(BigInteger filterId) {
+		return performBlockingRpcAction(new RpcAction<Boolean>() {
+
+			@Override
+			public Boolean call() {
+				return rpc.uninstallFilter(filterId);
+			}
+		});
+	}
+
+	/**
+	 * Future remove filter
+	 * 
+	 * @param filter id
+	 * @return future to get uninstall success
+	 */
+	public Future<TetherjResponse<Boolean>> uninstallFilterFuture(BigInteger filterId) {
+		return performFutureRpcAction(new RpcAction<Boolean>() {
+
+			@Override
+			public Boolean call() {
+				return rpc.uninstallFilter(filterId);
+			}
+		});
+	}
 }
