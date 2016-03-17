@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.cegeka.tetherj.crypto.CryptoUtil;
 import com.cegeka.tetherj.pojo.Block;
@@ -17,6 +19,7 @@ import com.cegeka.tetherj.pojo.TransactionReceipt;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
 import com.googlecode.jsonrpc4j.ProxyUtil;
+
 
 /**
  * Class for rpc request invoker to ethereum client.
@@ -33,6 +36,7 @@ public class EthRpcClient {
 	public final static String defaultHostname = Optional.ofNullable(System.getProperty("geth.address"))
 			.orElse("127.0.0.1");
 	public final static int defaultPort = 8545;
+	private static final Logger log = Logger.getLogger(EthRpcClient.class.getName());
 
 	public EthRpcClient() {
 		this(defaultHostname, defaultPort);
@@ -47,6 +51,7 @@ public class EthRpcClient {
 	 */
 	public EthRpcClient(String hostname, int port) {
 		URL url;
+		log.log(Level.INFO, "Geth address: " + hostname + ":" + port);
 		try {
 			url = new URL("http://" + hostname + ":" + port + "/");
 			JsonRpcHttpClient rpcClient = new JsonRpcHttpClient(url);
