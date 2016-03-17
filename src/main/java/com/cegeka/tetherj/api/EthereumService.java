@@ -278,7 +278,7 @@ public class EthereumService {
 				}
 			}
 		} else {
-			// sync actually
+			/* no async available, execute it blocking */
 			callable.call(performBlockingRpcAction(rpcAction));
 		}
 	}
@@ -1026,7 +1026,7 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
 	/**
 	 * Async create filter
 	 * 
@@ -1043,11 +1043,12 @@ public class EthereumService {
 
 		}, callable);
 	}
-	
+
 	/**
 	 * Async create filter with custom request
 	 * 
-	 * @param custom request
+	 * @param custom
+	 *            request
 	 * @param callable
 	 *            with Block response
 	 */
@@ -1075,11 +1076,12 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
 	/**
 	 * Blocking create new filter with custom request
 	 * 
-	 * @param custom request
+	 * @param custom
+	 *            request
 	 * @return response for filter id
 	 */
 	public TetherjResponse<BigInteger> newFilter(FilterLogRequest request) {
@@ -1095,7 +1097,7 @@ public class EthereumService {
 	/**
 	 * Future create new filter
 	 * 
-	 * @return future to get response for filter id 
+	 * @return future to get response for filter id
 	 */
 	public Future<TetherjResponse<BigInteger>> newFilterFuture() {
 		return performFutureRpcAction(new RpcAction<BigInteger>() {
@@ -1106,12 +1108,13 @@ public class EthereumService {
 			}
 		});
 	}
-	
+
 	/**
 	 * Future create new filter with custom request.
 	 * 
-	 * @param custom request
-	 * @return future to get response for filter id 
+	 * @param custom
+	 *            request
+	 * @return future to get response for filter id
 	 */
 	public Future<TetherjResponse<BigInteger>> newFilterFuture(FilterLogRequest request) {
 		return performFutureRpcAction(new RpcAction<BigInteger>() {
@@ -1119,6 +1122,53 @@ public class EthereumService {
 			@Override
 			public BigInteger call() {
 				return CryptoUtil.hexToBigInteger(rpc.newFilter(request));
+			}
+		});
+	}
+	
+	/**
+	 * Async create pending transaction filter
+	 * 
+	 * @param callable
+	 *            with Block response
+	 */
+	public void newPendingTransactionFilter(TetherjHandle<BigInteger> callable) {
+		performAsyncRpcAction(new RpcAction<BigInteger>() {
+
+			@Override
+			public BigInteger call() {
+				return CryptoUtil.hexToBigInteger(rpc.newPendingTransactionFilter());
+			}
+
+		}, callable);
+	}
+
+
+	/**
+	 * Blocking create new pending transaction filter
+	 * 
+	 */
+	public TetherjResponse<BigInteger> newPendingTransactionFilter() {
+		return performBlockingRpcAction(new RpcAction<BigInteger>() {
+
+			@Override
+			public BigInteger call() {
+				return CryptoUtil.hexToBigInteger(rpc.newPendingTransactionFilter());
+			}
+		});
+	}
+
+	/**
+	 * Future create new pending transaction filter
+	 * 
+	 * @return future to get response for filter id
+	 */
+	public Future<TetherjResponse<BigInteger>> newPendingTransactionFilterFuture() {
+		return performFutureRpcAction(new RpcAction<BigInteger>() {
+
+			@Override
+			public BigInteger call() {
+				return CryptoUtil.hexToBigInteger(rpc.newPendingTransactionFilter());
 			}
 		});
 	}
