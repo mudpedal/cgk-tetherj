@@ -89,7 +89,7 @@ public class DevTest {
 			byte[] encoded = txSigned.getSignedEncodedData();
 
 			System.out.println(CryptoUtil.byteToHex(encoded));
-			TetherjResponse<BigInteger> nonceResp = service.getAccountNonce(wallet.getAddress());
+			//TetherjResponse<BigInteger> nonceResp = service.getAccountNonce(wallet.getAddress());
 			TetherjResponse<String> txHashResponse = service.sendTransaction(wallet, tx);
 
 			String txHash = txHashResponse.getValue();

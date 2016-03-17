@@ -1,12 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cegeka</groupId>
 	<artifactId>tetherj</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<properties>
 		<project.scm.id>github</project.scm.id>
 		<scm.url>scm:git:https://github.com/cegeka/tether</scm.url>
-	</properties>	
+	</properties>
 	<distributionManagement>
 		<snapshotRepository>
 			<id>cgk-nexus-blockchain</id>
@@ -29,9 +30,9 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-		            <artifactId>maven-release-plugin</artifactId>
-		            <version>2.5.3</version>
-		        </plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -59,6 +60,12 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.6</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

@@ -4,7 +4,6 @@ import java.math.BigInteger;
 
 import com.cegeka.tetherj.pojo.Block;
 import com.cegeka.tetherj.pojo.CompileOutput;
-import com.cegeka.tetherj.pojo.FilterLogObject;
 import com.cegeka.tetherj.pojo.FilterLogRequest;
 import com.cegeka.tetherj.pojo.Transaction;
 import com.cegeka.tetherj.pojo.TransactionCall;
