@@ -3,6 +3,7 @@ package com.cegeka.tetherj;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 import com.cegeka.tetherj.crypto.CryptoUtil;
 import com.cegeka.tetherj.pojo.Block;
@@ -26,7 +27,7 @@ public class EthRpcClient {
 	 * Ethereum rpc Interface
 	 */
 	private EthRpcInterface rpc;
-	public final static String defaultHostname = System.getProperty("geth.address");
+	public final static String defaultHostname = Optional.ofNullable(System.getProperty("geth.address")).orElse("127.0.0.1");
 	public final static int defaultPort = 8545;
 
 	public EthRpcClient() {

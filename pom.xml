@@ -6,7 +6,6 @@
 	<properties>
 		<project.scm.id>github</project.scm.id>
 		<scm.url>scm:git:https://github.com/cegeka/tether</scm.url>
-		<geth.address>127.0.0.1</geth.address>
 	</properties>	
 	<distributionManagement>
 		<snapshotRepository>
