@@ -4,14 +4,17 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -876,6 +879,38 @@ public class EthereumService {
 				return call.decodeOutput(rpc.callMethod(call));
 			}
 		});
+	}
+	
+	/**
+	 * Blocking execute batch calls
+	 * 
+	 * @param calls to make
+	 * @return List of responses, in the same order as calls
+	 */
+	public TetherjResponse<List<Object[]>> makeCalls(final List<EthCall> calls) {
+	
+		List<Future<TetherjResponse<Object[]>>> futures = new ArrayList<>();
+		List<Object[]> responses = new ArrayList<>();
+		for (EthCall call : calls) {
+			futures.add(makeCallFuture(call));
+		}
+		
+		for (Future<TetherjResponse<Object[]>> future : futures) {
+			TetherjResponse<Object[]> response;
+			try {
+				response = future.get(1500, TimeUnit.MILLISECONDS);
+			
+			if (response.getErrorType() != null) {
+				return new TetherjResponse<>(response);
+			}
+			
+			responses.add(response.getValue());
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
+				return new TetherjResponse<>(ErrorType.BLOCKCHAIN_CLIENT_BAD_CONNECTION, e);
+			}
+		}
+		
+		return new TetherjResponse<List<Object[]>>(null, null, responses);
 	}
 
 	/**

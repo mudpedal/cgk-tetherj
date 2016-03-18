@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -111,17 +112,24 @@ public class DevTest {
 						EthSmartContract contract = factory.getContract(response.getValue().getContractAddress());
 
 						try {
-							EthCall call = contract.callConstantMethod("greet");
-							TetherjResponse<Object[]> greetingResponse = service.makeCall(call);
-							Object[] greeting = greetingResponse.getValue();
-							System.out.println("Greeting is " + greeting[0].toString());
+							List<EthCall> calls = new ArrayList<>();
+							calls.add(contract.callConstantMethod("greet"));
+							calls.add(contract.callConstantMethod("greet"));
+							calls.add(contract.callConstantMethod("greet"));
+							calls.add(contract.callConstantMethod("greet"));
+							calls.add(contract.callConstantMethod("greet"));
+							calls.add(contract.callConstantMethod("greet"));
+							
+							TetherjResponse<List<Object[]>> greetingsResponse = service.makeCalls(calls);
+							List<Object[]> greetings = greetingsResponse.getValue();
+							System.out.println("Greetings are " + Arrays.deepToString(greetings.toArray()));
 
-							call = contract.dryCallModMethod(wallet.getStorage().getAddress(), "setGreeting",
+							EthCall call = contract.dryCallModMethod(wallet.getStorage().getAddress(), "setGreeting",
 									"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 									BigInteger.valueOf(69));
 
 							call.setGasLimit(EthTransaction.maximumGasLimit);
-							greetingResponse = service.makeCall(call);
+							TetherjResponse<Object[]> greetingResponse = service.makeCall(call);
 							Object[] newGreeting = greetingResponse.getValue();
 
 							if (newGreeting.length > 0) {
