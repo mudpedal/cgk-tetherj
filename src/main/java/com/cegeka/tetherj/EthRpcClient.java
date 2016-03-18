@@ -84,11 +84,23 @@ public class EthRpcClient {
 	 * 
 	 * @param address
 	 *            to get nonce of
-	 * @return nonce of address
+	 * @return nonce of address based on mined transactions
 	 * @throws JsonRpcClientException
 	 */
 	public BigInteger getAccountNonce(String address) throws JsonRpcClientException {
 		String txCount = rpc.eth_getTransactionCount(address, "latest");
+		return CryptoUtil.hexToBigInteger(txCount);
+	}
+	
+	/**
+	 * 
+	 * @param address
+	 *            to get nonce of
+	 * @return nonce of address based on mined transactions
+	 * @throws JsonRpcClientException
+	 */
+	public BigInteger getAccountNonceWithPending(String address) throws JsonRpcClientException {
+		String txCount = rpc.eth_getTransactionCount(address, "pending");
 		return CryptoUtil.hexToBigInteger(txCount);
 	}
 

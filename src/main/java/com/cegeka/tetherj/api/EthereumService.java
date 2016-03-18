@@ -466,6 +466,61 @@ public class EthereumService {
 			}
 		});
 	}
+	
+	/**
+	 * Async get account nonce of address (does not currently count pending
+	 * executions)
+	 * 
+	 * @param address
+	 *            to get account nonce of.
+	 * @param callable
+	 *            to execute with nonce response
+	 */
+	public void getAccountNonceWithPending(final String address, TetherjHandle<BigInteger> callable) {
+		performAsyncRpcAction(new RpcAction<BigInteger>() {
+
+			@Override
+			public BigInteger call() {
+				return rpc.getAccountNonceWithPending(address);
+			}
+
+		}, callable);
+	}
+
+	/**
+	 * Blocking get account nonce of address (does not currently count pending
+	 * executions)
+	 * 
+	 * @param address
+	 *            to get account nonce of.
+	 * @return nonce response
+	 */
+	public TetherjResponse<BigInteger> getAccountNonceWithPending(final String address) {
+		return performBlockingRpcAction(new RpcAction<BigInteger>() {
+
+			@Override
+			public BigInteger call() {
+				return rpc.getAccountNonceWithPending(address);
+			}
+		});
+	}
+
+	/**
+	 * Future get account nonce of address (does not currently count pending
+	 * executions)
+	 * 
+	 * @param address
+	 * @return future to get nonce response
+	 */
+	public Future<TetherjResponse<BigInteger>> getAccountNonceWithPendingFuture(final String address) {
+		return performFutureRpcAction(new RpcAction<BigInteger>() {
+
+			@Override
+			public BigInteger call() {
+				return rpc.getAccountNonceWithPending(address);
+			}
+		});
+	}
 
 	/**
 	 * Blocking send transaction. Generates nonce automatically (by rpc)
@@ -479,7 +534,7 @@ public class EthereumService {
 	 */
 	public TetherjResponse<String> sendTransaction(EthWallet from, EthTransaction transaction)
 			throws WalletLockedException {
-		TetherjResponse<BigInteger> nonceResponse = getAccountNonce(from.getAddress());
+		TetherjResponse<BigInteger> nonceResponse = getAccountNonceWithPending(from.getAddress());
 
 		if (nonceResponse.getErrorType() == null) {
 			return sendTransaction(from, transaction, nonceResponse.getValue());
@@ -556,7 +611,7 @@ public class EthereumService {
 	 */
 	public void sendTransaction(EthWallet from, EthTransaction transaction, TetherjHandle<String> callable) {
 		String address = from.getAddress();
-		getAccountNonce(address, new TetherjHandle<BigInteger>() {
+		getAccountNonceWithPending(address, new TetherjHandle<BigInteger>() {
 
 			@Override
 			public void call(TetherjResponse<BigInteger> response) {
@@ -612,7 +667,7 @@ public class EthereumService {
 	public TetherjResponse<EthSignedTransaction> signTransaction(EthTransaction transaction, EthWallet wallet)
 			throws WalletLockedException {
 		String from = wallet.getAddress();
-		TetherjResponse<BigInteger> nonceResponse = getAccountNonce(from);
+		TetherjResponse<BigInteger> nonceResponse = getAccountNonceWithPending(from);
 
 		if (nonceResponse.getErrorType() != null) {
 			return new TetherjResponse<EthSignedTransaction>(nonceResponse);

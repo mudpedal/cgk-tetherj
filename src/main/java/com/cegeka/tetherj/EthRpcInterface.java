@@ -32,7 +32,7 @@ public interface EthRpcInterface {
 
 	String eth_coinbase();
 
-	String eth_getTransactionCount(String address, String state);
+	String eth_getTransactionCount(String address, String block);
 
 	Block eth_getBlockByNumber(Object string, Boolean full);
 

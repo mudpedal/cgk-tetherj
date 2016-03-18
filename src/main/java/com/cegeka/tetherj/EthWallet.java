@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -12,8 +14,8 @@ import org.joda.time.format.DateTimeFormatter;
 import com.cegeka.tetherj.crypto.CryptoUtil;
 import com.cegeka.tetherj.crypto.WalletStoragePojoV3;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Wallet container.
@@ -27,6 +29,8 @@ public class EthWallet implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -4893684742909372607L;
+	
+	@Getter @Setter
 	WalletStoragePojoV3 storage;
 	private byte[] privateKey;
 
@@ -145,22 +149,6 @@ public class EthWallet implements Serializable {
 	public void lock() {
 		logger.debug("Locked wallet " + storage.toString());
 		storage = null;
-	}
-
-	/**
-	 * 
-	 * @return the complete storage v3
-	 */
-	public WalletStoragePojoV3 getStorage() {
-		return storage;
-	}
-	
-	/**
-	 * Set storage
-	 * @param storage
-	 */
-	public void setStorage(WalletStoragePojoV3 storage) {
-		this.storage = storage;
 	}
 
 	/**
