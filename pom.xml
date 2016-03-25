@@ -24,7 +24,7 @@
 		<url>${scm.url}</url>
 		<connection>${scm.url}</connection>
 		<developerConnection>${scm.url}</developerConnection>
-		<tag>tetherj-1.0.10</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<build>
 		<pluginManagement>
