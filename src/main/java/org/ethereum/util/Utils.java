@@ -117,6 +117,11 @@ public class Utils {
         return addr != null && addr.length == 20;
     }
 
+    public static boolean isValidAddress(String addr) {
+        return addr != null && addr.length() == 40;
+    }
+    
+    
     /**
      * @param addr length should be 20
      * @return short string represent 1f21c...
@@ -134,6 +139,18 @@ public class Utils {
         return sb.toString();
     }
 
+    /**
+     * @param addr address as encoded by Ethereum
+     * @return short string represent 1f21c...
+     */
+    public static String getAddressShortString(BigInteger ethereumAddress) {
+    	String address =  ethereumAddress.toString(16);
+    	if (!isValidAddress(address)) throw new Error("not an address");
+    	
+    	return "0x" + address;    	
+    }
+    
+    
     public static SecureRandom getRandom() {
         return random;
     }
