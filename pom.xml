@@ -49,8 +49,8 @@
 						<configuration>
 							<failOnWarning>false</failOnWarning>
 							<ignoredDependencies>
-				                <ignoredDependency>org.projectlombok:lombok</ignoredDependency>
-              				</ignoredDependencies>
+								<ignoredDependency>org.projectlombok:lombok</ignoredDependency>
+							</ignoredDependencies>
 						</configuration>
 					</execution>
 				</executions>
@@ -73,6 +73,31 @@
 						<goals>
 							<goal>deploy</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.17</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>6.17</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+					<failOnViolation>true</failOnViolation>
+					<configLocation>codestyle/codestyle.xml</configLocation>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<violationSeverity>warning</violationSeverity>
+				</configuration>
+				<executions>
+					<execution>
+						<id>checkstyle</id>
+						<phase>validate</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -145,7 +170,7 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.0</version>
 		</dependency>
-		<!-- avoiding one error during test execution, yet getting another one --> 
+		<!-- avoiding one error during test execution, yet getting another one -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
