@@ -157,6 +157,18 @@ public class EthSmartContractFactory implements Serializable {
 		return new EthSmartContract(this, contractAddress);
 	}
 
+	public HashMap<String, Function> getModFunctions() {
+		return modFunctions;
+	}
+
+	public HashMap<String, Function> getConstFunctions() {
+		return constFunctions;
+	}
+
+	public Function getConstructor() {
+		return constructor;
+	}
+
 	/**
 	 * Return a constant function handle for this contract
 	 * 
