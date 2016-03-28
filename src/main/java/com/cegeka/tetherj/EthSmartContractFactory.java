@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.ethereum.core.CallTransaction.Function;
 import org.ethereum.util.ByteUtil;
