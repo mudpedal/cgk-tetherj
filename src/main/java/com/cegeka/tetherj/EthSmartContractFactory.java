@@ -3,7 +3,9 @@ package com.cegeka.tetherj;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import org.ethereum.core.CallTransaction.Function;
 import org.ethereum.util.ByteUtil;
@@ -157,12 +159,12 @@ public class EthSmartContractFactory implements Serializable {
 		return new EthSmartContract(this, contractAddress);
 	}
 
-	public HashMap<String, Function> getModFunctions() {
-		return modFunctions;
+	public Collection<Function> getModFunctions() {
+		return modFunctions.values();
 	}
 
-	public HashMap<String, Function> getConstFunctions() {
-		return constFunctions;
+	public Collection<Function> getConstFunctions() {
+		return constFunctions.values();
 	}
 
 	public Function getConstructor() {
