@@ -174,6 +174,9 @@ public class EthSmartContractFactory implements Serializable {
 	}
 
 	public Function getConstructor() {
+		if (constructor == null) {
+			indexMethods();
+		}
 		return constructor;
 	}
 
