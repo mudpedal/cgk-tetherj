@@ -165,6 +165,11 @@ public class CallTransaction {
 		}
 
 		public abstract byte[] encodeList(List<Object> l);
+
+		@Override
+		public String toString() {
+			return elementType.toString() + "[]";
+		}
 	}
 
 	public static class StaticArrayType extends ArrayType {
@@ -309,6 +314,11 @@ public class CallTransaction {
 		public boolean isDynamicType() {
 			return true;
 		}
+
+		@Override
+		public String toString() {
+			return "byte[]";
+		}
 	}
 
 	public static class StringType extends BytesType {
@@ -331,6 +341,11 @@ public class CallTransaction {
 		@Override
 		public Object decode(byte[] encoded, int offset) {
 			return new String((byte[]) super.decode(encoded, offset), StandardCharsets.UTF_8);
+		}
+
+		@Override
+		public String toString() {
+			return "String";
 		}
 	}
 
@@ -361,6 +376,11 @@ public class CallTransaction {
 		public Object decode(byte[] encoded, int offset) {
 			return Arrays.copyOfRange(encoded, offset, getFixedSize());
 		}
+
+		@Override
+		public String toString() {
+			return "int";
+		}
 	}
 
 	public static class AddressType extends IntType {
@@ -384,6 +404,11 @@ public class CallTransaction {
 				}
 			}
 			return addr;
+		}
+
+		@Override
+		public String toString() {
+			return "String";
 		}
 	}
 
@@ -450,6 +475,11 @@ public class CallTransaction {
 			System.arraycopy(bytes, 0, ret, 32 - bytes.length, bytes.length);
 			return ret;
 		}
+
+		@Override
+		public String toString() {
+			return "BigInteger";
+		}
 	}
 
 	public static class BoolType extends IntType {
@@ -470,6 +500,11 @@ public class CallTransaction {
 		@Override
 		public Object decode(byte[] encoded, int offset) {
 			return Boolean.valueOf(((Number) super.decode(encoded, offset)).intValue() != 0);
+		}
+
+		@Override
+		public String toString() {
+			return "boolean";
 		}
 	}
 
