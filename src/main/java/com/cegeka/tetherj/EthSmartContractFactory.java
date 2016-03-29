@@ -31,7 +31,7 @@ public class EthSmartContractFactory implements Serializable {
 	private HashMap<String, Function> modFunctions;
 	private HashMap<String, Function> constFunctions;
 	private Function constructor;
-	
+
 	/**
 	 * 
 	 * @param contract
@@ -41,13 +41,13 @@ public class EthSmartContractFactory implements Serializable {
 		this.contract = contract;
 		indexMethods();
 	}
-	
+
 	/**
 	 * Simple constructor
 	 */
 	public EthSmartContractFactory() {
 	}
-	
+
 	/**
 	 * 
 	 * @return smart contract factory from json string of contract data
@@ -61,7 +61,7 @@ public class EthSmartContractFactory implements Serializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 
@@ -71,7 +71,7 @@ public class EthSmartContractFactory implements Serializable {
 	private void indexMethods() {
 		this.modFunctions = new HashMap<>();
 		this.constFunctions = new HashMap<>();
-		
+
 		ContractAbiMethod[] methods = contract.getInfo().getAbiDefinition();
 
 		try {
@@ -100,9 +100,10 @@ public class EthSmartContractFactory implements Serializable {
 	public ContractData getContract() {
 		return contract;
 	}
-	
+
 	/**
 	 * Set contract data
+	 * 
 	 * @param contract
 	 */
 	public void setContract(ContractData contract) {
@@ -159,10 +160,16 @@ public class EthSmartContractFactory implements Serializable {
 	}
 
 	public Collection<Function> getModFunctions() {
+		if (modFunctions == null) {
+			indexMethods();
+		}
 		return modFunctions.values();
 	}
 
 	public Collection<Function> getConstFunctions() {
+		if (constFunctions == null) {
+			indexMethods();
+		}
 		return constFunctions.values();
 	}
 
