@@ -18,7 +18,7 @@ import java.util.Set;
 public class ByteUtil {
 
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-    public static final byte[] ZERO_BYTE_ARRAY = new byte[]{0};
+    public static final byte[] ZERO_BYTE_ARRAY = new byte[] { 0 };
 
     /**
      * Creates a copy of bytes and appends b to the end of it
@@ -33,8 +33,10 @@ public class ByteUtil {
      * The regular {@link java.math.BigInteger#toByteArray()} method isn't quite what we often need:
      * it appends a leading zero to indicate that the number is positive and may need padding.
      *
-     * @param b the integer to format into a byte array
-     * @param numBytes the desired size of the resulting byte array
+     * @param b
+     *            the integer to format into a byte array
+     * @param numBytes
+     *            the desired size of the resulting byte array
      * @return numBytes byte long array.
      */
     public static byte[] bigIntegerToBytes(BigInteger b, int numBytes) {
@@ -49,14 +51,15 @@ public class ByteUtil {
     }
 
     /**
-     * Omitting sign indication byte.
-     * <br><br>
-     * Instead of {@link org.spongycastle.util.BigIntegers#asUnsignedByteArray(BigInteger)}
-     * <br>we use this custom method to avoid an empty array in case of BigInteger.ZERO
+     * Omitting sign indication byte. <br>
+     * <br>
+     * Instead of {@link org.spongycastle.util.BigIntegers#asUnsignedByteArray(BigInteger)} <br>
+     * we use this custom method to avoid an empty array in case of BigInteger.ZERO
      *
-     * @param value - any big integer number. A <code>null</code>-value will return <code>null</code>
+     * @param value
+     *            - any big integer number. A <code>null</code>-value will return <code>null</code>
      * @return A byte array without a leading zero byte if present in the signed encoding.
-     *      BigInteger.ZERO will return an array with length 1 and byte-value 0.
+     *         BigInteger.ZERO will return an array with length 1 and byte-value 0.
      */
     public static byte[] bigIntegerToBytes(BigInteger value) {
         if (value == null)
@@ -73,11 +76,13 @@ public class ByteUtil {
     }
 
     /**
-     * Returns the amount of nibbles that match each other from 0 ...
-     * amount will never be larger than smallest input
+     * Returns the amount of nibbles that match each other from 0 ... amount will never be larger
+     * than smallest input
      *
-     * @param a - first input
-     * @param b - second input
+     * @param a
+     *            - first input
+     * @param b
+     *            - second input
      * @return Number of bytes that match
      */
     public static int matchingNibbleLength(byte[] a, byte[] b) {
@@ -94,7 +99,8 @@ public class ByteUtil {
     /**
      * Converts a long value into a byte array.
      *
-     * @param val - long value to convert
+     * @param val
+     *            - long value to convert
      * @return <code>byte[]</code> of length 8, representing the long value
      */
     public static byte[] longToBytes(long val) {
@@ -104,7 +110,8 @@ public class ByteUtil {
     /**
      * Converts a long value into a byte array.
      *
-     * @param val - long value to convert
+     * @param val
+     *            - long value to convert
      * @return decimal value with leading byte that are zeroes striped
      */
     public static byte[] longToBytesNoLeadZeroes(long val) {
@@ -115,14 +122,15 @@ public class ByteUtil {
         return stripLeadingZeroes(data);
     }
 
-    public static byte[] intToBytes(int val){
+    public static byte[] intToBytes(int val) {
 
-        if (val == 0) return EMPTY_BYTE_ARRAY;
+        if (val == 0)
+            return EMPTY_BYTE_ARRAY;
 
         int lenght = 0;
 
         int tmpVal = val;
-        while (tmpVal != 0){
+        while (tmpVal != 0) {
             tmpVal = tmpVal >> 8;
             ++lenght;
         }
@@ -130,9 +138,9 @@ public class ByteUtil {
         byte[] result = new byte[lenght];
 
         int index = result.length - 1;
-        while(val != 0){
+        while (val != 0) {
 
-            result[index] = (byte)(val & 0xFF);
+            result[index] = (byte) (val & 0xFF);
             val = val >> 8;
             index -= 1;
         }
@@ -140,15 +148,14 @@ public class ByteUtil {
         return result;
     }
 
-
     /**
      * Convert a byte-array into a hex String.<br>
-     * Works similar to {@link Hex#toHexString}
-     * but allows for <code>null</code>
+     * Works similar to {@link Hex#toHexString} but allows for <code>null</code>
      *
-     * @param data - byte-array to convert to a hex-string
+     * @param data
+     *            - byte-array to convert to a hex-string
      * @return hex representation of the data.<br>
-     *      Returns an empty String if the input is <code>null</code>
+     *         Returns an empty String if the input is <code>null</code>
      *
      * @see Hex#toHexString
      */
@@ -159,16 +166,14 @@ public class ByteUtil {
     /**
      * Calculate packet length
      *
-     * @param msg byte[]
+     * @param msg
+     *            byte[]
      * @return byte-array with 4 elements
      */
     public static byte[] calcPacketLength(byte[] msg) {
         int msgLen = msg.length;
-        return new byte[]{
-                (byte) ((msgLen >> 24) & 0xFF),
-                (byte) ((msgLen >> 16) & 0xFF),
-                (byte) ((msgLen >> 8) & 0xFF),
-                (byte) ((msgLen) & 0xFF)};
+        return new byte[] { (byte) ((msgLen >> 24) & 0xFF), (byte) ((msgLen >> 16) & 0xFF),
+                (byte) ((msgLen >> 8) & 0xFF), (byte) ((msgLen) & 0xFF) };
     }
 
     /**
@@ -176,7 +181,8 @@ public class ByteUtil {
      *
      * Limited to Integer.MAX_VALUE: 2^32-1 (4 bytes)
      *
-     * @param b array contains the values
+     * @param b
+     *            array contains the values
      * @return unsigned positive int value.
      */
     public static int byteArrayToInt(byte[] b) {
@@ -190,7 +196,8 @@ public class ByteUtil {
      *
      * Limited to Integer.MAX_VALUE: 2^32-1 (4 bytes)
      *
-     * @param b array contains the values
+     * @param b
+     *            array contains the values
      * @return unsigned positive long value.
      */
     public static long byteArrayToLong(byte[] b) {
@@ -199,14 +206,13 @@ public class ByteUtil {
         return new BigInteger(1, b).longValue();
     }
 
-
     /**
      * Turn nibbles to a pretty looking output string
      *
      * Example. [ 1, 2, 3, 4, 5 ] becomes '\x11\x23\x45'
      *
-     * @param nibbles - getting byte of data [ 04 ] and turning
-     *                  it to a '\x04' representation
+     * @param nibbles
+     *            - getting byte of data [ 04 ] and turning it to a '\x04' representation
      * @return pretty string of nibbles
      */
     public static String nibblesToPrettyString(byte[] nibbles) {
@@ -220,15 +226,16 @@ public class ByteUtil {
 
     public static String oneByteToHexString(byte value) {
         String retVal = Integer.toString(value & 0xFF, 16);
-        if (retVal.length() == 1) retVal = "0" + retVal;
+        if (retVal.length() == 1)
+            retVal = "0" + retVal;
         return retVal;
     }
 
     /**
-     * Calculate the number of bytes need
-     * to encode the number
+     * Calculate the number of bytes need to encode the number
      *
-     * @param val - number
+     * @param val
+     *            - number
      * @return number of min bytes used to encode the number
      */
     public static int numBytes(String val) {
@@ -240,12 +247,14 @@ public class ByteUtil {
             bInt = bInt.shiftRight(8);
             ++bytes;
         }
-        if (bytes == 0) ++bytes;
+        if (bytes == 0)
+            ++bytes;
         return bytes;
     }
 
     /**
-     * @param arg - not more that 32 bits
+     * @param arg
+     *            - not more that 32 bits
      * @return - bytes of the value pad with complete to 32 zeroes
      */
     public static byte[] encodeValFor32Bits(Object arg) {
@@ -255,12 +264,11 @@ public class ByteUtil {
         // check if the string is numeric
         if (arg.toString().trim().matches("-?\\d+(\\.\\d+)?"))
             data = new BigInteger(arg.toString().trim()).toByteArray();
-            // check if it's hex number
+        // check if it's hex number
         else if (arg.toString().trim().matches("0[xX][0-9a-fA-F]+"))
             data = new BigInteger(arg.toString().trim().substring(2), 16).toByteArray();
         else
             data = arg.toString().trim().getBytes();
-
 
         if (data.length > 32)
             throw new RuntimeException("values can't be more than 32 byte");
@@ -278,7 +286,8 @@ public class ByteUtil {
     /**
      * encode the values and concatenate together
      *
-     * @param args Object
+     * @param args
+     *            Object
      * @return byte[]
      */
     public static byte[] encodeDataList(Object... args) {
@@ -327,7 +336,8 @@ public class ByteUtil {
     /**
      * increment byte array as a number until max is reached
      *
-     * @param bytes byte[]
+     * @param bytes
+     *            byte[]
      * @return boolean
      */
     public static boolean increment(byte[] bytes) {
@@ -343,11 +353,11 @@ public class ByteUtil {
     }
 
     /**
-     * Utility function to copy a byte array into a new byte array with given size.
-     * If the src length is smaller than the given size, the result will be left-padded
-     * with zeros.
+     * Utility function to copy a byte array into a new byte array with given size. If the src
+     * length is smaller than the given size, the result will be left-padded with zeros.
      *
-     * @param value - a BigInteger with a maximum value of 2^256-1
+     * @param value
+     *            - a BigInteger with a maximum value of 2^256-1
      * @return Byte array of given size with a copy of the <code>src</code>
      */
     public static byte[] copyToArray(BigInteger value) {
@@ -356,7 +366,6 @@ public class ByteUtil {
         System.arraycopy(src, 0, dest, dest.length - src.length, src.length);
         return dest;
     }
-
 
     public static ByteArrayWrapper wrap(byte[] data) {
         return new ByteArrayWrapper(data);
@@ -392,52 +401,50 @@ public class ByteUtil {
         return Math.min(1, (dataByte & (1 << (posBit))));
     }
 
-
     /**
-     * @param arrays - arrays to merge
+     * @param arrays
+     *            - arrays to merge
      * @return - merged array
      */
-    public static byte[] merge(byte[]... arrays)
-    {
+    public static byte[] merge(byte[]... arrays) {
         int count = 0;
-        for (byte[] array: arrays)
-        {
+        for (byte[] array : arrays) {
             count += array.length;
         }
 
         // Create new array and copy all array contents
         byte[] mergedArray = new byte[count];
         int start = 0;
-        for (byte[] array: arrays) {
+        for (byte[] array : arrays) {
             System.arraycopy(array, 0, mergedArray, start, array.length);
             start += array.length;
         }
         return mergedArray;
     }
 
-    public static boolean isNullOrZeroArray(byte[] array){
+    public static boolean isNullOrZeroArray(byte[] array) {
         return (array == null) || (array.length == 0);
     }
 
-    public static boolean isSingleZero(byte[] array){
+    public static boolean isSingleZero(byte[] array) {
         return (array.length == 1 && array[0] == 0);
     }
 
-
-    public static Set<byte[]> difference(Set<byte[]> setA, Set<byte[]> setB){
+    public static Set<byte[]> difference(Set<byte[]> setA, Set<byte[]> setB) {
 
         Set<byte[]> result = new HashSet<>();
 
-        for (byte[] elementA : setA){
+        for (byte[] elementA : setA) {
             boolean found = false;
-            for (byte[] elementB : setB){
+            for (byte[] elementB : setB) {
 
-                if (Arrays.equals(elementA, elementB)){
+                if (Arrays.equals(elementA, elementB)) {
                     found = true;
                     break;
                 }
             }
-            if (!found) result.add(elementA);
+            if (!found)
+                result.add(elementA);
         }
 
         return result;

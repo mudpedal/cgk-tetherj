@@ -13,13 +13,13 @@ import javax.swing.*;
 public class Utils {
 
     private static SecureRandom random = new SecureRandom();
-    
+
     public static ImageIcon getImageIcon(String resource) {
         URL imageURL = ClassLoader.getSystemResource(resource);
         ImageIcon image = new ImageIcon(imageURL);
         return image;
     }
-    
+
     public static SecureRandom getRandom() {
         return random;
     }
@@ -30,17 +30,19 @@ public class Utils {
         String version = System.getProperty("java.version");
 
         // on android this property equals to 0
-        if (version.equals("0")) return 0;
+        if (version.equals("0"))
+            return 0;
 
         int pos = 0, count = 0;
         for (; pos < version.length() && count < 2; pos++) {
-            if (version.charAt(pos) == '.') count++;
+            if (version.charAt(pos) == '.')
+                count++;
         }
         return Double.parseDouble(version.substring(0, pos - 1));
     }
-    
+
     @SuppressWarnings("unchecked")
-	public static <T> T[] mergeArrays(T[] ... arr) {
+    public static <T> T[] mergeArrays(T[]... arr) {
         int size = 0;
         for (T[] ts : arr) {
             size += ts.length;
@@ -55,11 +57,13 @@ public class Utils {
     }
 
     public static String align(String s, char fillChar, int targetLen, boolean alignRight) {
-        if (targetLen <= s.length()) return s;
+        if (targetLen <= s.length())
+            return s;
         String alignString = repeat("" + fillChar, targetLen - s.length());
         return alignRight ? alignString + s : s + alignString;
 
     }
+
     public static String repeat(String s, int n) {
         if (s.length() == 1) {
             byte[] bb = new byte[n];
@@ -67,7 +71,8 @@ public class Utils {
             return new String(bb);
         } else {
             StringBuilder ret = new StringBuilder();
-            for (int i = 0; i < n; i++) ret.append(s);
+            for (int i = 0; i < n; i++)
+                ret.append(s);
             return ret.toString();
         }
     }

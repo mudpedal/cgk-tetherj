@@ -25,153 +25,154 @@ import lombok.Setter;
  */
 public class EthWallet implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4893684742909372607L;
-	
-	@Getter @Setter
-	WalletStoragePojoV3 storage;
-	private byte[] privateKey;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4893684742909372607L;
 
-	private static final Logger logger = LogManager.getLogger(EthWallet.class);
+    @Getter
+    @Setter
+    WalletStoragePojoV3 storage;
+    private byte[] privateKey;
 
-	public EthWallet() {
-		privateKey = null;
-	}
-	
-	/**
-	 * Create wallet from storage pojo
-	 * 
-	 * @param v3
-	 *            storage pojo
-	 */
-	public EthWallet(WalletStoragePojoV3 storage) {
-		privateKey = null;
-		this.storage = storage;
-	}
+    private static final Logger logger = LogManager.getLogger(EthWallet.class);
 
-	/**
-	 * Generate a random key pair wallet
-	 * 
-	 * @param passphrase
-	 *            to encrypt private key with
-	 * @return the new wallet
-	 */
-	public static EthWallet createWallet(String passphrase) {
-		EthWallet wallet = new EthWallet(WalletStoragePojoV3.createWallet(passphrase));
-		logger.info("Generated wallet " + wallet.getStorage().toString());
-		return wallet;
-	}
+    public EthWallet() {
+        privateKey = null;
+    }
 
-	/**
-	 * Load wallet from v3 storage json
-	 * 
-	 * @param json
-	 *            in v3 format
-	 * @return the wallet
-	 */
-	public static EthWallet loadWalletFromString(String json) {
-		EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromString(json));
-		logger.debug("Load wallet from string " + wallet.getStorage().toString());
-		return wallet;
-	}
+    /**
+     * Create wallet from storage pojo
+     * 
+     * @param v3
+     *            storage pojo
+     */
+    public EthWallet(WalletStoragePojoV3 storage) {
+        privateKey = null;
+        this.storage = storage;
+    }
 
-	/**
-	 * Load wallet from file containing v3 json
-	 * 
-	 * @param file
-	 *            to load from
-	 * @return the wallet
-	 * @throws IOException
-	 */
-	public static EthWallet loadWalletFromFile(File file) throws IOException {
-		EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromFile(file));
-		logger.debug("Load wallet from string " + wallet.getStorage().toString());
-		return wallet;
-	}
+    /**
+     * Generate a random key pair wallet
+     * 
+     * @param passphrase
+     *            to encrypt private key with
+     * @return the new wallet
+     */
+    public static EthWallet createWallet(String passphrase) {
+        EthWallet wallet = new EthWallet(WalletStoragePojoV3.createWallet(passphrase));
+        logger.info("Generated wallet " + wallet.getStorage().toString());
+        return wallet;
+    }
 
-	/**
-	 * Write v3 storage to disk
-	 * 
-	 * @param file
-	 *            to write to
-	 * @throws IOException
-	 */
-	public void writeToFile(File file) throws IOException {
-		logger.debug("Write wallet to file " + file.getAbsolutePath() + " " + storage.toString());
-		storage.writeToFile(file);
-	}
+    /**
+     * Load wallet from v3 storage json
+     * 
+     * @param json
+     *            in v3 format
+     * @return the wallet
+     */
+    public static EthWallet loadWalletFromString(String json) {
+        EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromString(json));
+        logger.debug("Load wallet from string " + wallet.getStorage().toString());
+        return wallet;
+    }
 
-	/**
-	 * Is private key available in memory
-	 * 
-	 * @return true if private key is decrypted
-	 */
-	public boolean isUnlocked() {
-		return privateKey != null;
-	}
+    /**
+     * Load wallet from file containing v3 json
+     * 
+     * @param file
+     *            to load from
+     * @return the wallet
+     * @throws IOException
+     */
+    public static EthWallet loadWalletFromFile(File file) throws IOException {
+        EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromFile(file));
+        logger.debug("Load wallet from string " + wallet.getStorage().toString());
+        return wallet;
+    }
 
-	/**
-	 * Decrypt private key and store it in memory
-	 * 
-	 * @param passphrase
-	 *            to decrypt
-	 * @return true if succeeded
-	 */
-	public boolean unlock(String passphrase) {
-		privateKey = storage.getPrivateKey(passphrase);
-		if (privateKey == null) {
-			logger.debug("Failed to unlock wallet " + storage.toString());
-			return false;
-		}
+    /**
+     * Write v3 storage to disk
+     * 
+     * @param file
+     *            to write to
+     * @throws IOException
+     */
+    public void writeToFile(File file) throws IOException {
+        logger.debug("Write wallet to file " + file.getAbsolutePath() + " " + storage.toString());
+        storage.writeToFile(file);
+    }
 
-		logger.debug("Unlocked wallet " + storage.toString());
-		return true;
-	}
+    /**
+     * Is private key available in memory
+     * 
+     * @return true if private key is decrypted
+     */
+    public boolean isUnlocked() {
+        return privateKey != null;
+    }
 
-	/**
-	 * Works if unlocked, otherwise returns null
-	 * 
-	 * @return null if locked, hex private key otherwise
-	 */
-	public String getPrivateKey() {
-		if (privateKey != null) {
-			return CryptoUtil.byteToHex(privateKey);
-		}
+    /**
+     * Decrypt private key and store it in memory
+     * 
+     * @param passphrase
+     *            to decrypt
+     * @return true if succeeded
+     */
+    public boolean unlock(String passphrase) {
+        privateKey = storage.getPrivateKey(passphrase);
+        if (privateKey == null) {
+            logger.debug("Failed to unlock wallet " + storage.toString());
+            return false;
+        }
 
-		return null;
-	}
+        logger.debug("Unlocked wallet " + storage.toString());
+        return true;
+    }
 
-	/**
-	 * delete private key from memory
-	 */
-	public void lock() {
-		logger.debug("Locked wallet " + storage.toString());
-		storage = null;
-	}
+    /**
+     * Works if unlocked, otherwise returns null
+     * 
+     * @return null if locked, hex private key otherwise
+     */
+    public String getPrivateKey() {
+        if (privateKey != null) {
+            return CryptoUtil.byteToHex(privateKey);
+        }
 
-	/**
-	 * @return wallet address
-	 */
-	public String getAddress() {
-		if (storage != null) {
-			return storage.getAddress();
-		}
+        return null;
+    }
 
-		return null;
-	}
+    /**
+     * delete private key from memory
+     */
+    public void lock() {
+        logger.debug("Locked wallet " + storage.toString());
+        storage = null;
+    }
 
-	/**
-	 * Generate ethereum client standard filename (uses now date)
-	 * 
-	 * @return file name
-	 */
-	public String generateStandardFilename() {
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-DD'T'HH-mm-ss'.'SS");
-		DateTime now = DateTime.now(DateTimeZone.UTC);
+    /**
+     * @return wallet address
+     */
+    public String getAddress() {
+        if (storage != null) {
+            return storage.getAddress();
+        }
 
-		String filename = "UTC--" + now.toString(fmt) + "--" + storage.getAddress();
-		return filename;
-	}
+        return null;
+    }
+
+    /**
+     * Generate ethereum client standard filename (uses now date)
+     * 
+     * @return file name
+     */
+    public String generateStandardFilename() {
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-DD'T'HH-mm-ss'.'SS");
+        DateTime now = DateTime.now(DateTimeZone.UTC);
+
+        String filename = "UTC--" + now.toString(fmt) + "--" + storage.getAddress();
+        return filename;
+    }
 }

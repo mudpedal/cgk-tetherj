@@ -9,7 +9,8 @@ public class TimeUtils {
     /**
      * Converts minutes to millis
      *
-     * @param minutes time in minutes
+     * @param minutes
+     *            time in minutes
      * @return corresponding millis value
      */
     public static long minutesToMillis(long minutes) {
@@ -19,7 +20,8 @@ public class TimeUtils {
     /**
      * Converts seconds to millis
      *
-     * @param seconds time in seconds
+     * @param seconds
+     *            time in seconds
      * @return corresponding millis value
      */
     public static long secondsToMillis(long seconds) {
@@ -29,7 +31,8 @@ public class TimeUtils {
     /**
      * Converts millis to minutes
      *
-     * @param millis time in millis
+     * @param millis
+     *            time in millis
      * @return time in minutes
      */
     public static long millisToMinutes(long millis) {
@@ -39,7 +42,8 @@ public class TimeUtils {
     /**
      * Returns timestamp in the future after some millis passed from now
      *
-     * @param millis millis count
+     * @param millis
+     *            millis count
      * @return future timestamp
      */
     public static long timeAfterMillis(long millis) {

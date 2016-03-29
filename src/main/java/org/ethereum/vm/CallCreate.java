@@ -11,7 +11,6 @@ public class CallCreate {
     final byte[] gasLimit;
     final byte[] value;
 
-
     public CallCreate(byte[] data, byte[] destination, byte[] gasLimit, byte[] value) {
         this.data = data;
         this.destination = destination;
