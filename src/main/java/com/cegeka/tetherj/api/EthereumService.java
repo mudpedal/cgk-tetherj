@@ -81,7 +81,7 @@ public class EthereumService {
 	 * Creates executor automatically
 	 */
 	public EthereumService() {
-		this(EthereumService.defaultExecutorThreads, EthRpcClient.defaultHostname, EthRpcClient.defaultPort);
+		this(EthereumService.defaultExecutorThreads, EthRpcClient.DEFAULT_HOSTNAME, EthRpcClient.DEFAULT_PORT);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class EthereumService {
 	 *            to spawn, 0 to disable async support
 	 */
 	public EthereumService(int executorThreads) {
-		this(executorThreads, EthRpcClient.defaultHostname, EthRpcClient.defaultPort);
+		this(executorThreads, EthRpcClient.DEFAULT_HOSTNAME, EthRpcClient.DEFAULT_PORT);
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class EthereumService {
 	 *            disable async support
 	 */
 	public EthereumService(ScheduledExecutorService executor) {
-		this(executor, EthRpcClient.defaultHostname, EthRpcClient.defaultPort);
+		this(executor, EthRpcClient.DEFAULT_HOSTNAME, EthRpcClient.DEFAULT_PORT);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class EthereumService {
 	 *            ethereum client hostname
 	 */
 	public EthereumService(ScheduledExecutorService executor, String rpcHostname) {
-		this(executor, rpcHostname, EthRpcClient.defaultPort);
+		this(executor, rpcHostname, EthRpcClient.DEFAULT_PORT);
 	}
 
 	/**
