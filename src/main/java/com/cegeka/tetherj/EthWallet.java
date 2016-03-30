@@ -25,9 +25,6 @@ import lombok.Setter;
  */
 public class EthWallet implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -4893684742909372607L;
 
     @Getter

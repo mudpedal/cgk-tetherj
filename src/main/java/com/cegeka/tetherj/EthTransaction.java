@@ -9,13 +9,13 @@ import com.cegeka.tetherj.api.WalletLockedException;
 import com.cegeka.tetherj.crypto.CryptoUtil;
 
 /**
- * 
- * @author Andrei Grigoriu Container for data for a future transaction.
+ * Container for data for a future transaction.
+ * @author Andrei Grigoriu
  *
  */
 public class EthTransaction {
-    public static final BigInteger defaultGasPrice = BigInteger.valueOf(50000000000L);
-    public static final BigInteger defaultGasLimit = BigInteger.valueOf(90000L);
+    public static final BigInteger DEFAULT_GAS_PRICE = BigInteger.valueOf(50000000000L);
+    public static final BigInteger DEFAULT_GAS_LIMIT = BigInteger.valueOf(90000L);
 
     /* may change in future ethereum updates */
     public static final BigInteger maximumGasLimit = BigInteger.valueOf(3141592L);
@@ -27,8 +27,8 @@ public class EthTransaction {
     }
 
     String to;
-    BigInteger gasPrice = defaultGasPrice;
-    BigInteger gasLimit = defaultGasLimit;
+    BigInteger gasPrice = DEFAULT_GAS_PRICE;
+    BigInteger gasLimit = DEFAULT_GAS_LIMIT;
     byte[] data = null;
     BigInteger weiValue;
 
@@ -73,7 +73,7 @@ public class EthTransaction {
     }
 
     public static BigInteger getDefaultgasprice() {
-        return defaultGasPrice;
+        return DEFAULT_GAS_PRICE;
     }
 
     public static BigInteger getMaximumGasLimit() {
@@ -81,11 +81,11 @@ public class EthTransaction {
     }
 
     public static BigInteger getDefaultgaslimit() {
-        return defaultGasLimit;
+        return DEFAULT_GAS_LIMIT;
     }
 
     /**
-     * Default empty constructor
+     * Noarg constructor.
      */
     public EthTransaction() {
     }
@@ -132,7 +132,7 @@ public class EthTransaction {
      * @param nonce
      *            to sign with
      * @return encoded transaction data
-     * @throws WalletLockedException
+     * @throws WalletLockedException If the wallet is locked.
      */
     public EthSignedTransaction signWithWallet(EthWallet wallet, BigInteger nonce)
             throws WalletLockedException {
@@ -164,7 +164,7 @@ public class EthTransaction {
      * @param passphrase
      *            to unlock wallet with in case its locked
      * @return encoded transaction data
-     * @throws WalletLockedException
+     * @throws WalletLockedException if the wallet is locked.
      */
     public EthSignedTransaction signWithWallet(EthWallet wallet, BigInteger nonce,
             String passphrase) throws WalletLockedException {

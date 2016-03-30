@@ -23,11 +23,12 @@ public class EthSmartContract {
     private static final Logger logger = LogManager.getLogger(EthSmartContract.class);
 
     /**
-     *
+     * Construct from factory.
+     * 
      * @param factory
-     *            to use for method calling
+     *            Factory to use for method calling.
      * @param contractAddress
-     *            from chain
+     *            Address of the contract.
      */
     public EthSmartContract(EthSmartContractFactory factory, String contractAddress) {
         this.factory = factory;
@@ -35,13 +36,13 @@ public class EthSmartContract {
     }
 
     /**
-     * Return a call that will call a constant method on this contract
+     * Return a call that will call a constant method on this contract.
      * 
      * @param method
-     *            to call
+     *            Name of the method to call.
      * @param args
-     *            contract arguments
-     * @return the call to submit to your service
+     *            Method arguments, variadic.
+     * @return Returns the call to submit to your service.
      * @throws NoSuchContractMethod
      *             (if no such constant method exists)
      */
@@ -69,12 +70,14 @@ public class EthSmartContract {
     }
 
     /**
-     * Return a call that will dry call a modifier method on this contract
+     * Return a call that will dry call a modifier method on this contract.
      * 
+     * @param from
+     *            Address to dry call as.
      * @param method
-     *            to call
+     *            Name of method to dry call.
      * @param args
-     *            contract arguments
+     *            Method arguments, variadic.
      * @return the call to submit to your service
      * @throws NoSuchContractMethod
      *             (if no such modifier method exists)
@@ -106,9 +109,9 @@ public class EthSmartContract {
      * Returns a transaction that will call a modifier method on the contract.
      * 
      * @param method
-     *            modifier method to call
+     *            Name of modifier method to call.
      * @param args
-     *            contract arguments
+     *            Method arguments, variadic.
      * @return transaction
      * @throws NoSuchContractMethod
      *             (if no such modifier method exists)
@@ -122,7 +125,7 @@ public class EthSmartContract {
         }
 
         EthTransaction tx = new EthTransaction(this.contractAddress, BigInteger.ZERO,
-                EthTransaction.defaultGasPrice, EthTransaction.defaultGasLimit,
+                EthTransaction.DEFAULT_GAS_PRICE, EthTransaction.DEFAULT_GAS_LIMIT,
                 methodFunction.encode(args));
         logger.debug(
                 "Generated function call tx(contractAddress: " + this.contractAddress + ", method: "
