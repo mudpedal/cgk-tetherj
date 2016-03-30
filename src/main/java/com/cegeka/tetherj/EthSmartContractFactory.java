@@ -22,7 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class EthSmartContractFactory implements Serializable {
-
+    /**
+     * .
+     */
     private static final long serialVersionUID = 8576482271936503680L;
     private ContractData contract;
 
@@ -52,21 +54,14 @@ public class EthSmartContractFactory implements Serializable {
      * 
      * @return smart contract factory.
      */
-    public static EthSmartContractFactory createFactoryFromContractDataString(String json) {
+    public static EthSmartContractFactory createFactoryFromContractDataString(String json)
+            throws IOException, JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            return new EthSmartContractFactory(mapper.readValue(json, ContractData.class));
-        } catch (JsonProcessingException exception) {
-            exception.printStackTrace();
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-
-        return null;
+        return new EthSmartContractFactory(mapper.readValue(json, ContractData.class));
     }
 
     /**
-     * Must be called once per instance to index all contract data.
+     * called once to index functions by type.
      */
     private void indexMethods() {
         this.modFunctions = new HashMap<>();
@@ -96,7 +91,7 @@ public class EthSmartContractFactory implements Serializable {
     /**
      * @return Returns contract data.
      */
-    public ContractData getContractData() {
+    public ContractData getContract() {
         return contract;
     }
 
