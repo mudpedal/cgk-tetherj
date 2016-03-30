@@ -35,14 +35,14 @@ import com.googlecode.jsonrpc4j.HttpException;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
 
 /**
- * Implementation for an Ethereum service api
+ * Implementation for an Ethereum service api.
  * 
  * @author Andrei Grigoriu
  *
  */
 public class EthereumService {
 
-    public final static int defaultExecutorThreads = 2;
+    public final static int DEFAULT_EXECUTOR_THREADS = 2;
 
     /**
      * A generic wrapper for a rpc call.
@@ -65,12 +65,12 @@ public class EthereumService {
     /**
      * Interval between receipt check polls
      */
-    public static final int receiptCheckIntervalMillis = 1000;
+    public static final int RECEIPT_CHECK_INTERVAL_MILLIS = 1000;
 
     /**
      * Max receipt checks to do
      */
-    public static final int receiptMaxChecks = 60 * 1000 * 10 / receiptCheckIntervalMillis;
+    public static final int RECEIPT_MAX_CHECKS = 60 * 1000 * 10 / RECEIPT_CHECK_INTERVAL_MILLIS;
 
     private final EthRpcClient rpc;
     private final ScheduledExecutorService executor;
@@ -81,7 +81,7 @@ public class EthereumService {
      * Creates executor automatically
      */
     public EthereumService() {
-        this(EthereumService.defaultExecutorThreads, EthRpcClient.DEFAULT_HOSTNAME,
+        this(EthereumService.DEFAULT_EXECUTOR_THREADS, EthRpcClient.DEFAULT_HOSTNAME,
                 EthRpcClient.DEFAULT_PORT);
     }
 
@@ -767,8 +767,8 @@ public class EthereumService {
      */
     public void listenForTxReceipt(final String txHash, int secondsTimeout,
             final TetherjHandle<TransactionReceipt> callable) {
-        int checks = secondsTimeout * 1000 / receiptCheckIntervalMillis;
-        listenForTxReceipt(txHash, receiptCheckIntervalMillis, checks, callable);
+        int checks = secondsTimeout * 1000 / RECEIPT_CHECK_INTERVAL_MILLIS;
+        listenForTxReceipt(txHash, RECEIPT_CHECK_INTERVAL_MILLIS, checks, callable);
     }
 
     /**
@@ -781,7 +781,7 @@ public class EthereumService {
      */
     public void listenForTxReceipt(final String txHash,
             final TetherjHandle<TransactionReceipt> callable) {
-        listenForTxReceipt(txHash, receiptCheckIntervalMillis, receiptMaxChecks, callable);
+        listenForTxReceipt(txHash, RECEIPT_CHECK_INTERVAL_MILLIS, RECEIPT_MAX_CHECKS, callable);
     }
 
     private void listenForTxReceipt(final String txHash, final int checkIntervalMillis,

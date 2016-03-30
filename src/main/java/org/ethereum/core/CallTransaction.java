@@ -75,20 +75,27 @@ public class CallTransaction {
 
         @JsonCreator
         public static Type getType(String typeName) {
-            if (typeName.contains("["))
+            if (typeName.contains("[")) {
                 return ArrayType.getType(typeName);
-            if ("bool".equals(typeName))
+            }
+            if ("bool".equals(typeName)) {
                 return new BoolType();
-            if (typeName.startsWith("int") || typeName.startsWith("uint"))
+            }
+            if (typeName.startsWith("int") || typeName.startsWith("uint")) {
                 return new IntType(typeName);
-            if ("address".equals(typeName))
+            }
+            if ("address".equals(typeName)) {
                 return new AddressType();
-            if ("string".equals(typeName))
+            }
+            if ("string".equals(typeName)) {
                 return new StringType();
-            if ("bytes".equals(typeName))
+            }
+            if ("bytes".equals(typeName)) {
                 return new BytesType();
-            if (typeName.startsWith("bytes"))
+            }
+            if (typeName.startsWith("bytes")) {
                 return new Bytes32Type(typeName);
+            }
             throw new RuntimeException("Unknown type: " + typeName);
         }
 
@@ -425,10 +432,12 @@ public class CallTransaction {
 
         @Override
         public String getCanonicalName() {
-            if (getName().equals("int"))
+            if (getName().equals("int")) {
                 return "int256";
-            if (getName().equals("uint"))
+            }
+            if (getName().equals("uint")) {
                 return "uint256";
+            }
             return super.getCanonicalName();
         }
 
@@ -437,16 +446,16 @@ public class CallTransaction {
             BigInteger bigInt;
 
             if (value instanceof String) {
-                String s = ((String) value).toLowerCase().trim();
+                String stringValue = ((String) value).toLowerCase().trim();
                 int radix = 10;
-                if (s.startsWith("0x")) {
-                    s = s.substring(2);
+                if (stringValue.startsWith("0x")) {
+                    stringValue = stringValue.substring(2);
                     radix = 16;
-                } else if (s.contains("a") || s.contains("b") || s.contains("c") || s.contains("d")
-                        || s.contains("e") || s.contains("f")) {
+                } else if (stringValue.contains("a") || stringValue.contains("b") || stringValue.contains("c") || stringValue.contains("d")
+                        || stringValue.contains("e") || stringValue.contains("f")) {
                     radix = 16;
                 }
-                bigInt = new BigInteger(s, radix);
+                bigInt = new BigInteger(stringValue, radix);
             } else if (value instanceof BigInteger) {
                 bigInt = (BigInteger) value;
             } else if (value instanceof Number) {
@@ -467,8 +476,8 @@ public class CallTransaction {
             return new BigInteger(Arrays.copyOfRange(encoded, offset, offset + 32));
         }
 
-        public static byte[] encodeInt(int i) {
-            return encodeInt(new BigInteger("" + i));
+        public static byte[] encodeInt(int integerValue) {
+            return encodeInt(new BigInteger("" + integerValue));
         }
 
         public static byte[] encodeInt(BigInteger bigInt) {
@@ -495,8 +504,9 @@ public class CallTransaction {
 
         @Override
         public byte[] encode(Object value) {
-            if (!(value instanceof Boolean))
+            if (!(value instanceof Boolean)) {
                 throw new RuntimeException("Wrong value for bool type: " + value);
+            }
             return super.encode(value == Boolean.TRUE ? 1 : 0);
         }
 
@@ -541,9 +551,10 @@ public class CallTransaction {
         }
 
         public byte[] encodeArguments(Object... args) {
-            if (args.length > inputs.length)
+            if (args.length > inputs.length) {
                 throw new RuntimeException(
                         "Too many arguments: " + args.length + " > " + inputs.length);
+            }
 
             int staticSize = 0;
             int dynamicCnt = 0;
