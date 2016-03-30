@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * Pojo to store wallet crypto
+ * Pojo to store wallet crypto.
  * 
  * @author Andrei Grigoriu
  *
@@ -16,7 +16,7 @@ public class WalletCryptoPojoV3 implements Serializable {
     private static final long serialVersionUID = 3895065516835152955L;
 
     /**
-     * Internal pojo for iv
+     * Internal pojo for iv.
      */
     @Data
     public class CipherParams implements Serializable {
@@ -27,7 +27,7 @@ public class WalletCryptoPojoV3 implements Serializable {
     }
 
     /**
-     * Internal pojo for KDF params
+     * Internal pojo for KDF params.
      *
      */
     @Data
@@ -36,6 +36,7 @@ public class WalletCryptoPojoV3 implements Serializable {
         private static final long serialVersionUID = 4851325137367204904L;
 
         String prf;
+        @SuppressWarnings("checkstyle:variable")
         int c;
         String salt;
         int dklen;

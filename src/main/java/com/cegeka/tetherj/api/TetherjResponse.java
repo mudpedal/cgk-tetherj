@@ -41,10 +41,10 @@ public class TetherjResponse<T> {
     private final T value;
 
     /**
-     * 
-     * @param errorType
-     * @param exception
-     * @param resp
+     * Construct response.
+     * @param errorType Error type to set.
+     * @param exception Exception to set.
+     * @param resp Value response to set.
      */
     public TetherjResponse(ErrorType errorType, Exception exception, T resp) {
         this.errorType = errorType;
@@ -53,10 +53,10 @@ public class TetherjResponse<T> {
     }
 
     /**
-     * Create error response (value is set to null)
+     * Create error response (value is set to null).
      * 
-     * @param errorType
-     * @param exception
+     * @param errorType Error Type to set.
+     * @param exception Error Type to set.
      */
     public TetherjResponse(ErrorType errorType, Exception exception) {
         this.errorType = errorType;
@@ -67,7 +67,7 @@ public class TetherjResponse<T> {
     /**
      * Create error response from other response copying only errorType and exception.
      * 
-     * @param otherResponse
+     * @param otherResponse Other error response.
      */
     public <V> TetherjResponse(TetherjResponse<V> otherResponse) {
         this.errorType = otherResponse.errorType;

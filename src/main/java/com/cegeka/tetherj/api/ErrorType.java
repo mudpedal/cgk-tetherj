@@ -1,7 +1,7 @@
 package com.cegeka.tetherj.api;
 
 /**
- * tetherj errors
+ * Tetherj error types.
  * 
  * @author Andrei Grigoriu
  *

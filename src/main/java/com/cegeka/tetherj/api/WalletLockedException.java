@@ -1,9 +1,9 @@
 package com.cegeka.tetherj.api;
 
 /**
- * Thrown if the wallet is locked (can't get private key)
+ * Thrown if the wallet is locked (can't get private key).
  * 
- * @author Andrei Grigoriu <mudpedal@vertexarmy.org>
+ * @author Andrei Grigoriu
  *
  */
 public class WalletLockedException extends Exception {
