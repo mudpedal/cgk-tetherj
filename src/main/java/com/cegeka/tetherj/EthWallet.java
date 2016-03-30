@@ -39,10 +39,10 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * Create wallet from storage pojo
+     * Create wallet from storage pojo.
      * 
-     * @param v3
-     *            storage pojo
+     * @param storage
+     *            The storage object.
      */
     public EthWallet(WalletStoragePojoV3 storage) {
         privateKey = null;
@@ -50,11 +50,11 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * Generate a random key pair wallet
+     * Generate a random key pair wallet.
      * 
      * @param passphrase
-     *            to encrypt private key with
-     * @return the new wallet
+     *            Pass to encrypt private key with.
+     * @return Returns the new wallet.
      */
     public static EthWallet createWallet(String passphrase) {
         EthWallet wallet = new EthWallet(WalletStoragePojoV3.createWallet(passphrase));
@@ -63,11 +63,11 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * Load wallet from v3 storage json
+     * Load wallet from v3 storage json.
      * 
      * @param json
-     *            in v3 format
-     * @return the wallet
+     *            Json string in v3 format.
+     * @return Returns the wallet.
      */
     public static EthWallet loadWalletFromString(String json) {
         EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromString(json));
@@ -76,12 +76,13 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * Load wallet from file containing v3 json
+     * Load wallet from file containing v3 json.
      * 
      * @param file
-     *            to load from
-     * @return the wallet
+     *            to load from, containing json string in v3 format.
+     * @return Returns the wallet.
      * @throws IOException
+     *             In case of IO errors.
      */
     public static EthWallet loadWalletFromFile(File file) throws IOException {
         EthWallet wallet = new EthWallet(WalletStoragePojoV3.loadWalletFromFile(file));
@@ -90,11 +91,12 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * Write v3 storage to disk
+     * Write v3 storage to disk.
      * 
      * @param file
-     *            to write to
+     *            File to write to.
      * @throws IOException
+     *             In case of IO errors.
      */
     public void writeToFile(File file) throws IOException {
         logger.debug("Write wallet to file " + file.getAbsolutePath() + " " + storage.toString());
@@ -102,20 +104,20 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * Is private key available in memory
+     * Is private key available in memory.
      * 
-     * @return true if private key is decrypted
+     * @return Returns true if private key is decrypted.
      */
     public boolean isUnlocked() {
         return privateKey != null;
     }
 
     /**
-     * Decrypt private key and store it in memory
+     * Decrypt private key and store it in memory.
      * 
      * @param passphrase
-     *            to decrypt
-     * @return true if succeeded
+     *            Passphrase to decrypt with.
+     * @return Returns true if succeeded.
      */
     public boolean unlock(String passphrase) {
         privateKey = storage.getPrivateKey(passphrase);
@@ -129,9 +131,9 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * Works if unlocked, otherwise returns null
+     * Returns private key if the wallet is unlocked.
      * 
-     * @return null if locked, hex private key otherwise
+     * @return null if locked, hex private key otherwise.
      */
     public String getPrivateKey() {
         if (privateKey != null) {
@@ -142,7 +144,7 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * delete private key from memory
+     * Deletes private key from memory.
      */
     public void lock() {
         logger.debug("Locked wallet " + storage.toString());
@@ -150,7 +152,7 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * @return wallet address
+     * @return Returns wallet address.
      */
     public String getAddress() {
         if (storage != null) {
@@ -161,7 +163,7 @@ public class EthWallet implements Serializable {
     }
 
     /**
-     * Generate ethereum client standard filename (uses now date)
+     * Generate ethereum client standard filename (uses current time).
      * 
      * @return file name
      */
