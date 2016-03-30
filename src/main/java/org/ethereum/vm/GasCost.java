@@ -1,10 +1,10 @@
 package org.ethereum.vm;
 
 /**
- * The fundamental network cost unit. Paid for exclusively by Ether, which is converted
- * freely to and from Gas as required. Gas does not exist outside of the internal Ethereum
- * computation engine; its price is set by the Transaction and miners are free to
- * ignore Transactions whose Gas price is too low.
+ * The fundamental network cost unit. Paid for exclusively by Ether, which is converted freely to
+ * and from Gas as required. Gas does not exist outside of the internal Ethereum computation engine;
+ * its price is set by the Transaction and miners are free to ignore Transactions whose Gas price is
+ * too low.
  */
 public class GasCost {
 
@@ -40,8 +40,8 @@ public class GasCost {
     public final static int CREATE_DATA_BYTE = 5;
     public final static int CALL = 40;
     public final static int STIPEND_CALL = 2300;
-    public final static int VT_CALL = 9000;  //value transfer call
-    public final static int NEW_ACCT_CALL = 25000;  //new account call
+    public final static int VT_CALL = 9000; // value transfer call
+    public final static int NEW_ACCT_CALL = 25000; // new account call
     public final static int MEMORY = 3;
     public final static int SUICIDE_REFUND = 24000;
     public final static int QUAD_COEFF_DIV = 512;

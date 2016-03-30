@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class UserDocMethod implements Serializable {
 
-	private static final long serialVersionUID = -6808833294590633503L;
-	
-	String notice;
+    private static final long serialVersionUID = -6808833294590633503L;
+
+    String notice;
 }

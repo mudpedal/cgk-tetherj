@@ -82,7 +82,8 @@ public class SHA3Helper {
         return doSha3(m1, m2, digest, bouncyencoder);
     }
 
-    private static byte[] sha3(byte[] message, int start, int length, SHA3Digest digest, boolean bouncyencoder) {
+    private static byte[] sha3(byte[] message, int start, int length, SHA3Digest digest,
+            boolean bouncyencoder) {
         byte[] hash = new byte[digest.getDigestSize()];
 
         if (message.length != 0) {
@@ -91,7 +92,6 @@ public class SHA3Helper {
         digest.doFinal(hash, 0);
         return hash;
     }
-
 
     private static byte[] doSha3(byte[] message, SHA3Digest digest, boolean bouncyencoder) {
         byte[] hash = new byte[digest.getDigestSize()];
@@ -114,10 +114,7 @@ public class SHA3Helper {
 
     public enum Size {
 
-        S224(224),
-        S256(256),
-        S384(384),
-        S512(512);
+        S224(224), S256(256), S384(384), S512(512);
 
         int bits = 0;
 

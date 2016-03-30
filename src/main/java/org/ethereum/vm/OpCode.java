@@ -5,11 +5,9 @@ import java.util.Map;
 
 import static org.ethereum.vm.OpCode.Tier.*;
 
-
 /**
- * Instruction set for the Ethereum Virtual Machine
- * See Yellow Paper: http://www.gavwood.com/Paper.pdf
- * - Appendix G. Virtual Machine Specification
+ * Instruction set for the Ethereum Virtual Machine See Yellow Paper:
+ * http://www.gavwood.com/Paper.pdf - Appendix G. Virtual Machine Specification
  */
 public enum OpCode {
     // TODO #POC9 Need to make tiers more accurate
@@ -18,7 +16,7 @@ public enum OpCode {
      */
     STOP(0x00, 0, 0, ZeroTier),
 
-    /*  Arithmetic Operations   */
+    /* Arithmetic Operations */
 
     /**
      * (0x01) Addition operation
@@ -49,13 +47,11 @@ public enum OpCode {
      */
     SMOD(0x07, 2, 1, LowTier),
     /**
-     * (0x08) Addition combined with modulo
-     * remainder operation
+     * (0x08) Addition combined with modulo remainder operation
      */
     ADDMOD(0x08, 3, 1, MidTier),
     /**
-     * (0x09) Multiplication combined with modulo
-     * remainder operation
+     * (0x09) Multiplication combined with modulo remainder operation
      */
     MULMOD(0x09, 3, 1, MidTier),
     /**
@@ -67,7 +63,7 @@ public enum OpCode {
      */
     SIGNEXTEND(0x0b, 2, 1, LowTier),
 
-    /*  Bitwise Logic & Comparison Operations   */
+    /* Bitwise Logic & Comparison Operations */
 
     /**
      * (0x10) Less-than comparison
@@ -114,18 +110,17 @@ public enum OpCode {
      */
     BYTE(0x1a, 2, 1, VeryLowTier),
 
-    /*  Cryptographic Operations    */
+    /* Cryptographic Operations */
 
     /**
      * (0x20) Compute SHA3-256 hash
      */
     SHA3(0x20, 2, 1, SpecialTier),
 
-    /*  Environmental Information   */
+    /* Environmental Information */
 
     /**
-     * (0x30)  Get address of currently
-     * executing account
+     * (0x30) Get address of currently executing account
      */
     ADDRESS(0x30, 0, 1, BaseTier),
     /**
@@ -141,57 +136,46 @@ public enum OpCode {
      */
     CALLER(0x33, 0, 1, BaseTier),
     /**
-     * (0x34) Get deposited value by the
-     * instruction/transaction responsible
-     * for this execution
+     * (0x34) Get deposited value by the instruction/transaction responsible for this execution
      */
     CALLVALUE(0x34, 0, 1, BaseTier),
     /**
-     * (0x35) Get input data of current
-     * environment
+     * (0x35) Get input data of current environment
      */
     CALLDATALOAD(0x35, 1, 1, VeryLowTier),
     /**
-     * (0x36) Get size of input data in current
-     * environment
+     * (0x36) Get size of input data in current environment
      */
     CALLDATASIZE(0x36, 0, 1, BaseTier),
     /**
-     * (0x37) Copy input data in current
-     * environment to memory
+     * (0x37) Copy input data in current environment to memory
      */
     CALLDATACOPY(0x37, 3, 0, VeryLowTier),
     /**
-     * (0x38) Get size of code running in
-     * current environment
+     * (0x38) Get size of code running in current environment
      */
     CODESIZE(0x38, 0, 1, BaseTier),
     /**
-     * (0x39) Copy code running in current
-     * environment to memory
+     * (0x39) Copy code running in current environment to memory
      */
     CODECOPY(0x39, 3, 0, VeryLowTier), // [len code_start mem_start CODECOPY]
     /**
-     * (0x3a) Get price of gas in current
-     * environment
+     * (0x3a) Get price of gas in current environment
      */
     GASPRICE(0x3a, 0, 1, BaseTier),
     /**
-     * (0x3b) Get size of code running in
-     * current environment with given offset
+     * (0x3b) Get size of code running in current environment with given offset
      */
     EXTCODESIZE(0x3b, 1, 1, ExtTier),
     /**
-     * (0x3c) Copy code running in current
-     * environment to memory with given offset
+     * (0x3c) Copy code running in current environment to memory with given offset
      */
     EXTCODECOPY(0x3c, 4, 0, ExtTier),
 
-    /*  Block Information   */
+    /* Block Information */
 
     /**
-     * (0x40) Get hash of most recent
-     * complete block
+     * (0x40) Get hash of most recent complete block
      */
     BLOCKHASH(0x40, 1, 1, ExtTier),
     /**
@@ -215,7 +199,7 @@ public enum OpCode {
      */
     GASLIMIT(0x45, 0, 1, BaseTier),
 
-    /*  Memory, Storage and Flow Operations */
+    /* Memory, Storage and Flow Operations */
 
     /**
      * (0x50) Remove item from stack
@@ -246,8 +230,7 @@ public enum OpCode {
      */
     JUMP(0x56, 1, 0, MidTier),
     /**
-     * (0x57) Conditionally alter the program
-     * counter
+     * (0x57) Conditionally alter the program counter
      */
     JUMPI(0x57, 2, 0, HighTier),
     /**
@@ -267,7 +250,7 @@ public enum OpCode {
      */
     JUMPDEST(0x5b, 0, 0, SpecialTier),
 
-    /*  Push Operations */
+    /* Push Operations */
 
     /**
      * (0x60) Place 1-byte item on stack
@@ -394,12 +377,11 @@ public enum OpCode {
      */
     PUSH31(0x7e, 0, 1, VeryLowTier),
     /**
-     * (0x7f) Place 32-byte (full word)
-     * item on stack
+     * (0x7f) Place 32-byte (full word) item on stack
      */
     PUSH32(0x7f, 0, 1, VeryLowTier),
 
-    /*  Duplicate Nth item from the stack   */
+    /* Duplicate Nth item from the stack */
 
     /**
      * (0x80) Duplicate 1st item on stack
@@ -466,7 +448,7 @@ public enum OpCode {
      */
     DUP16(0x8f, 16, 17, VeryLowTier),
 
-    /*  Swap the Nth item from the stack with the top   */
+    /* Swap the Nth item from the stack with the top */
 
     /**
      * (0x90) Exchange 2nd item from stack with the top
@@ -507,7 +489,7 @@ public enum OpCode {
     /**
      * (0x99) Exchange 11th item from stack with the top
      */
-    SWAP10(0x99, 11, 11,VeryLowTier),
+    SWAP10(0x99, 11, 11, VeryLowTier),
     /**
      * (0x9a) Exchange 12th item from stack with the top
      */
@@ -536,26 +518,24 @@ public enum OpCode {
     /**
      * (0xa[n]) log some data for some addres with 0..n tags [addr [tag0..tagn] data]
      */
-    LOG0(0xa0, 2, 0, SpecialTier),
-    LOG1(0xa1, 3, 0, SpecialTier),
-    LOG2(0xa2, 4, 0, SpecialTier),
-    LOG3(0xa3, 5, 0, SpecialTier),
-    LOG4(0xa4, 6, 0, SpecialTier),
+    LOG0(0xa0, 2, 0, SpecialTier), LOG1(0xa1, 3, 0, SpecialTier), LOG2(0xa2, 4, 0,
+            SpecialTier), LOG3(0xa3, 5, 0, SpecialTier), LOG4(0xa4, 6, 0, SpecialTier),
 
-    /*  System operations   */
+    /* System operations */
 
     /**
      * (0xf0) Create a new account with associated code
      */
-    CREATE(0xf0, 3, 1, SpecialTier),   //       [in_size] [in_offs] [gas_val] CREATE
+    CREATE(0xf0, 3, 1, SpecialTier), // [in_size] [in_offs] [gas_val] CREATE
     /**
      * (cxf1) Message-call into an account
      */
-    CALL(0xf1, 7, 1, SpecialTier),     //       [out_data_size] [out_data_start] [in_data_size] [in_data_start] [value] [to_addr]
+    CALL(0xf1, 7, 1, SpecialTier), // [out_data_size] [out_data_start] [in_data_size]
+                                   // [in_data_start] [value] [to_addr]
     // [gas] CALL
     /**
-     * (0xf2) Calls self, but grabbing the code from the
-     * TO argument instead of from one's own address
+     * (0xf2) Calls self, but grabbing the code from the TO argument instead of from one's own
+     * address
      */
     CALLCODE(0xf2, 7, 1, SpecialTier),
     /**
@@ -563,8 +543,7 @@ public enum OpCode {
      */
     RETURN(0xf3, 2, 0, ZeroTier),
     /**
-     * (0xff) Halt execution and register account for
-     * later deletion
+     * (0xff) Halt execution and register account for later deletion
      */
     SUICIDE(0xff, 1, 0, ZeroTier);
 
@@ -583,8 +562,8 @@ public enum OpCode {
         }
     }
 
-    //require = required args
-    //return = required return
+    // require = required args
+    // return = required return
     private OpCode(int op, int require, int ret, Tier tier) {
         this.opcode = (byte) op;
         this.require = require;
@@ -630,16 +609,9 @@ public enum OpCode {
     }
 
     public enum Tier {
-        ZeroTier(0),
-        BaseTier(2),
-        VeryLowTier(3),
-        LowTier(5),
-        MidTier(8),
-        HighTier(10),
-        ExtTier(20),
-        SpecialTier(1), //TODO #POC9 is this correct?? "multiparam" from cpp
-        InvalidTier(0);
-
+        ZeroTier(0), BaseTier(2), VeryLowTier(3), LowTier(5), MidTier(8), HighTier(10), ExtTier(
+                20), SpecialTier(1), // TODO #POC9 is this correct?? "multiparam" from cpp
+                InvalidTier(0);
 
         private final int level;
 
@@ -655,5 +627,3 @@ public enum OpCode {
     ;
 
 }
-
-

@@ -11,8 +11,7 @@ public class BuildInfo {
 
     private static final Logger logger = LogManager.getLogger("general");
 
-
-    public static void printInfo(){
+    public static void printInfo() {
         try {
             Properties props = new Properties();
             InputStream is = ClassLoader.getSystemResourceAsStream("build-info.properties");
@@ -27,6 +26,7 @@ public class BuildInfo {
                 logger.info("build.time: {}", time);
                 logger.info("");
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
     }
 }

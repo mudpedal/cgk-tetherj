@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class EthSmartContractFactory implements Serializable {
     /**
-     * 
+     * .
      */
     private static final long serialVersionUID = 8576482271936503680L;
     private ContractData contract;
@@ -33,9 +33,10 @@ public class EthSmartContractFactory implements Serializable {
     private Function constructor;
 
     /**
+     * Construct factory by contract data.
      * 
      * @param contract
-     *            data to use for this factory
+     *            Contract data to use for this factory
      */
     public EthSmartContractFactory(ContractData contract) {
         this.contract = contract;
@@ -43,22 +44,24 @@ public class EthSmartContractFactory implements Serializable {
     }
 
     /**
-     * Simple constructor
+     * Noarg constructor.
      */
     public EthSmartContractFactory() {
     }
 
     /**
+     * Factory static method to create a smart contract factory from json contract data.
      * 
-     * @return smart contract factory from json string of contract data
+     * @return smart contract factory.
      */
-    public static EthSmartContractFactory createFactoryFromContractDataString(String json) throws IOException, JsonProcessingException {
+    public static EthSmartContractFactory createFactoryFromContractDataString(String json)
+            throws IOException, JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return new EthSmartContractFactory(mapper.readValue(json, ContractData.class));
     }
 
     /**
-     * called once to index functions by type
+     * called once to index functions by type.
      */
     private void indexMethods() {
         this.modFunctions = new HashMap<>();
@@ -86,17 +89,17 @@ public class EthSmartContractFactory implements Serializable {
     }
 
     /**
-     * 
-     * @return contact data
+     * @return Returns contract data.
      */
     public ContractData getContract() {
         return contract;
     }
 
     /**
-     * Set contract data
+     * Set contract data.
      * 
      * @param contract
+     *            Contract data to set.
      */
     public void setContract(ContractData contract) {
         this.contract = contract;
@@ -104,20 +107,20 @@ public class EthSmartContractFactory implements Serializable {
 
     /**
      * 
-     * @return contract data as json string. Use this to store it into the database.
+     * @return Returns contract data as json string. Use this for storage purposes.
      */
     public String getContractDataAsString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(contract);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (JsonProcessingException exception) {
+            exception.printStackTrace();
             return null;
         }
     }
 
     /**
-     * @return contract evm code
+     * @return Returns contract evm code.
      */
     public String getCode() {
         return contract.getCode();
@@ -128,28 +131,31 @@ public class EthSmartContractFactory implements Serializable {
      * 
      * @param args
      *            for the contract constructor
-     * @return transaction to sign and submit to your service
+     * @return Returns transaction to sign and submit to your service.
      */
     public EthTransaction createContract(Object... args) {
 
         byte[] codeBytes = CryptoUtil.hexToBytes(contract.getCode());
         byte[] constructorCall = constructor.encodeArguments(args);
 
-        return new EthTransaction(null, BigInteger.ZERO, EthTransaction.defaultGasPrice,
-                EthTransaction.defaultGasLimit, ByteUtil.merge(codeBytes, constructorCall));
+        return new EthTransaction(null, BigInteger.ZERO, EthTransaction.DEFAULT_GAS_PRICE,
+                EthTransaction.DEFAULT_GAS_LIMIT, ByteUtil.merge(codeBytes, constructorCall));
     }
 
     /**
-     * Create a smart contract handle for a contract on your chain.
+     * Factory method to create a smart contract handle for a contract on your chain.
      * 
      * @param contractAddress
-     *            for the contract on the chain
-     * @return the smart contract handle
+     *            Contract address on the blockchain.
+     * @return Returns the smart contract handle
      */
     public EthSmartContract getContract(String contractAddress) {
         return new EthSmartContract(this, contractAddress);
     }
 
+    /**
+     * @return Returns all modifier functions.
+     */
     public Collection<Function> getModFunctions() {
         if (modFunctions == null) {
             indexMethods();
@@ -157,6 +163,9 @@ public class EthSmartContractFactory implements Serializable {
         return modFunctions.values();
     }
 
+    /**
+     * @return Returns all constant functions.
+     */
     public Collection<Function> getConstFunctions() {
         if (constFunctions == null) {
             indexMethods();
@@ -164,6 +173,9 @@ public class EthSmartContractFactory implements Serializable {
         return constFunctions.values();
     }
 
+    /**
+     * @return Returns constructor function.
+     */
     public Function getConstructor() {
         if (constructor == null) {
             indexMethods();
@@ -172,11 +184,11 @@ public class EthSmartContractFactory implements Serializable {
     }
 
     /**
-     * Return a constant function handle for this contract
+     * Return a constant function handle for this contract.
      * 
      * @param method
-     *            to get
-     * @return
+     *            Method name.
+     * @return Returns the requested constant function.
      */
     public Function getConstantFunction(String method) {
         if (constFunctions == null) {
@@ -186,11 +198,11 @@ public class EthSmartContractFactory implements Serializable {
     }
 
     /**
-     * Return a modifier function handle for this contract
+     * Return a modifier function handle for this contract.
      * 
      * @param method
-     *            to get
-     * @return
+     *            Method name.
+     * @return Returns the requested modifier function.
      */
     public Function getModFunction(String method) {
         if (modFunctions == null) {

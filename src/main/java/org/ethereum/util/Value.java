@@ -31,17 +31,18 @@ public class Value {
         return null;
     }
 
-    public Value(){
+    public Value() {
     }
 
-    public void init(byte[] rlp){
+    public void init(byte[] rlp) {
         this.rlp = rlp;
     }
 
     public Value(Object obj) {
 
         this.decoded = true;
-        if (obj == null) return;
+        if (obj == null)
+            return;
 
         if (obj instanceof Value) {
             this.value = ((Value) obj).asObj();
@@ -50,9 +51,9 @@ public class Value {
         }
     }
 
-    /* *****************
-     *      Convert
-     * *****************/
+    /*
+     * ***************** Convert
+     *****************/
 
     public Object asObj() {
         decode();
@@ -110,14 +111,13 @@ public class Value {
         return ByteUtil.EMPTY_BYTE_ARRAY;
     }
 
-    public String getHex(){
+    public String getHex() {
         return Hex.toHexString(this.encode());
     }
 
-    public byte[] getData(){
+    public byte[] getData() {
         return this.encode();
     }
-
 
     public int[] asSlice() {
         return (int[]) value;
@@ -138,11 +138,11 @@ public class Value {
         return new Value(null);
     }
 
-    /* *****************
-     *      Utility
-     * *****************/
+    /*
+     * ***************** Utility
+     *****************/
 
-    public void decode(){
+    public void decode() {
         if (!this.decoded) {
             this.value = RLP.decode(rlp, 0).getDecoded();
             this.decoded = true;
@@ -155,22 +155,24 @@ public class Value {
         return rlp;
     }
 
-    public byte[] hash(){
+    public byte[] hash() {
         if (sha3 == null)
             sha3 = HashUtil.sha3(encode());
         return sha3;
-    } 
+    }
+
     public boolean cmp(Value o) {
         return DeepEquals.deepEquals(this, o);
     }
 
-    /* *****************
-     *      Checks
-     * *****************/
+    /*
+     * ***************** Checks
+     *****************/
 
     public boolean isList() {
         decode();
-        return value != null && value.getClass().isArray() && !value.getClass().getComponentType().isPrimitive();
+        return value != null && value.getClass().isArray()
+                && !value.getClass().getComponentType().isPrimitive();
     }
 
     public boolean isString() {
@@ -210,7 +212,8 @@ public class Value {
         }
 
         for (byte aData : data) {
-            if (aData > 32 && aData < 126) ++readableChars;
+            if (aData > 32 && aData < 126)
+                ++readableChars;
         }
 
         return (double) readableChars / (double) data.length > 0.55;
@@ -225,8 +228,7 @@ public class Value {
 
         for (byte aData : data) {
 
-            if ((aData >= 48 && aData <= 57)
-                    || (aData >= 97 && aData <= 102))
+            if ((aData >= 48 && aData <= 57) || (aData >= 97 && aData <= 102))
                 ++hexChars;
         }
 
@@ -245,10 +247,14 @@ public class Value {
 
     public boolean isEmpty() {
         decode();
-        if (isNull()) return true;
-        if (isBytes() && asBytes().length == 0) return true;
-        if (isList() && asList().isEmpty()) return true;
-        if (isString() && asString().equals("")) return true;
+        if (isNull())
+            return true;
+        if (isBytes() && asBytes().length == 0)
+            return true;
+        if (isList() && asList().isEmpty())
+            return true;
+        if (isString() && asString().equals(""))
+            return true;
 
         return false;
     }

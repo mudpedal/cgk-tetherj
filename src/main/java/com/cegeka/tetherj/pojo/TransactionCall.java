@@ -10,23 +10,23 @@ import lombok.Data;
 
 @Data
 public class TransactionCall implements Serializable {
-	
-	private static final long serialVersionUID = -478362046262304477L;
 
-	public TransactionCall(Function methodFunction) {
-		this.methodFunction = methodFunction;
-	}
+    private static final long serialVersionUID = -478362046262304477L;
 
-	public Object[] decodeOutput(String output) {
-		return methodFunction.decodeResult(CryptoUtil.hexToBytes(output));
-	}
+    public TransactionCall(Function methodFunction) {
+        this.methodFunction = methodFunction;
+    }
 
-	private Function methodFunction;
-	public String from;
-	public String to;
-	public String gas;
-	public String gasPrice;
-	public String value;
-	public String data;
+    public Object[] decodeOutput(String output) {
+        return methodFunction.decodeResult(CryptoUtil.hexToBytes(output));
+    }
+
+    private Function methodFunction;
+    public String from;
+    public String to;
+    public String gas;
+    public String gasPrice;
+    public String value;
+    public String data;
 
 }

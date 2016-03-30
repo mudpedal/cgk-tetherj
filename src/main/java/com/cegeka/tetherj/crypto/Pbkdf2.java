@@ -4,6 +4,7 @@ package com.cegeka.tetherj.crypto;
  * Copyright (c) 2012
  * Cole Barnes [cryptofreek{at}gmail{dot}com]
  * http://cryptofreek.org/
+ * 
  */
 
 import java.io.ByteArrayOutputStream;
@@ -14,75 +15,90 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Pbkdf2 {
-	/* START RFC 2898 IMPLEMENTATION */
-	public static byte[] derive(String P, byte[] S, int c, int dkLen) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    /* START RFC 2898 IMPLEMENTATION */
 
-		try {
-			int hLen = 20;
+    /**
+     * Derive a key.
+     * 
+     * @param password
+     *            password from which to derive a key.
+     * @param salt
+     *            Salt for the derivation.
+     * @param iterations
+     *            Number of iterations.
+     * @param keyLength
+     *            Derived key length.
+     * @return Returns the derived key.
+     */
+    public static byte[] derive(String password, byte[] salt, int iterations, int keyLength) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-			if (dkLen > ((Math.pow(2, 32)) - 1) * hLen) {
-				System.out.println("derived key too long");
-			} else {
-				int l = (int) Math.ceil((double) dkLen / (double) hLen);
-				// int r = dkLen - (l-1)*hLen;
+        try {
+            int blockLength = 20; // hlen
 
-				for (int i = 1; i <= l; i++) {
-					byte[] T = F(P, S, c, i);
-					baos.write(T);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            if (keyLength > ((Math.pow(2, 32)) - 1) * blockLength) {
+                System.out.println("derived key too long");
+            } else {
+                int length = (int) Math.ceil((double) keyLength / (double) blockLength);
+                // int r = dkLen - (l-1)*hLen;
 
-		byte[] baDerived = new byte[dkLen];
-		System.arraycopy(baos.toByteArray(), 0, baDerived, 0, baDerived.length);
+                for (int i = 1; i <= length; i++) {
+                    byte[] block = xor(password, salt, iterations, i);
+                    baos.write(block);
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
 
-		return baDerived;
-	}
+        byte[] baDerived = new byte[keyLength];
+        System.arraycopy(baos.toByteArray(), 0, baDerived, 0, baDerived.length);
 
-	private static byte[] F(String P, byte[] S, int c, int i) throws Exception {
-		byte[] U_LAST = null;
-		byte[] U_XOR = null;
+        return baDerived;
+    }
 
-		SecretKeySpec key = new SecretKeySpec(P.getBytes("UTF-8"), "HmacSHA256");
-		Mac mac = Mac.getInstance(key.getAlgorithm());
-		mac.init(key);
+    private static byte[] xor(String password, byte[] salt, int iterations, int offset)
+            throws Exception {
+        byte[] lastIteration = null;
+        byte[] xor = null;
 
-		for (int j = 0; j < c; j++) {
-			if (j == 0) {
-				byte[] baS = S;
-				byte[] baI = INT(i);
-				byte[] baU = new byte[baS.length + baI.length];
+        SecretKeySpec key = new SecretKeySpec(password.getBytes("UTF-8"), "HmacSHA256");
+        Mac mac = Mac.getInstance(key.getAlgorithm());
+        mac.init(key);
 
-				System.arraycopy(baS, 0, baU, 0, baS.length);
-				System.arraycopy(baI, 0, baU, baS.length, baI.length);
+        for (int j = 0; j < iterations; j++) {
+            if (j == 0) {
+                byte[] baS = salt;
+                byte[] baI = intToBytes(offset);
+                byte[] baU = new byte[baS.length + baI.length];
 
-				U_XOR = mac.doFinal(baU);
-				U_LAST = U_XOR;
-				mac.reset();
-			} else {
-				byte[] baU = mac.doFinal(U_LAST);
-				mac.reset();
+                System.arraycopy(baS, 0, baU, 0, baS.length);
+                System.arraycopy(baI, 0, baU, baS.length, baI.length);
 
-				for (int k = 0; k < U_XOR.length; k++) {
-					U_XOR[k] = (byte) (U_XOR[k] ^ baU[k]);
-				}
+                xor = mac.doFinal(baU);
+                lastIteration = xor;
+                mac.reset();
+            } else {
+                byte[] baU = mac.doFinal(lastIteration);
+                mac.reset();
 
-				U_LAST = baU;
-			}
-		}
+                for (int k = 0; k < xor.length; k++) {
+                    xor[k] = (byte) (xor[k] ^ baU[k]);
+                }
 
-		return U_XOR;
-	}
+                lastIteration = baU;
+            }
+        }
 
-	private static byte[] INT(int i) {
-		ByteBuffer bb = ByteBuffer.allocate(4);
-		bb.order(ByteOrder.BIG_ENDIAN);
-		bb.putInt(i);
+        return xor;
+    }
 
-		return bb.array();
-	}
+    private static byte[] intToBytes(int integerValue) {
+        ByteBuffer bb = ByteBuffer.allocate(4);
+        bb.order(ByteOrder.BIG_ENDIAN);
+        bb.putInt(integerValue);
+
+        return bb.array();
+    }
 
 }
