@@ -88,7 +88,7 @@
 				</dependencies>
 				<configuration>
 					<includeTestSourceDirectory>true</includeTestSourceDirectory>
-					<failOnViolation>true</failOnViolation>
+					<failOnViolation>false</failOnViolation>
 					<configLocation>codestyle/codestyle.xml</configLocation>
 					<logViolationsToConsole>true</logViolationsToConsole>
 					<violationSeverity>warning</violationSeverity>
@@ -96,7 +96,10 @@
 				<executions>
 					<execution>
 						<id>checkstyle</id>
-						<phase>validate</phase>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
