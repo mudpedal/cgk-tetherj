@@ -91,7 +91,7 @@ public class EthSmartContractFactory implements Serializable {
     /**
      * @return Returns contract data.
      */
-    public ContractData getContract() {
+    public ContractData getContractData() {
         return contract;
     }
 
