@@ -522,26 +522,28 @@ public class CallTransaction {
     }
 
     public static class Param implements Serializable {
-
-        private static final long serialVersionUID = -3362354539571316426L;
-
+		public boolean indexed;
         public String name;
         public Type type;
+		
+		private static final long serialVersionUID = -3362354539571316426L;
     }
 
     enum FunctionType {
-        constructor, function
+        constructor,
+        function,
+        event
     }
 
     public static class Function implements Serializable {
-
-        private static final long serialVersionUID = -8368831893056514382L;
-
+		public boolean anonymous;
         public boolean constant;
         public String name;
         public Param[] inputs;
         public Param[] outputs;
         public FunctionType type;
+		
+		private static final long serialVersionUID = -8368831893056514382L;
 
         private Function() {
         }
@@ -639,17 +641,26 @@ public class CallTransaction {
             }
         }
 
-        public static Function fromSignature(String funcName, String... paramTypes) {
+        public static Function fromSignature(String funcName, String ... paramTypes) {
+            return fromSignature(funcName, paramTypes, new String[0]);
+        }
+
+        public static Function fromSignature(String funcName, String[] paramTypes, String[] resultTypes) {
             Function ret = new Function();
             ret.name = funcName;
             ret.constant = false;
             ret.type = FunctionType.function;
-            ret.outputs = new Param[0];
             ret.inputs = new Param[paramTypes.length];
             for (int i = 0; i < paramTypes.length; i++) {
                 ret.inputs[i] = new Param();
                 ret.inputs[i].name = "param" + i;
                 ret.inputs[i].type = Type.getType(paramTypes[i]);
+            }
+            ret.outputs = new Param[resultTypes.length];
+            for (int i = 0; i < resultTypes.length; i++) {
+                ret.outputs[i] = new Param();
+                ret.outputs[i].name = "res" + i;
+                ret.outputs[i].type = Type.getType(resultTypes[i]);
             }
             return ret;
         }
@@ -662,6 +673,15 @@ public class CallTransaction {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        public Function getByName(String name) {
+            for (Function function : functions) {
+                if (name.equals(function.name)) {
+                    return function;
+                }
+            }
+            return null;
         }
 
         public Function[] functions;
