@@ -9,5 +9,6 @@ public class DevDoc implements Serializable {
 
     private static final long serialVersionUID = 297037653570409555L;
 
+    String title;
     private DevDocMethods methods;
 }

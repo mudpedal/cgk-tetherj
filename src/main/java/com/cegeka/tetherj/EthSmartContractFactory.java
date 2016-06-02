@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Factory to instantiate contracts on the chain and access existing ones.
- * 
+ *
  * @author Andrei Grigoriu
  *
  */
@@ -30,11 +30,12 @@ public class EthSmartContractFactory implements Serializable {
 
     private HashMap<String, Function> modFunctions;
     private HashMap<String, Function> constFunctions;
+    private HashMap<String, Function> events;
     private Function constructor;
 
     /**
      * Construct factory by contract data.
-     * 
+     *
      * @param contract
      *            Contract data to use for this factory
      */
@@ -51,7 +52,7 @@ public class EthSmartContractFactory implements Serializable {
 
     /**
      * Factory static method to create a smart contract factory from json contract data.
-     * 
+     *
      * @return smart contract factory.
      */
     public static EthSmartContractFactory createFactoryFromContractDataString(String json)
@@ -75,12 +76,14 @@ public class EthSmartContractFactory implements Serializable {
                 Function function = Function.fromJsonInterface(mapper.writeValueAsString(method));
                 if (method.getType().equals("constructor")) {
                     constructor = function;
-                } else {
+                } else if (method.getType().equals("function")) {
                     if (!method.isConstant()) {
                         modFunctions.put(method.getName(), function);
                     } else {
                         constFunctions.put(method.getName(), function);
                     }
+                } else {
+                    events.put(method.getName(), function);
                 }
             }
         } catch (JsonProcessingException ex) {
@@ -97,7 +100,7 @@ public class EthSmartContractFactory implements Serializable {
 
     /**
      * Set contract data.
-     * 
+     *
      * @param contract
      *            Contract data to set.
      */
@@ -106,7 +109,7 @@ public class EthSmartContractFactory implements Serializable {
     }
 
     /**
-     * 
+     *
      * @return Returns contract data as json string. Use this for storage purposes.
      */
     public String getContractDataAsString() {
@@ -128,7 +131,7 @@ public class EthSmartContractFactory implements Serializable {
 
     /**
      * Creates a transaction that will create a contract instance.
-     * 
+     *
      * @param args
      *            for the contract constructor
      * @return Returns transaction to sign and submit to your service.
@@ -144,7 +147,7 @@ public class EthSmartContractFactory implements Serializable {
 
     /**
      * Factory method to create a smart contract handle for a contract on your chain.
-     * 
+     *
      * @param contractAddress
      *            Contract address on the blockchain.
      * @return Returns the smart contract handle
@@ -174,6 +177,16 @@ public class EthSmartContractFactory implements Serializable {
     }
 
     /**
+     * @return Returns all event functions.
+     */
+    public Collection<Function> getEventFunctions() {
+        if (events == null) {
+            indexMethods();
+        }
+        return events.values();
+    }
+
+    /**
      * @return Returns constructor function.
      */
     public Function getConstructor() {
@@ -185,7 +198,7 @@ public class EthSmartContractFactory implements Serializable {
 
     /**
      * Return a constant function handle for this contract.
-     * 
+     *
      * @param method
      *            Method name.
      * @return Returns the requested constant function.
@@ -199,7 +212,7 @@ public class EthSmartContractFactory implements Serializable {
 
     /**
      * Return a modifier function handle for this contract.
-     * 
+     *
      * @param method
      *            Method name.
      * @return Returns the requested modifier function.
@@ -209,6 +222,20 @@ public class EthSmartContractFactory implements Serializable {
             indexMethods();
         }
         return modFunctions.get(method);
+    }
+
+    /**
+     * Return an event function handle for this contract.
+     *
+     * @param event
+     *            Event name.
+     * @return Returns the requested event function.
+     */
+    public Function getEventFunction(String event) {
+        if (events == null) {
+            indexMethods();
+        }
+        return events.get(event);
     }
 
 }
