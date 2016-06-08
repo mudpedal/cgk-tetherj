@@ -253,7 +253,7 @@ public class EthRpcClient {
      * @return output encoded
      */
     public String callMethod(TransactionCall call) {
-        return rpc.eth_call(call);
+        return rpc.eth_call(call, "latest");
     }
 
     /**
@@ -264,7 +264,7 @@ public class EthRpcClient {
      * @return output encoded
      */
     public String callMethod(EthCall call) {
-        return rpc.eth_call(call.getCall());
+        return rpc.eth_call(call.getCall(), "latest");
     }
 
     /**

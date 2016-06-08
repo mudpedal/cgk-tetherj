@@ -56,11 +56,11 @@ public class EthSmartContract {
 
         TransactionCall callPojo = new TransactionCall(methodFunction);
         callPojo.setData(CryptoUtil.byteToHexWithPrefix(methodFunction.encode(args)));
-        callPojo.setFrom(null);
+        callPojo.setFrom("0xffffffffffffffffffffffffffffffffffffffff");
         callPojo.setGas(null);
         callPojo.setGasPrice(null);
         callPojo.setTo(this.contractAddress);
-        callPojo.setValue(null);
+        callPojo.setValue("0x0");
 
         logger.debug("Generated constant call (contractAddress: " + this.contractAddress
                 + ", method: " + method + ", params: " + Arrays.toString(args) + ")"

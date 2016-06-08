@@ -1,8 +1,11 @@
 package com.cegeka.tetherj.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Block {
     public String number;
     public String hash;

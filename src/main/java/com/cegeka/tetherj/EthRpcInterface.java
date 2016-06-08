@@ -35,7 +35,7 @@ public interface EthRpcInterface {
 
     Block eth_getBlockByNumber(Object string, Boolean full);
 
-    String eth_call(TransactionCall txCall);
+    String eth_call(TransactionCall txCall, String tag);
 
     CompileOutput eth_compileSolidity(String sourceCode);
 
