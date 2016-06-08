@@ -451,7 +451,8 @@ public class CallTransaction {
                 if (stringValue.startsWith("0x")) {
                     stringValue = stringValue.substring(2);
                     radix = 16;
-                } else if (stringValue.contains("a") || stringValue.contains("b") || stringValue.contains("c") || stringValue.contains("d")
+                } else if (stringValue.contains("a") || stringValue.contains("b")
+                        || stringValue.contains("c") || stringValue.contains("d")
                         || stringValue.contains("e") || stringValue.contains("f")) {
                     radix = 16;
                 }
@@ -522,28 +523,26 @@ public class CallTransaction {
     }
 
     public static class Param implements Serializable {
-		public boolean indexed;
+        public boolean indexed;
         public String name;
         public Type type;
 
-		private static final long serialVersionUID = -3362354539571316426L;
+        private static final long serialVersionUID = -3362354539571316426L;
     }
 
     enum FunctionType {
-        constructor,
-        function,
-        event
+        constructor, function, event
     }
 
     public static class Function implements Serializable {
-		public boolean anonymous;
+        public boolean anonymous;
         public boolean constant;
         public String name;
         public Param[] inputs;
         public Param[] outputs;
         public FunctionType type;
 
-		private static final long serialVersionUID = -8368831893056514382L;
+        private static final long serialVersionUID = -8368831893056514382L;
 
         private Function() {
         }
@@ -641,11 +640,12 @@ public class CallTransaction {
             }
         }
 
-        public static Function fromSignature(String funcName, String ... paramTypes) {
+        public static Function fromSignature(String funcName, String... paramTypes) {
             return fromSignature(funcName, paramTypes, new String[0]);
         }
 
-        public static Function fromSignature(String funcName, String[] paramTypes, String[] resultTypes) {
+        public static Function fromSignature(String funcName, String[] paramTypes,
+                String[] resultTypes) {
             Function ret = new Function();
             ret.name = funcName;
             ret.constant = false;
