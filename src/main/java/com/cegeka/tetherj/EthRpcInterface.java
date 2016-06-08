@@ -12,12 +12,12 @@ import com.cegeka.tetherj.pojo.TransactionReceipt;
 /**
  * Rpc Interface to use by json rpc invoker. All methods defined as per ethereum rpc standard.
  * https://github.com/ethereum/wiki/wiki/JSON-RPC
- * 
+ *
  * @author Andrei Grigoriu
  *
  */
 public interface EthRpcInterface {
-    String eth_getBalance(String address);
+    String eth_getBalance(String address, String tag);
 
     String[] eth_accounts();
 

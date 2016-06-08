@@ -22,7 +22,7 @@ import com.googlecode.jsonrpc4j.ProxyUtil;
 
 /**
  * Class for rpc request invoker to ethereum client.
- * 
+ *
  * @author Andrei Grigoriu
  *
  */
@@ -43,7 +43,7 @@ public class EthRpcClient {
 
     /**
      * Constructor to specify hostname and port for ethereum client.
-     * 
+     *
      * @param hostname
      *            Hostname for ethereum client.
      * @param port
@@ -65,7 +65,7 @@ public class EthRpcClient {
 
     /**
      * Get the ethereum client coinbase.
-     * 
+     *
      * @return Returns coinbase address from ethereum client.
      * @throws JsonRpcClientException
      *             In case of rpc errors.
@@ -76,7 +76,7 @@ public class EthRpcClient {
 
     /**
      * Get all the wallets registed in the ethereum client.
-     * 
+     *
      * @return Returns accounts from ethereum client/
      * @throws JsonRpcClientException
      *             In case of rpc errors.
@@ -87,7 +87,7 @@ public class EthRpcClient {
 
     /**
      * This get only counts mined transactions.
-     * 
+     *
      * @param address
      *            Address to get transaction count for.
      * @return Returns nonce of address based on mined transactions.
@@ -101,7 +101,7 @@ public class EthRpcClient {
 
     /**
      * This get also counts pending transactions.
-     * 
+     *
      * @param address
      *            Address to get transaction count for.
      * @return Returns nonce of address based on mined transactions.
@@ -115,7 +115,7 @@ public class EthRpcClient {
 
     /**
      * EXPERIMENTAL (should not be used), only works with custom ethereum clients.
-     * 
+     *
      * @param address
      *            Address from the ethereum client to unlock.
      * @param secret
@@ -130,7 +130,7 @@ public class EthRpcClient {
 
     /**
      * EXPERIMENTAL (should not be used), only works with custom ethereum clients.
-     * 
+     *
      * @param from
      *            Address from ethereum client to send from.
      * @param fromSecret
@@ -155,7 +155,7 @@ public class EthRpcClient {
 
     /**
      * Send transaction from already unlocked accounts.
-     * 
+     *
      * @param from
      *            Address to send from.
      * @param to
@@ -179,7 +179,7 @@ public class EthRpcClient {
 
     /**
      * Send self encoded transaction. The safest way to rpc send transactions.
-     * 
+     *
      * @param encodedSignedTransaction
      *            encoded data as hex
      * @return transaction hash
@@ -193,7 +193,7 @@ public class EthRpcClient {
 
     /**
      * Send self encoded transaction. The safest way to rpc send transactions.
-     * 
+     *
      * @param encodedSignedTransaction
      *            encoded data
      * @return transaction hash
@@ -207,7 +207,7 @@ public class EthRpcClient {
 
     /**
      * Get balance of address.
-     * 
+     *
      * @param address
      *            Address to get balance of.
      * @return balance as wei
@@ -215,13 +215,13 @@ public class EthRpcClient {
      *             In case of rpc errors.
      */
     public BigInteger getBalance(String address) throws JsonRpcClientException {
-        String balance = rpc.eth_getBalance(address);
+        String balance = rpc.eth_getBalance(address, "latest");
         return CryptoUtil.hexToBigInteger(balance);
     }
 
     /**
      * Returns the transaction receipt, null if the transaction is not mined.
-     * 
+     *
      * @param txHash
      *            to get receipt of
      * @return receipt
@@ -234,7 +234,7 @@ public class EthRpcClient {
 
     /**
      * Get transaction data by transaction hash/
-     * 
+     *
      * @param txHash
      *            to get data by.
      * @return transaction data.
@@ -247,7 +247,7 @@ public class EthRpcClient {
 
     /**
      * Call a contract method or dry call it.
-     * 
+     *
      * @param call
      *            to make
      * @return output encoded
@@ -258,7 +258,7 @@ public class EthRpcClient {
 
     /**
      * Call a contract method or dry call it.
-     * 
+     *
      * @param call
      *            to make
      * @return output encoded
@@ -269,7 +269,7 @@ public class EthRpcClient {
 
     /**
      * Get latest block from on ethereum client.
-     * 
+     *
      * @return The latest block object
      */
     public Block getLatestBlock() {
@@ -278,7 +278,7 @@ public class EthRpcClient {
 
     /**
      * Get latest block gas limit.
-     * 
+     *
      * @return The gas limit of latest block on ethereum client
      */
     public BigInteger getLatestBlockGasLimit() {
@@ -292,7 +292,7 @@ public class EthRpcClient {
 
     /**
      * Compile solidity source on ethereum client and return a compile output.
-     * 
+     *
      * @param sourceCode
      *            Source code to compile.
      * @return Compile output.
@@ -303,7 +303,7 @@ public class EthRpcClient {
 
     /**
      * Create an ethereum filter.
-     * 
+     *
      * @return Returns filter id from ethereum client.
      */
     public String newFilter() {
@@ -312,7 +312,7 @@ public class EthRpcClient {
 
     /**
      * Create an ethereum filter.
-     * 
+     *
      * @param filterLogRequest
      *            The filter log request to send.
      * @return Returns filter id from ethereum client.
@@ -323,7 +323,7 @@ public class EthRpcClient {
 
     /**
      * Create an ethereum filter for pending transactions.
-     * 
+     *
      * @return Returns filter id from ethereum client.
      */
     public String newPendingTransactionFilter() {
@@ -332,7 +332,7 @@ public class EthRpcClient {
 
     /**
      * Remove ethereum filter from ethereum client.
-     * 
+     *
      * @param filterId
      *            Filter to be removed.
      * @return Returns true for success.
@@ -343,7 +343,7 @@ public class EthRpcClient {
 
     /**
      * Get ethereum filter changes.
-     * 
+     *
      * @param filterId
      *            Filter to check.
      * @return Retuns the filter log object.
@@ -356,7 +356,7 @@ public class EthRpcClient {
 
     /**
      * Get ethereum filter changes.
-     * 
+     *
      * @param filterId
      *            id to fetch changes of.
      * @return Returns a filter log object.
@@ -368,7 +368,7 @@ public class EthRpcClient {
 
     /**
      * Get ethereum filter changes.
-     * 
+     *
      * @param filterId
      *            filter id to fetch changes of.
      * @return Returns a filter log object
@@ -380,7 +380,7 @@ public class EthRpcClient {
 
     /**
      * Get ethereum filter changes.
-     * 
+     *
      * @param filterId
      *            id to fetch changes of
      * @return a filter log object
