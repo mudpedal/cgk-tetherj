@@ -97,7 +97,7 @@ public class EthSmartContract {
         callPojo.setGas(null);
         callPojo.setGasPrice(null);
         callPojo.setTo(this.contractAddress);
-        callPojo.setValue(null);
+        callPojo.setValue("0x0");
 
         logger.debug("Generated dry call (contractAddress: " + this.contractAddress + ", method: "
                 + method + ", params: " + Arrays.toString(args) + ")" + callPojo.toString());
