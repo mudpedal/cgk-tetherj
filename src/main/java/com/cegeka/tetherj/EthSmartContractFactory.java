@@ -67,6 +67,7 @@ public class EthSmartContractFactory implements Serializable {
     private void indexMethods() {
         this.modFunctions = new HashMap<>();
         this.constFunctions = new HashMap<>();
+        this.events = new HashMap<>();
 
         ContractAbiMethod[] methods = contract.getInfo().getAbiDefinition();
 

@@ -101,7 +101,7 @@ public class CallTransaction {
 
         /**
          * Encodes the value according to specific type rules
-         * 
+         *
          * @param value
          */
         public abstract byte[] encode(Object value);
@@ -332,7 +332,7 @@ public class CallTransaction {
 
     public static class StringType extends BytesType {
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -2421274211203157882L;
 
@@ -383,7 +383,7 @@ public class CallTransaction {
 
         @Override
         public Object decode(byte[] encoded, int offset) {
-            return Arrays.copyOfRange(encoded, offset, getFixedSize());
+            return Arrays.copyOfRange(encoded, offset, offset + getFixedSize());
         }
 
         @Override
@@ -525,7 +525,7 @@ public class CallTransaction {
 		public boolean indexed;
         public String name;
         public Type type;
-		
+
 		private static final long serialVersionUID = -3362354539571316426L;
     }
 
@@ -542,7 +542,7 @@ public class CallTransaction {
         public Param[] inputs;
         public Param[] outputs;
         public FunctionType type;
-		
+
 		private static final long serialVersionUID = -8368831893056514382L;
 
         private Function() {
