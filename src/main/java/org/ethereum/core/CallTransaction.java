@@ -362,8 +362,8 @@ public class CallTransaction {
 
         private static final long serialVersionUID = 3908573608891803814L;
 
-        public Bytes32Type(String s) {
-            super(s);
+        public Bytes32Type(String name) {
+            super(name);
         }
 
         @Override
