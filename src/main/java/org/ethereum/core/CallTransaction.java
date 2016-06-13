@@ -18,6 +18,7 @@ import java.util.List;
 import org.ethereum.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
+import com.cegeka.tetherj.crypto.CryptoUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -618,6 +619,27 @@ public class CallTransaction {
             }
 
             return format("%s(%s)", name, stripEnd(paramsTypes.toString(), ","));
+        }
+
+        public byte[] encodeTopicSignature() {
+            String signature = formatSignature();
+            byte[] signatureHashed = sha3(signature.getBytes());
+            return signatureHashed;
+        }
+
+        public String[] encodeTopics(Object... args) {
+            int argIndex = 0;
+            List<String> argTopics = new ArrayList<>();
+            argTopics.add(CryptoUtil.byteToHexWithPrefix(encodeTopicSignature()));
+            for (int i = 0; i < inputs.length; i++) {
+                if (inputs[i].indexed) {
+                    argTopics.add(CryptoUtil.byteToHexWithPrefix(inputs[i].type.encode(args[argIndex++])));
+                }
+            }
+
+            String[] topics = new String[argTopics.size()];
+            argTopics.toArray(topics);
+            return topics;
         }
 
         public byte[] encodeSignature() {

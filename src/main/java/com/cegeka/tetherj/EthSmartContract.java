@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.ethereum.core.CallTransaction.Function;
 
 import com.cegeka.tetherj.crypto.CryptoUtil;
+import com.cegeka.tetherj.pojo.FilterLogRequest;
 import com.cegeka.tetherj.pojo.TransactionCall;
 
 /**
@@ -134,27 +135,36 @@ public class EthSmartContract {
         return tx;
     }
 
-    /** TODO ADD JAVADOC **/
-    public EthCall getEvents(String method, Object... args) throws NoSuchContractMethod {
-        Function eventFunction = factory.getEventFunction(method);
+    /**
+     * Return a filter object with encoded topics.
+     *
+     * @param event
+     *            Event name.
+     * @param args
+     *            Event arguments to search by, only use indexed ones.
+     * @return the filter object to submit to the ethereum service.
+     * @throws NoSuchContractMethod
+     *             (if no such event exists)
+     */
+    public FilterLogRequest getEventFilter(String event, Object... args)
+            throws NoSuchContractMethod {
+        Function eventFunction = factory.getEventFunction(event);
 
         if (eventFunction == null) {
             throw new NoSuchContractMethod(
-                "Method " + method + " does not exist for contract factory");
+                    "Event " + event + " does not exist for contract factory");
         }
 
-        TransactionCall callPojo = new TransactionCall(eventFunction);
-        callPojo.setData(CryptoUtil.byteToHexWithPrefix(eventFunction.encode(args)));
-        callPojo.setFrom(null);
-        callPojo.setGas(null);
-        callPojo.setGasPrice(null);
-        callPojo.setTo(this.contractAddress);
-        callPojo.setValue(null);
+        FilterLogRequest filter = new FilterLogRequest();
+        filter.setAddress(this.contractAddress);
+        filter.setFromBlock("0x0");
+        filter.setToBlock("latest");
+        filter.setTopics(eventFunction.encodeTopics(args));
 
-        logger.debug("Generated event call (contractAddress: " + this.contractAddress
-            + ", method: " + method + ", params: " + Arrays.toString(args) + ")"
-            + callPojo.toString());
+        logger.debug(
+                "Generated event filter call (contractAddress: " + this.contractAddress + ", name: "
+                        + event + ", params: " + Arrays.toString(args) + ")" + filter.toString());
 
-        return new EthCall(callPojo);
+        return filter;
     }
 }

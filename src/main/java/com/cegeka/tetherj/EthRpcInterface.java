@@ -1,9 +1,11 @@
 package com.cegeka.tetherj;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import com.cegeka.tetherj.pojo.Block;
 import com.cegeka.tetherj.pojo.CompileOutput;
+import com.cegeka.tetherj.pojo.FilterLogObject;
 import com.cegeka.tetherj.pojo.FilterLogRequest;
 import com.cegeka.tetherj.pojo.Transaction;
 import com.cegeka.tetherj.pojo.TransactionCall;
@@ -45,7 +47,9 @@ public interface EthRpcInterface {
 
     Boolean eth_uninstallFilter(BigInteger filterId);
 
-    Object eth_getFilterChanges(BigInteger filterId);
+    Object eth_getFilterChanges(String filterId);
+
+    List<FilterLogObject> eth_getFilterLogs(String filterId);
 
     /**
      * Experimental, remote unlocking.
