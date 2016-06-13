@@ -612,6 +612,13 @@ public class CallTransaction {
             return decode(encodedRet, outputs);
         }
 
+        /**
+         * Decodes event params from data and topics.
+         * @author Andrei Grigoriu
+         * @param data received from ethereum client
+         * @param topics received from ethereum client
+         * @return Param values as array of objects
+         */
         public Object[] decodeEventData(String data, String[] topics) {
             byte[] dataBytes = CryptoUtil.hexToBytes(data);
             Object[] ret = new Object[inputs.length];
@@ -650,12 +657,22 @@ public class CallTransaction {
             return format("%s(%s)", name, stripEnd(paramsTypes.toString(), ","));
         }
 
+        /**
+         * Encodes topic signature (topics[0]).
+         * @author Andrei Grigoriu
+         * @return the topic signature as sha3
+         */
         public byte[] encodeTopicSignature() {
             String signature = formatSignature();
             byte[] signatureHashed = sha3(signature.getBytes());
             return signatureHashed;
         }
 
+        /**
+         * Encode event signature and indexed event params.
+         * @param args args to encode
+         * @return The topics as an array of strins.
+         */
         public String[] encodeTopics(Object... args) {
             int argIndex = 0;
             List<String> argTopics = new ArrayList<>();
