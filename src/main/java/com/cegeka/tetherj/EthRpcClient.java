@@ -350,7 +350,7 @@ public class EthRpcClient {
      */
     @SuppressWarnings("unchecked")
     public List<FilterLogObject> getFilterChanges(String filterId) {
-        return (List<FilterLogObject>) rpc
+        return rpc
                 .eth_getFilterChanges(filterId);
     }
 
@@ -363,7 +363,7 @@ public class EthRpcClient {
      */
     @SuppressWarnings("unchecked")
     public List<FilterLogObject> getFilterChanges(BigInteger filterId) {
-        return (List<FilterLogObject>) rpc.eth_getFilterChanges("0x" + filterId.toString(16));
+        return rpc.eth_getFilterChanges("0x" + filterId.toString(16));
     }
 
     /**
@@ -372,11 +372,11 @@ public class EthRpcClient {
      * @param filterId
      *            filter id to fetch changes of.
      * @return Returns a filter log object
-     */
+     *
     @SuppressWarnings("unchecked")
     public List<String> getPendingTransactionFilterChanges(String filterId) {
         return (List<String>) rpc.eth_getFilterChanges(filterId);
-    }
+    }*/
 
     /**
      * Get ethereum filter changes.
@@ -384,11 +384,11 @@ public class EthRpcClient {
      * @param filterId
      *            id to fetch changes of
      * @return a filter log object
-     */
+     *
     @SuppressWarnings("unchecked")
     public List<String> getPendingTransactionFilterChanges(BigInteger filterId) {
         return (List<String>) rpc.eth_getFilterChanges("0x" + filterId.toString(16));
-    }
+    }*/
 
     /**
      * Get ethereum filter changes.
@@ -399,7 +399,7 @@ public class EthRpcClient {
      */
     @SuppressWarnings("unchecked")
     public List<FilterLogObject> getFilterLogs(String filterId) {
-        return (List<FilterLogObject>) rpc
+        return rpc
                 .eth_getFilterLogs(filterId);
     }
 
@@ -412,6 +412,6 @@ public class EthRpcClient {
      */
     @SuppressWarnings("unchecked")
     public List<FilterLogObject> getFilterLogs(BigInteger filterId) {
-        return (List<FilterLogObject>) rpc.eth_getFilterLogs("0x" + filterId.toString(16));
+        return rpc.eth_getFilterLogs("0x" + filterId.toString(16));
     }
 }

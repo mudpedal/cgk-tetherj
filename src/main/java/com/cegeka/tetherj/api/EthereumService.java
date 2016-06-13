@@ -1445,7 +1445,7 @@ public class EthereumService {
      *            to get changes for
      * @param callable
      *            with Block response
-     */
+     *
     public void getPendingTransactionFilterChanges(BigInteger filterId,
             TetherjHandle<List<String>> callable) {
         performAsyncRpcAction(new RpcAction<List<String>>() {
@@ -1456,7 +1456,7 @@ public class EthereumService {
             }
 
         }, callable);
-    }
+    }*/
 
     /**
      * Blocking get filter changes for pending transactions.
@@ -1464,7 +1464,7 @@ public class EthereumService {
      * @param filterId
      *            to get changes for
      * @return response for change objects
-     */
+     *
     public TetherjResponse<List<String>> getPendingTransactionFilterChanges(BigInteger filterId) {
         return performBlockingRpcAction(new RpcAction<List<String>>() {
 
@@ -1473,7 +1473,7 @@ public class EthereumService {
                 return rpc.getPendingTransactionFilterChanges(filterId);
             }
         });
-    }
+    }*/
 
     /**
      * Future get filter changes for pending transactions.
@@ -1481,7 +1481,7 @@ public class EthereumService {
      * @param filterId
      *            to get changes for
      * @return future to get uninstall success
-     */
+     *
     public Future<TetherjResponse<List<String>>> getPendingTransactionFilterChangesFuture(
             BigInteger filterId) {
         return performFutureRpcAction(new RpcAction<List<String>>() {
@@ -1491,5 +1491,5 @@ public class EthereumService {
                 return rpc.getPendingTransactionFilterChanges(filterId);
             }
         });
-    }
+    }*/
 }

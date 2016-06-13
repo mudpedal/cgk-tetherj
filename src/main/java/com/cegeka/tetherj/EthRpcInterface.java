@@ -47,7 +47,7 @@ public interface EthRpcInterface {
 
     Boolean eth_uninstallFilter(BigInteger filterId);
 
-    Object eth_getFilterChanges(String filterId);
+    List<FilterLogObject> eth_getFilterChanges(String filterId);
 
     List<FilterLogObject> eth_getFilterLogs(String filterId);
 

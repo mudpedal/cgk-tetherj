@@ -44,26 +44,28 @@ public class DevTest {
                 }
 
                 FilterLogRequest request = theDao.getEventFilter("Voted", null);
-                request.setFromBlock(BigInteger.valueOf(1300000));
-                request.setFromBlock(BigInteger.valueOf(1500000));
+                request.setFromBlock("latest");
+                request.setToBlock("latest");
 
                 TetherjResponse<BigInteger> filterResponse = service.newFilter(request);
 
                 if (filterResponse.isSuccessful()) {
-                    TetherjResponse<List<FilterLogObject>> eventResponse = service
-                            .getFilterLogs(filterResponse.getValue());
+                    while (true) {
+                        TetherjResponse<List<FilterLogObject>> eventResponse = service
+                                .getFilterChanges(filterResponse.getValue());
 
-                    if (eventResponse.isSuccessful()) {
-                        for (FilterLogObject obj : eventResponse.getValue()) {
-                            System.out.println(obj);
+                        if (eventResponse.isSuccessful() && eventResponse.getValue() != null) {
+                            for (FilterLogObject obj : eventResponse.getValue()) {
+                                System.out.println(obj);
 
-                            System.out.println(Arrays.toString(
-                                    request.decodeEventData(obj.getData(), obj.getTopics())));
+                                System.out.println(Arrays.toString(
+                                        request.decodeEventData(obj.getData(), obj.getTopics())));
 
+                            }
+                        } else if (!eventResponse.isSuccessful()) {
+                            System.err.println("BAD EVENT RESPONSE "
+                                    + eventResponse.getException().getMessage());
                         }
-                    } else {
-                        System.err.println(
-                                "BAD EVENT RESPONSE " + eventResponse.getException().getMessage());
                     }
                 } else {
                     System.err.println(
