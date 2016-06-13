@@ -24,12 +24,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Creates a contract function call transaction. Serializes arguments according to the function ABI
- * .
- *
  * Created by Anton Nashatyrev on 25.08.2015.
+ * Modified by Andrei Grigoriu
  */
 public class CallTransaction {
 
+    /**
+     * Create raw transaction.
+     * @param nonce for transaction
+     * @param gasPrice for transaction
+     * @param gasLimit for transaction
+     * @param toAddress for transaction
+     * @param value for transaction
+     * @param data for transaction
+     * @return Transaction object
+     */
     public static Transaction createRawTransaction(long nonce, long gasPrice, long gasLimit,
             String toAddress, long value, byte[] data) {
         Transaction tx = new Transaction(longToBytesNoLeadZeroes(nonce),
@@ -39,6 +48,17 @@ public class CallTransaction {
         return tx;
     }
 
+    /**
+     * Create raw transaction for calling methods.
+     * @param nonce for transaction
+     * @param gasPrice for transaction
+     * @param gasLimit for transaction
+     * @param toAddress for transaction
+     * @param value for transaction
+     * @param callFunc for transaction
+     * @param funcArgs for transaction
+     * @return Transaction object
+     */
     public static Transaction createCallTransaction(long nonce, long gasPrice, long gasLimit,
             String toAddress, long value, Function callFunc, Object... funcArgs) {
 
@@ -47,9 +67,9 @@ public class CallTransaction {
     }
 
     /**
-     * Generic ABI type
+     * Generic ABI type.
      */
-    public static abstract class Type implements Serializable {
+    public abstract static class Type implements Serializable {
 
         private static final long serialVersionUID = 2587268561151462949L;
 
@@ -60,7 +80,7 @@ public class CallTransaction {
         }
 
         /**
-         * The type name as it was specified in the interface description
+         * The type name as it was specified in the interface description.
          */
         public String getName() {
             return name;
@@ -74,6 +94,11 @@ public class CallTransaction {
             return getName();
         }
 
+        /**
+         * Map string type to derived class.
+         * @param typeName as string.
+         * @return Type object.
+         */
         @JsonCreator
         public static Type getType(String typeName) {
             if (typeName.contains("[")) {
@@ -101,9 +126,8 @@ public class CallTransaction {
         }
 
         /**
-         * Encodes the value according to specific type rules
-         *
-         * @param value
+         * Encodes the value according to specific type rules.
+         * @param value to encode
          */
         public abstract byte[] encode(Object value);
 
@@ -131,7 +155,7 @@ public class CallTransaction {
         }
     }
 
-    public static abstract class ArrayType extends Type {
+    public abstract static class ArrayType extends Type {
 
         private static final long serialVersionUID = 9006784067322999908L;
 
@@ -172,7 +196,7 @@ public class CallTransaction {
             }
         }
 
-        public abstract byte[] encodeList(List<Object> l);
+        public abstract byte[] encodeList(List<Object> list);
 
         @Override
         public String toString() {
@@ -185,6 +209,10 @@ public class CallTransaction {
         private static final long serialVersionUID = 2576085181269405949L;
         int size;
 
+        /**
+         * Constructor.
+         * @param name for static array
+         */
         public StaticArrayType(String name) {
             super(name);
             int idx1 = name.indexOf("[");
@@ -199,13 +227,14 @@ public class CallTransaction {
         }
 
         @Override
-        public byte[] encodeList(List<Object> l) {
-            if (l.size() != size)
+        public byte[] encodeList(List<Object> list) {
+            if (list.size() != size) {
                 throw new RuntimeException(
-                        "List size (" + l.size() + ") != " + size + " for type " + getName());
+                        "List size (" + list.size() + ") != " + size + " for type " + getName());
+            }
             byte[][] elems = new byte[size][];
-            for (int i = 0; i < l.size(); i++) {
-                elems[i] = elementType.encode(l.get(i));
+            for (int i = 0; i < list.size(); i++) {
+                elems[i] = elementType.encode(list.get(i));
             }
             return ByteUtil.merge(elems);
         }
@@ -241,24 +270,24 @@ public class CallTransaction {
         }
 
         @Override
-        public byte[] encodeList(List<Object> l) {
+        public byte[] encodeList(List<Object> list) {
             byte[][] elems;
             if (elementType.isDynamicType()) {
-                elems = new byte[l.size() * 2 + 1][];
-                elems[0] = IntType.encodeInt(l.size());
-                int offset = l.size() * 32;
-                for (int i = 0; i < l.size(); i++) {
+                elems = new byte[list.size() * 2 + 1][];
+                elems[0] = IntType.encodeInt(list.size());
+                int offset = list.size() * 32;
+                for (int i = 0; i < list.size(); i++) {
                     elems[i + 1] = IntType.encodeInt(offset);
-                    byte[] encoded = elementType.encode(l.get(i));
-                    elems[l.size() + i + 1] = encoded;
+                    byte[] encoded = elementType.encode(list.get(i));
+                    elems[list.size() + i + 1] = encoded;
                     offset += 32 * ((encoded.length - 1) / 32 + 1);
                 }
             } else {
-                elems = new byte[l.size() + 1][];
-                elems[0] = IntType.encodeInt(l.size());
+                elems = new byte[list.size() + 1][];
+                elems[0] = IntType.encodeInt(list.size());
 
-                for (int i = 0; i < l.size(); i++) {
-                    elems[i + 1] = elementType.encode(l.get(i));
+                for (int i = 0; i < list.size(); i++) {
+                    elems[i + 1] = elementType.encode(list.get(i));
                 }
             }
             return ByteUtil.merge(elems);
@@ -303,11 +332,11 @@ public class CallTransaction {
 
         @Override
         public byte[] encode(Object value) {
-            if (!(value instanceof byte[]))
+            if (!(value instanceof byte[])) {
                 throw new RuntimeException("byte[] value expected for type 'bytes'");
+            }
             byte[] bb = (byte[]) value;
             byte[] ret = new byte[((bb.length - 1) / 32 + 1) * 32]; // padding
-                                                                    // 32 bytes
             System.arraycopy(bb, 0, ret, 0, bb.length);
 
             return ByteUtil.merge(IntType.encodeInt(bb.length), ret);
@@ -332,9 +361,7 @@ public class CallTransaction {
     }
 
     public static class StringType extends BytesType {
-        /**
-         *
-         */
+
         private static final long serialVersionUID = -2421274211203157882L;
 
         public StringType() {
@@ -343,8 +370,9 @@ public class CallTransaction {
 
         @Override
         public byte[] encode(Object value) {
-            if (!(value instanceof String))
+            if (!(value instanceof String)) {
                 throw new RuntimeException("String value expected for type 'string'");
+            }
             return super.encode(((String) value).getBytes(StandardCharsets.UTF_8));
         }
 
@@ -482,6 +510,11 @@ public class CallTransaction {
             return encodeInt(new BigInteger("" + integerValue));
         }
 
+        /**
+         * Encode int from BigInteger.
+         * @param bigInt to encode
+         * @return rlp data
+         */
         public static byte[] encodeInt(BigInteger bigInt) {
             byte[] ret = new byte[32];
             Arrays.fill(ret, bigInt.signum() < 0 ? (byte) 0xFF : 0);
@@ -552,6 +585,11 @@ public class CallTransaction {
             return ByteUtil.merge(encodeSignature(), encodeArguments(args));
         }
 
+        /**
+         * Encode method arguments.
+         * @param args to encode
+         * @return data rlp encoded
+         */
         public byte[] encodeArguments(Object... args) {
             if (args.length > inputs.length) {
                 throw new RuntimeException(
@@ -648,6 +686,10 @@ public class CallTransaction {
             return ret;
         }
 
+        /**
+         * Return formated signature as Method(Param1Type,Param2Type...)
+         * @return method signature per standard
+         */
         public String formatSignature() {
             StringBuilder paramsTypes = new StringBuilder();
             for (Param param : inputs) {
@@ -679,7 +721,7 @@ public class CallTransaction {
             argTopics.add(CryptoUtil.byteToHexWithPrefix(encodeTopicSignature()));
             for (int i = 0; i < inputs.length; i++) {
                 if (inputs[i].indexed) {
-                    if (args != null && args[argIndex] != null) {
+                    if (args != null && argIndex < args.length && args[argIndex] != null) {
                         argTopics.add(CryptoUtil
                                 .byteToHexWithPrefix(inputs[i].type.encode(args[argIndex++])));
                     } else {
@@ -694,6 +736,10 @@ public class CallTransaction {
             return topics;
         }
 
+        /**
+         * Get method signature.
+         * @return first 4 bytes of sha3(methodEncoding)
+         */
         public byte[] encodeSignature() {
             String signature = formatSignature();
             byte[] sha3Fingerprint = sha3(signature.getBytes());
@@ -706,6 +752,11 @@ public class CallTransaction {
             return formatSignature();
         }
 
+        /**
+         * Deserialize Function from json.
+         * @param json to deserialize from
+         * @return function object
+         */
         public static Function fromJsonInterface(String json) {
             try {
                 return new ObjectMapper().readValue(json, Function.class);
@@ -718,6 +769,13 @@ public class CallTransaction {
             return fromSignature(funcName, paramTypes, new String[0]);
         }
 
+        /**
+         * Create function from custom signature.
+         * @param funcName name
+         * @param paramTypes inputs
+         * @param resultTypes outputs
+         * @return Function object
+         */
         public static Function fromSignature(String funcName, String[] paramTypes,
                 String[] resultTypes) {
             Function ret = new Function();
@@ -738,26 +796,5 @@ public class CallTransaction {
             }
             return ret;
         }
-    }
-
-    public static class Contract {
-        public Contract(String jsonInterface) {
-            try {
-                functions = new ObjectMapper().readValue(jsonInterface, Function[].class);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public Function getByName(String name) {
-            for (Function function : functions) {
-                if (name.equals(function.name)) {
-                    return function;
-                }
-            }
-            return null;
-        }
-
-        public Function[] functions;
     }
 }

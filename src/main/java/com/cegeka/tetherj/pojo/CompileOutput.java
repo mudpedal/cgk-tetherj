@@ -24,6 +24,10 @@ public class CompileOutput {
         return contractData;
     }
 
+    /**
+     * Get all contract names in this compilation output.
+     * @return names
+     */
     public String[] getContractNames() {
         String[] names = new String[contractData.keySet().size()];
         contractData.keySet().toArray(names);

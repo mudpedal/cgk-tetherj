@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class DevDocMethodParams implements Serializable {
 

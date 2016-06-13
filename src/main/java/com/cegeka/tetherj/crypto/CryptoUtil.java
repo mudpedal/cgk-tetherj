@@ -4,16 +4,16 @@ import java.math.BigInteger;
 import java.util.Formatter;
 
 /**
- * Util for both crypto and decoding
- * 
+ * Util for both crypto and decoding.
+ *
  * @author Andrei Grigoriu
  *
  */
 public class CryptoUtil {
 
     /**
-     * Convert bytes to hex + 0x in front
-     * 
+     * Convert bytes to hex + 0x in front.
+     *
      * @param data
      *            to convert
      * @return hex string
@@ -23,8 +23,8 @@ public class CryptoUtil {
     }
 
     /**
-     * Convert bytes to hex without (no 0x in front)
-     * 
+     * Convert bytes to hex without (no 0x in front).
+     *
      * @param data
      *            to convert
      * @return hex strng
@@ -40,8 +40,8 @@ public class CryptoUtil {
     }
 
     /**
-     * Converts hex to bytes
-     * 
+     * Converts hex to bytes.
+     *
      * @param hex
      *            to decoded (may have 0x in front)
      * @return byte data
@@ -54,8 +54,28 @@ public class CryptoUtil {
     }
 
     /**
-     * Convert hex to BigInteger
-     * 
+     * Converts hex to bytes.
+     *
+     * @param hex
+     *            to decoded (may have 0x in front)
+     * @return byte data
+     */
+    public static byte[] hexToBytes(char[] hex) {
+        if (hex.length % 2 != 0) {
+            throw new IllegalArgumentException("Must pass an even number of characters.");
+        }
+
+        int length = hex.length >> 1;
+        byte[] raw = new byte[length];
+        for (int o = 0, i = 0; o < length; o++) {
+            raw[o] = (byte) ((getHexCharValue(hex[i++]) << 4) | getHexCharValue(hex[i++]));
+        }
+        return raw;
+    }
+
+    /**
+     * Convert hex to BigInteger.
+     *
      * @param hex
      *            to convert
      * @return biginteger from hex
@@ -78,34 +98,19 @@ public class CryptoUtil {
     }
 
     /**
-     * Converts hex to bytes
-     * 
-     * @param hex
-     *            to decoded (may have 0x in front)
-     * @return byte data
+     * Get associated byte for char.
+     * @param ch char
+     * @return byte associated with char
      */
-    public static byte[] hexToBytes(char[] hex) {
-        if (hex.length % 2 != 0) {
-            throw new IllegalArgumentException("Must pass an even number of characters.");
+    public static byte getHexCharValue(char ch) {
+        if (ch >= '0' && ch <= '9') {
+            return (byte) (ch - '0');
         }
-
-        int length = hex.length >> 1;
-        byte[] raw = new byte[length];
-        for (int o = 0, i = 0; o < length; o++) {
-            raw[o] = (byte) ((getHexCharValue(hex[i++]) << 4) | getHexCharValue(hex[i++]));
+        if (ch >= 'A' && ch <= 'F') {
+            return (byte) (10 + ch - 'A');
         }
-        return raw;
-    }
-
-    public static byte getHexCharValue(char c) {
-        if (c >= '0' && c <= '9') {
-            return (byte) (c - '0');
-        }
-        if (c >= 'A' && c <= 'F') {
-            return (byte) (10 + c - 'A');
-        }
-        if (c >= 'a' && c <= 'f') {
-            return (byte) (10 + c - 'a');
+        if (ch >= 'a' && ch <= 'f') {
+            return (byte) (10 + ch - 'a');
         }
         throw new IllegalArgumentException("Invalid hex character");
     }

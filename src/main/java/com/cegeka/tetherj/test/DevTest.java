@@ -20,6 +20,10 @@ public class DevTest {
 
     public static EthRpcClient c = new EthRpcClient();
 
+    /**
+     * MAIN TEST.
+     * @param args process args
+     */
     public static void main(String[] args) {
 
         EthereumService service = new EthereumService(2);
@@ -43,7 +47,7 @@ public class DevTest {
                     System.out.println(Arrays.toString(balanceResponse.getValue()));
                 }
 
-                FilterLogRequest request = theDao.getEventFilter("Voted", null);
+                FilterLogRequest request = theDao.getEventFilter("Voted", new Object[] {null});
                 request.setFromBlock("latest");
                 request.setToBlock("latest");
 

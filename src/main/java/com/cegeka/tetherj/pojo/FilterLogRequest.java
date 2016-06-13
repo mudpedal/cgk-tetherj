@@ -5,7 +5,6 @@ import java.math.BigInteger;
 
 import org.ethereum.core.CallTransaction.Function;
 
-import com.cegeka.tetherj.crypto.CryptoUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
