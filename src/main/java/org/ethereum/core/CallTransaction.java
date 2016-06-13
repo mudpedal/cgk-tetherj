@@ -612,6 +612,35 @@ public class CallTransaction {
             return decode(encodedRet, outputs);
         }
 
+        public Object[] decodeEventData(String data, String[] topics) {
+            byte[] dataBytes = CryptoUtil.hexToBytes(data);
+            Object[] ret = new Object[inputs.length];
+
+            int dataOff = 0;
+            int topicIndex = 1;
+            for (int i = 0; i < inputs.length; i++) {
+                if (inputs[i].indexed) {
+                    byte[] topicData = CryptoUtil.hexToBytes(topics[topicIndex++]);
+                    if (inputs[i].type.isDynamicType()) {
+                        ret[i] = inputs[i].type.decode(topicData,
+                                IntType.decodeInt(topicData, 0).intValue());
+                    } else {
+                        ret[i] = inputs[i].type.decode(topicData, 0);
+                    }
+                } else {
+                    if (inputs[i].type.isDynamicType()) {
+                        ret[i] = inputs[i].type.decode(dataBytes,
+                                IntType.decodeInt(dataBytes, dataOff).intValue());
+                    } else {
+                        ret[i] = inputs[i].type.decode(dataBytes, dataOff);
+                    }
+                    dataOff += inputs[i].type.getFixedSize();
+                }
+            }
+
+            return ret;
+        }
+
         public String formatSignature() {
             StringBuilder paramsTypes = new StringBuilder();
             for (Param param : inputs) {
@@ -633,7 +662,13 @@ public class CallTransaction {
             argTopics.add(CryptoUtil.byteToHexWithPrefix(encodeTopicSignature()));
             for (int i = 0; i < inputs.length; i++) {
                 if (inputs[i].indexed) {
-                    argTopics.add(CryptoUtil.byteToHexWithPrefix(inputs[i].type.encode(args[argIndex++])));
+                    if (args != null && args[argIndex] != null) {
+                        argTopics.add(CryptoUtil
+                                .byteToHexWithPrefix(inputs[i].type.encode(args[argIndex++])));
+                    } else {
+                        argTopics.add(null);
+                        ++argIndex;
+                    }
                 }
             }
 

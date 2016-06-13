@@ -78,8 +78,7 @@ public class EthereumService {
     private static final Logger logger = LogManager.getLogger(EthereumService.class);
 
     /**
-     * Constructor.
-     * Creates executor automatically
+     * Constructor. Creates executor automatically
      */
     public EthereumService() {
         this(EthereumService.DEFAULT_EXECUTOR_THREADS, EthRpcClient.DEFAULT_HOSTNAME,
@@ -113,17 +112,19 @@ public class EthereumService {
                     new ThreadFactory() {
 
                         @Override
-                        public Thread newThread(Runnable r) {
-                            Thread t = new Thread(r);
+                        public Thread newThread(Runnable runnable) {
+                            Thread thread = new Thread(runnable);
 
-                            t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                                @Override
-                                public void uncaughtException(Thread t, Throwable e) {
-                                    handleUnknownThrowables(e);
-                                }
-                            });
+                            thread.setUncaughtExceptionHandler(
+                                    new Thread.UncaughtExceptionHandler() {
+                                    @Override
+                                    public void uncaughtException(Thread thread, Throwable ex) {
+                                        handleUnknownThrowables(ex);
+                                    }
+                            }
+                            );
 
-                            return t;
+                            return thread;
                         }
                     });
 
@@ -142,6 +143,7 @@ public class EthereumService {
 
     /**
      * Constructor.
+     *
      * @param executor
      *            to use for async and future calls, also for polling, null to disable async support
      */
@@ -151,6 +153,7 @@ public class EthereumService {
 
     /**
      * Constructor.
+     *
      * @param executor
      *            to use for async and future calls, also for polling, null to disable async support
      * @param rpcHostname
@@ -162,6 +165,7 @@ public class EthereumService {
 
     /**
      * Constructor.
+     *
      * @param executor
      *            to use for async and future calls, also for polling
      * @param rpcHostname
@@ -1016,8 +1020,8 @@ public class EthereumService {
     /**
      * Future get a transaction by transaction hash.
      *
-     * @param sourceCode
-     *            to get data by.
+     * @param txHash
+     *            to get transaction data by.
      * @return future for Transaction response
      */
     public Future<TetherjResponse<Transaction>> getTransactionFuture(String txHash) {
@@ -1050,8 +1054,7 @@ public class EthereumService {
     /**
      * Blocking get the latest block.
      *
-     * @param callable
-     *            with Block response
+     * @return block data
      */
     public TetherjResponse<Block> getLatestBlock() {
         return performBlockingRpcAction(new RpcAction<Block>() {
@@ -1066,8 +1069,7 @@ public class EthereumService {
     /**
      * Future get the latest block.
      *
-     * @param callable
-     *            with Block response
+     * @return block data
      */
     public Future<TetherjResponse<Block>> getLatestBlockFuture() {
         return performFutureRpcAction(new RpcAction<Block>() {

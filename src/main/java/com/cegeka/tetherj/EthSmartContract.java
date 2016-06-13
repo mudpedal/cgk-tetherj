@@ -160,6 +160,7 @@ public class EthSmartContract {
         filter.setFromBlock("0x0");
         filter.setToBlock("latest");
         filter.setTopics(eventFunction.encodeTopics(args));
+        filter.setFunction(eventFunction);
 
         logger.debug(
                 "Generated event filter call (contractAddress: " + this.contractAddress + ", name: "

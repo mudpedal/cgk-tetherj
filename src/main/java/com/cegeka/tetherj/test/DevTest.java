@@ -43,10 +43,11 @@ public class DevTest {
                     System.out.println(Arrays.toString(balanceResponse.getValue()));
                 }
 
-                FilterLogRequest request = theDao.getEventFilter("CreatedToken", "e382dcaabf70dbce10dfcaecf0ac3b78184f6e65");
-                TetherjResponse<BigInteger> filterResponse = service
-                        .newFilter(request);
+                FilterLogRequest request = theDao.getEventFilter("Voted", null);
+                request.setFromBlock(BigInteger.valueOf(1300000));
+                request.setFromBlock(BigInteger.valueOf(1500000));
 
+                TetherjResponse<BigInteger> filterResponse = service.newFilter(request);
 
                 if (filterResponse.isSuccessful()) {
                     TetherjResponse<List<FilterLogObject>> eventResponse = service
@@ -55,6 +56,10 @@ public class DevTest {
                     if (eventResponse.isSuccessful()) {
                         for (FilterLogObject obj : eventResponse.getValue()) {
                             System.out.println(obj);
+
+                            System.out.println(Arrays.toString(
+                                    request.decodeEventData(obj.getData(), obj.getTopics())));
+
                         }
                     } else {
                         System.err.println(
@@ -67,9 +72,8 @@ public class DevTest {
 
             }
 
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
     }
