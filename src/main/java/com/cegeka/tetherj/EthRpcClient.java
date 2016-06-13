@@ -31,6 +31,7 @@ public class EthRpcClient {
     /**
      * Ethereum rpc interface.
      */
+    JsonRpcHttpClient rpcClient;
     private EthRpcInterface rpc;
     public static final String DEFAULT_HOSTNAME = Optional
             .ofNullable(System.getProperty("geth.address")).orElse("127.0.0.1");
@@ -54,7 +55,7 @@ public class EthRpcClient {
         log.log(Level.INFO, "Geth address: " + hostname + ":" + port);
         try {
             url = new URL("http://" + hostname + ":" + port + "/");
-            JsonRpcHttpClient rpcClient = new JsonRpcHttpClient(url);
+            rpcClient = new JsonRpcHttpClient(url);
             rpc = ProxyUtil.createClientProxy(getClass().getClassLoader(), EthRpcInterface.class,
                     rpcClient);
 
@@ -348,7 +349,6 @@ public class EthRpcClient {
      *            Filter to check.
      * @return Retuns the filter log object.
      */
-    @SuppressWarnings("unchecked")
     public List<FilterLogObject> getFilterChanges(String filterId) {
         return rpc
                 .eth_getFilterChanges(filterId);
@@ -361,7 +361,6 @@ public class EthRpcClient {
      *            id to fetch changes of.
      * @return Returns a filter log object.
      */
-    @SuppressWarnings("unchecked")
     public List<FilterLogObject> getFilterChanges(BigInteger filterId) {
         return rpc.eth_getFilterChanges("0x" + filterId.toString(16));
     }
@@ -372,11 +371,10 @@ public class EthRpcClient {
      * @param filterId
      *            filter id to fetch changes of.
      * @return Returns a filter log object
-     *
-    @SuppressWarnings("unchecked")
+     */
     public List<String> getPendingTransactionFilterChanges(String filterId) {
-        return (List<String>) rpc.eth_getFilterChanges(filterId);
-    }*/
+        return rpc.eth_getFilterChangesTransactions(filterId);
+    }
 
     /**
      * Get ethereum filter changes.
@@ -384,11 +382,10 @@ public class EthRpcClient {
      * @param filterId
      *            id to fetch changes of
      * @return a filter log object
-     *
-    @SuppressWarnings("unchecked")
+     */
     public List<String> getPendingTransactionFilterChanges(BigInteger filterId) {
-        return (List<String>) rpc.eth_getFilterChanges("0x" + filterId.toString(16));
-    }*/
+        return rpc.eth_getFilterChangesTransactions("0x" + filterId.toString(16));
+    }
 
     /**
      * Get ethereum filter changes.
@@ -397,7 +394,6 @@ public class EthRpcClient {
      *            Filter to check.
      * @return Retuns the filter log object.
      */
-    @SuppressWarnings("unchecked")
     public List<FilterLogObject> getFilterLogs(String filterId) {
         return rpc
                 .eth_getFilterLogs(filterId);
@@ -410,7 +406,6 @@ public class EthRpcClient {
      *            id to fetch changes of.
      * @return Returns a filter log object.
      */
-    @SuppressWarnings("unchecked")
     public List<FilterLogObject> getFilterLogs(BigInteger filterId) {
         return rpc.eth_getFilterLogs("0x" + filterId.toString(16));
     }

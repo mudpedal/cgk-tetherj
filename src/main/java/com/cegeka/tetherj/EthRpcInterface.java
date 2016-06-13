@@ -10,6 +10,7 @@ import com.cegeka.tetherj.pojo.FilterLogRequest;
 import com.cegeka.tetherj.pojo.Transaction;
 import com.cegeka.tetherj.pojo.TransactionCall;
 import com.cegeka.tetherj.pojo.TransactionReceipt;
+import com.googlecode.jsonrpc4j.JsonRpcMethod;
 
 /**
  * Rpc Interface to use by json rpc invoker. All methods defined as per ethereum rpc standard.
@@ -48,6 +49,9 @@ public interface EthRpcInterface {
     Boolean eth_uninstallFilter(BigInteger filterId);
 
     List<FilterLogObject> eth_getFilterChanges(String filterId);
+
+    @JsonRpcMethod("eth_getFilterChanges")
+    List<String> eth_getFilterChangesTransactions(String filterId);
 
     List<FilterLogObject> eth_getFilterLogs(String filterId);
 
