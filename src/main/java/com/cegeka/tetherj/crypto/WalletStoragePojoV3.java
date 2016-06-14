@@ -30,7 +30,7 @@ import lombok.Data;
 
 /**
  * Wallet v3 storage pojo and manager.
- * 
+ *
  * @author Andrei Grigoriu
  *
  */
@@ -55,8 +55,8 @@ public class WalletStoragePojoV3 implements Serializable {
     }
 
     /**
-     * Create a random wallet (new keys pairs)
-     * 
+     * Create a random wallet (new keys pairs).
+     *
      * @param passphrase
      *            to encrypt private key with
      * @return storage
@@ -141,7 +141,7 @@ public class WalletStoragePojoV3 implements Serializable {
 
     /**
      * Create storage from json string
-     * 
+     *
      * @param json
      *            to create storage from
      * @return storage object
@@ -163,7 +163,7 @@ public class WalletStoragePojoV3 implements Serializable {
 
     /**
      * Create storage from file
-     * 
+     *
      * @param file
      *            to read and deserialize storage from
      * @return storage object
@@ -182,8 +182,8 @@ public class WalletStoragePojoV3 implements Serializable {
     }
 
     /**
-     * Serialize to file
-     * 
+     * Serialize to file.
+     *
      * @param file
      *            to write to
      * @throws IOException
@@ -200,8 +200,8 @@ public class WalletStoragePojoV3 implements Serializable {
     }
 
     /**
-     * Serialize to String
-     * 
+     * Serialize to String.
+     *
      * @return serialized json
      */
     public String toJsonString() {
@@ -216,8 +216,8 @@ public class WalletStoragePojoV3 implements Serializable {
     }
 
     /**
-     * Decrypt private key
-     * 
+     * Decrypt private key.
+     *
      * @param passphrase
      *            to decrypt
      * @return private key data

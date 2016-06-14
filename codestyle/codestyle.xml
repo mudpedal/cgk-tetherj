@@ -9,10 +9,18 @@
     Description: 
 Checkstyle configurartion that checks the Google coding conventions (https://google-styleguide.googlecode.com/svn-history/r130/trunk/javaguide.html).
 -->
+
 <module name="Checker">
   <property name="severity" value="warning"/>
   <property name="charset" value="UTF-8"/>
   <property name="fileExtensions" value="java, properties, xml"/>
+
+  <module name="SuppressionFilter">
+    <property name="file" value="codestyle/suppressions.xml"/>
+    <property name="optional" value="false"/>
+  </module>
+
+
   <module name="TreeWalker">
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
