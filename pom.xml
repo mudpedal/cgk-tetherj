@@ -92,6 +92,7 @@
 					<configLocation>codestyle/codestyle.xml</configLocation>
 					<logViolationsToConsole>true</logViolationsToConsole>
 					<violationSeverity>warning</violationSeverity>
+					<consoleOutput>true</consoleOutput>
 				</configuration>
 				<executions>
 					<execution>

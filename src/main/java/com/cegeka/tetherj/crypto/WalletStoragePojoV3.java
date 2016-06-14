@@ -70,7 +70,6 @@ public class WalletStoragePojoV3 implements Serializable {
 
         try {
             wallet.address = CryptoUtil.byteToHex(ecdsaPair.getAddress());
-            byte[] privateKeyBytes = ecdsaPair.getPrivKeyBytes();
 
             WalletCryptoPojoV3 crypto = new WalletCryptoPojoV3();
             wallet.crypto = crypto;
@@ -94,7 +93,7 @@ public class WalletStoragePojoV3 implements Serializable {
                     crypto.kdfparams.dklen);
 
             // select AES algorithm
-            Cipher c = Cipher.getInstance("AES/CTR/NoPadding");
+            Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
 
             // key will only be the first 16 bytes of the hash key
             byte[] trimmedKey = Arrays.copyOfRange(key, 0, 16);
@@ -105,9 +104,9 @@ public class WalletStoragePojoV3 implements Serializable {
 
             // crypt using AES and get generated IV
             SecretKeySpec secretKeySpec = new SecretKeySpec(trimmedKey, "AES");
-            c.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-            byte[] iv = c.getIV();
-            byte[] ciphertext = c.doFinal(privateKeyBytes);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+            byte[] privateKeyBytes = ecdsaPair.getPrivKeyBytes();
+            byte[] ciphertext = cipher.doFinal(privateKeyBytes);
 
             // generate MAC as per ethereum standard
             KeccakDigest md = new KeccakDigest(256);
@@ -121,26 +120,19 @@ public class WalletStoragePojoV3 implements Serializable {
 
             // set in storage
             crypto.mac = CryptoUtil.byteToHex(mac);
+            byte[] iv = cipher.getIV();
             crypto.cipherparams.iv = CryptoUtil.byteToHex(iv);
             crypto.ciphertext = CryptoUtil.byteToHex(ciphertext);
 
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         return wallet;
     }
 
     /**
-     * Create storage from json string
+     * Create storage from json string.
      *
      * @param json
      *            to create storage from
@@ -150,21 +142,17 @@ public class WalletStoragePojoV3 implements Serializable {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(json, WalletStoragePojoV3.class);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         return null;
     }
 
     /**
-     * Create storage from file
+     * Create storage from file.
      *
-     * @param file
+     * @param wallet
      *            to read and deserialize storage from
      * @return storage object
      */
@@ -172,10 +160,8 @@ public class WalletStoragePojoV3 implements Serializable {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(wallet, WalletStoragePojoV3.class);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
+        } catch (JsonParseException | JsonMappingException ex) {
+            ex.printStackTrace();
         }
 
         return null;
@@ -186,16 +172,14 @@ public class WalletStoragePojoV3 implements Serializable {
      *
      * @param file
      *            to write to
-     * @throws IOException
+     * @throws IOException in case write fails
      */
     public void writeToFile(File file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writeValue(file, this);
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
+        } catch (JsonGenerationException | JsonMappingException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -208,8 +192,8 @@ public class WalletStoragePojoV3 implements Serializable {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
         }
 
         return null;
@@ -227,11 +211,6 @@ public class WalletStoragePojoV3 implements Serializable {
             byte[] key = Pbkdf2.derive(passphrase, CryptoUtil.hexToBytes(crypto.kdfparams.salt),
                     crypto.kdfparams.c, crypto.kdfparams.dklen);
             try {
-                Cipher c = Cipher.getInstance("AES/CTR/NoPadding");
-
-                // key will only be the first 16 bytes of the hash key
-                byte[] trimmedKey = Arrays.copyOfRange(key, 0, 16);
-
                 // macKey that will be used to validate wallet unlocking (as per
                 // ethereum standard)
                 byte[] macKey = Arrays.copyOfRange(key, 16, 32);
@@ -252,27 +231,20 @@ public class WalletStoragePojoV3 implements Serializable {
                     return null;
                 }
 
+                // key will only be the first 16 bytes of the hash key
+                byte[] trimmedKey = Arrays.copyOfRange(key, 0, 16);
                 SecretKeySpec secretKeySpec = new SecretKeySpec(trimmedKey, "AES");
                 byte[] ivAsBytes = CryptoUtil.hexToBytes(crypto.cipherparams.iv);
                 IvParameterSpec iv = new IvParameterSpec(ivAsBytes);
-                c.init(Cipher.DECRYPT_MODE, secretKeySpec, iv);
 
-                byte[] privateKey = c.doFinal(CryptoUtil.hexToBytes(crypto.ciphertext));
+                Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+                cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, iv);
+                byte[] privateKey = cipher.doFinal(CryptoUtil.hexToBytes(crypto.ciphertext));
 
                 return privateKey;
 
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                e.printStackTrace();
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         } else {
             throw new UnsupportedOperationException("Wallet is incompatible or corrupted!");
