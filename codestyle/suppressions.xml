@@ -8,5 +8,6 @@
   <suppress files="[/\\]target[/\\]" checks=".*"/>
   <suppress files="src/test/*" checks="AbbreviationAsWordInName"/>
   <suppress files="src/main/java/org/*" checks=".*"/>
+  <suppress files="/src/main/java/com/cegeka/tetherj/crypto/WalletCryptoPojoV3.java" checks="MemberName"/>
 </suppressions>
 

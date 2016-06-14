@@ -88,11 +88,10 @@
 				</dependencies>
 				<configuration>
 					<includeTestSourceDirectory>true</includeTestSourceDirectory>
-					<failOnViolation>false</failOnViolation>
+					<failOnViolation>true</failOnViolation>
 					<configLocation>codestyle/codestyle.xml</configLocation>
 					<logViolationsToConsole>true</logViolationsToConsole>
 					<violationSeverity>warning</violationSeverity>
-					<consoleOutput>true</consoleOutput>
 				</configuration>
 				<executions>
 					<execution>
