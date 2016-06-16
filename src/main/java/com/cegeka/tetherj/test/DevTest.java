@@ -5,12 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.cegeka.tetherj.EthCall;
-import com.cegeka.tetherj.EthRpcClient;
-import com.cegeka.tetherj.EthSmartContract;
-import com.cegeka.tetherj.EthSmartContractFactory;
+import com.cegeka.tetherj.*;
 import com.cegeka.tetherj.api.EthereumService;
+import com.cegeka.tetherj.api.TetherjHandle;
 import com.cegeka.tetherj.api.TetherjResponse;
 import com.cegeka.tetherj.pojo.CompileOutput;
 import com.cegeka.tetherj.pojo.FilterLogObject;
@@ -47,35 +47,34 @@ public class DevTest {
                     System.out.println(Arrays.toString(balanceResponse.getValue()));
                 }
 
-                FilterLogRequest request = theDao.getEventFilter("Voted", new Object[] {null});
-                request.setFromBlock("latest");
+                FilterLogRequest request = theDao.getEventFilter("Voted", 84);
+                request.setFromBlock(BigInteger.valueOf(1550000));
                 request.setToBlock("latest");
 
-                TetherjResponse<BigInteger> filterResponse = service.newFilter(request);
+                AtomicBoolean finished = new AtomicBoolean(false);
 
-                if (filterResponse.isSuccessful()) {
-                    while (true) {
-                        TetherjResponse<List<FilterLogObject>> eventResponse = service
-                                .getFilterChanges(filterResponse.getValue());
-
-                        if (eventResponse.isSuccessful() && eventResponse.getValue() != null) {
-                            for (FilterLogObject obj : eventResponse.getValue()) {
-                                System.out.println(obj);
-
-                                System.out.println(Arrays.toString(
-                                        request.decodeEventData(obj.getData(), obj.getTopics())));
-
+                service.getEvents(request, new TetherjHandle<List<EthEvent>>() {
+                    @Override
+                    public void call(TetherjResponse<List<EthEvent>> response) {
+                        if (response.isSuccessful()) {
+                            for (EthEvent event : response.getValue()) {
+                                System.out.println(Arrays.toString(event.getData()));
                             }
-                        } else if (!eventResponse.isSuccessful()) {
-                            System.err.println("BAD EVENT RESPONSE "
-                                    + eventResponse.getException().getMessage());
+                        } else {
+                            System.err.println(response.getException().getMessage());
                         }
-                    }
-                } else {
-                    System.err.println(
-                            "BAD FILTER RESPONSE " + filterResponse.getException().getMessage());
-                }
 
+                        finished.set(true);
+                    }
+                });
+
+                while (!finished.get()) {
+                    Future<TetherjResponse<BigInteger>> future = service.getLatestBlockNumberFuture();
+                    TetherjResponse<BigInteger> response = future.get();
+                    if (response.isSuccessful()) {
+                        System.out.println("BALANCE IS " + response.getValue());
+                    }
+                }
             }
 
         } catch (Exception ex) {
