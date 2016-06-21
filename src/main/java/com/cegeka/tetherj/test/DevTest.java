@@ -53,19 +53,16 @@ public class DevTest {
 
                 AtomicBoolean finished = new AtomicBoolean(false);
 
-                service.getEvents(request, new TetherjHandle<List<EthEvent>>() {
-                    @Override
-                    public void call(TetherjResponse<List<EthEvent>> response) {
-                        if (response.isSuccessful()) {
-                            for (EthEvent event : response.getValue()) {
-                                System.out.println(Arrays.toString(event.getData()));
-                            }
-                        } else {
-                            System.err.println(response.getException().getMessage());
+                service.getEvents(request, response -> {
+                    if (response.isSuccessful()) {
+                        for (EthEvent event : response.getValue()) {
+                            System.out.println(Arrays.toString(event.getData()));
                         }
-
-                        finished.set(true);
+                    } else {
+                        System.err.println(response.getException().getMessage());
                     }
+
+                    finished.set(true);
                 });
 
                 while (!finished.get()) {
@@ -76,7 +73,6 @@ public class DevTest {
                     }
                 }
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

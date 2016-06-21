@@ -1519,9 +1519,8 @@ public class EthereumService {
                     partialRequest.setToBlock(requestToBlock);
                 }
 
-                executorAsync(() -> {
-                    getEventsPartial(eventResponse, latestBlock, partialRequest, request, handle);
-                });
+                executorAsync(() -> getEventsPartial(eventResponse, latestBlock, partialRequest,
+                    request, handle));
 
             } else {
                 handle.call(new TetherjResponse<>(null, null, eventResponse));
@@ -1538,6 +1537,60 @@ public class EthereumService {
                 return latestBlock;
             default:
                 return CryptoUtil.hexToBigInteger(block);
+        }
+    }
+
+    /**
+     * Create a watch for events of a request type. The watch will notify of any new events, the
+     * watch can be cancelled at any time using the event below.
+     *
+     * @param request     request describing event query
+     * @param eventHandle the handle to call when new events are found
+     * @return watch handle, can be used to cancel watch.
+     */
+    public TetherjResponse<TetherjFilterWatch> watchEvents(FilterLogRequest request,
+        TetherjHandle<List<EthEvent>> eventHandle) {
+
+        TetherjResponse<BigInteger> filterResponse = this.newFilter(request);
+
+        if (!filterResponse.isSuccessful()) {
+            return new TetherjResponse<>(filterResponse);
+        }
+
+        BigInteger filterId = filterResponse.getValue();
+        TetherjFilterWatch watch = new TetherjFilterWatch(eventHandle);
+
+        executorAsync(() -> watchEventChanges(request, watch, filterId, eventHandle));
+
+        return new TetherjResponse<>(null, null, watch);
+    }
+
+    private void watchEventChanges(FilterLogRequest request, TetherjFilterWatch watch, BigInteger
+        filterId,
+        TetherjHandle<List<EthEvent>> eventHandle) {
+        if (watch.getIsCancelled().get()) {
+            uninstallFilter(filterId, response -> {
+            });
+        } else {
+            List<EthEvent> events = new ArrayList<>();
+            TetherjResponse<List<FilterLogObject>> eventResponse = this
+                .getFilterChanges(filterId);
+
+            if (eventResponse.isSuccessful() && eventResponse.getValue() != null) {
+                for (FilterLogObject obj : eventResponse.getValue()) {
+                    EthEvent event = new EthEvent();
+                    event.setData(request.decodeEventData(obj.getData(), obj.getTopics()));
+                    event.setFilterLogObject(obj);
+                    events.add(event);
+                }
+                eventHandle.call(new TetherjResponse<>(null, null, events));
+            } else if (!eventResponse.isSuccessful()) {
+                logger.error("Event Watch with filterId " + filterId + " for request " + request
+                    .toString() + " failed when fetching! ERROR: " + eventResponse.getException()
+                    .getMessage());
+            }
+
+            executorAsync(() -> watchEventChanges(request, watch, filterId, eventHandle));
         }
     }
 }
