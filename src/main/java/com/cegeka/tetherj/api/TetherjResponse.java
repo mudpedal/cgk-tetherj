@@ -2,7 +2,7 @@ package com.cegeka.tetherj.api;
 
 /**
  * Returned after a tetherj operation finishes.
- * 
+ *
  * @author Andrei Grigoriu
  *
  * @param <T>
@@ -11,16 +11,20 @@ package com.cegeka.tetherj.api;
 public class TetherjResponse<T> {
     /**
      * Tetherj defined ErrorType that has occured
-     * 
+     *
      * @return null if no error, check for this first.
      */
     public ErrorType getErrorType() {
         return errorType;
     }
 
+    public boolean isSuccessful() {
+        return getErrorType() == null;
+    }
+
     /**
      * Returns exception that triggered the error. Sometimes its best to check cause as well.
-     * 
+     *
      * @return null if no error
      */
     public Exception getException() {
@@ -29,7 +33,7 @@ public class TetherjResponse<T> {
 
     /**
      * Returns the actual payload, null if error occured.
-     * 
+     *
      * @return null if error occured. May be null if operation returns null.
      */
     public T getValue() {
@@ -54,7 +58,7 @@ public class TetherjResponse<T> {
 
     /**
      * Create error response (value is set to null).
-     * 
+     *
      * @param errorType Error Type to set.
      * @param exception Error Type to set.
      */
@@ -66,7 +70,7 @@ public class TetherjResponse<T> {
 
     /**
      * Create error response from other response copying only errorType and exception.
-     * 
+     *
      * @param otherResponse Other error response.
      */
     public <V> TetherjResponse(TetherjResponse<V> otherResponse) {

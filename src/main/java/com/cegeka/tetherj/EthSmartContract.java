@@ -8,11 +8,12 @@ import org.apache.logging.log4j.Logger;
 import org.ethereum.core.CallTransaction.Function;
 
 import com.cegeka.tetherj.crypto.CryptoUtil;
+import com.cegeka.tetherj.pojo.FilterLogRequest;
 import com.cegeka.tetherj.pojo.TransactionCall;
 
 /**
  * Instance to control a contract on the ethereum chain.
- * 
+ *
  * @author Andrei Grigoriu
  *
  */
@@ -24,7 +25,7 @@ public class EthSmartContract {
 
     /**
      * Construct from factory.
-     * 
+     *
      * @param factory
      *            Factory to use for method calling.
      * @param contractAddress
@@ -37,7 +38,7 @@ public class EthSmartContract {
 
     /**
      * Return a call that will call a constant method on this contract.
-     * 
+     *
      * @param method
      *            Name of the method to call.
      * @param args
@@ -56,11 +57,11 @@ public class EthSmartContract {
 
         TransactionCall callPojo = new TransactionCall(methodFunction);
         callPojo.setData(CryptoUtil.byteToHexWithPrefix(methodFunction.encode(args)));
-        callPojo.setFrom(null);
+        callPojo.setFrom("0xffffffffffffffffffffffffffffffffffffffff");
         callPojo.setGas(null);
         callPojo.setGasPrice(null);
         callPojo.setTo(this.contractAddress);
-        callPojo.setValue(null);
+        callPojo.setValue("0x0");
 
         logger.debug("Generated constant call (contractAddress: " + this.contractAddress
                 + ", method: " + method + ", params: " + Arrays.toString(args) + ")"
@@ -71,7 +72,7 @@ public class EthSmartContract {
 
     /**
      * Return a call that will dry call a modifier method on this contract.
-     * 
+     *
      * @param from
      *            Address to dry call as.
      * @param method
@@ -97,7 +98,7 @@ public class EthSmartContract {
         callPojo.setGas(null);
         callPojo.setGasPrice(null);
         callPojo.setTo(this.contractAddress);
-        callPojo.setValue(null);
+        callPojo.setValue("0x0");
 
         logger.debug("Generated dry call (contractAddress: " + this.contractAddress + ", method: "
                 + method + ", params: " + Arrays.toString(args) + ")" + callPojo.toString());
@@ -107,7 +108,7 @@ public class EthSmartContract {
 
     /**
      * Returns a transaction that will call a modifier method on the contract.
-     * 
+     *
      * @param method
      *            Name of modifier method to call.
      * @param args
@@ -132,5 +133,39 @@ public class EthSmartContract {
                         + method + ", params: " + Arrays.toString(args) + ")" + tx.toString());
 
         return tx;
+    }
+
+    /**
+     * Return a filter object with encoded topics.
+     *
+     * @param event
+     *            Event name.
+     * @param args
+     *            Event arguments to search by, only use indexed ones.
+     * @return the filter object to submit to the ethereum service.
+     * @throws NoSuchContractMethod
+     *             (if no such event exists)
+     */
+    public FilterLogRequest getEventFilter(String event, Object... args)
+            throws NoSuchContractMethod {
+        Function eventFunction = factory.getEventFunction(event);
+
+        if (eventFunction == null) {
+            throw new NoSuchContractMethod(
+                    "Event " + event + " does not exist for contract factory");
+        }
+
+        FilterLogRequest filter = new FilterLogRequest();
+        filter.setAddress(this.contractAddress);
+        filter.setFromBlock("0x0");
+        filter.setToBlock("latest");
+        filter.setTopics(eventFunction.encodeTopics(args));
+        filter.setFunction(eventFunction);
+
+        logger.debug(
+                "Generated event filter call (contractAddress: " + this.contractAddress + ", name: "
+                        + event + ", params: " + Arrays.toString(args) + ")" + filter.toString());
+
+        return filter;
     }
 }

@@ -89,10 +89,10 @@ public class Transaction {
         parsed = false;
     }
 
-    /*
+    /**
      * creation contract tx [ nonce, gasPrice, gasLimit, "", endowment, init, signature(v, r, s) ]
      * or simple send tx [ nonce, gasPrice, gasLimit, receiveAddress, value, data, signature(v, r,
-     * s) ]
+     * s) ].
      */
     public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress,
             byte[] value, byte[] data) {

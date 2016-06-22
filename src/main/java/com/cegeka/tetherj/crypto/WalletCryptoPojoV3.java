@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * Pojo to store wallet crypto.
- * 
+ *
  * @author Andrei Grigoriu
  *
  */
@@ -36,7 +36,6 @@ public class WalletCryptoPojoV3 implements Serializable {
         private static final long serialVersionUID = 4851325137367204904L;
 
         String prf;
-        @SuppressWarnings("checkstyle:variable")
         int c;
         String salt;
         int dklen;

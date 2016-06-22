@@ -21,10 +21,8 @@ public class DataWord implements Comparable<DataWord> {
     /* Maximum value of the DataWord */
     public static final BigInteger _2_256 = BigInteger.valueOf(2).pow(256);
     public static final BigInteger MAX_VALUE = _2_256.subtract(BigInteger.ONE);
-    public static final DataWord ZERO = new DataWord(new byte[32]); // don't push it in to the stack
-    public static final DataWord ZERO_EMPTY_ARRAY = new DataWord(new byte[0]); // don't push it in
-                                                                               // to the stack
-
+    public static final DataWord ZERO = new DataWord(new byte[32]);
+    public static final DataWord ZERO_EMPTY_ARRAY = new DataWord(new byte[0]);
     private byte[] data = new byte[32];
 
     public DataWord() {
@@ -318,6 +316,7 @@ public class DataWord implements Comparable<DataWord> {
         this.data = ByteUtil.copyToArray(result.and(MAX_VALUE));
     }
 
+    @Override
     public String toString() {
         return Hex.toHexString(data);
     }
@@ -339,6 +338,7 @@ public class DataWord implements Comparable<DataWord> {
         return "0x" + hexValue.replaceFirst("^0+(?!$)", "");
     }
 
+    @Override
     public DataWord clone() {
         return new DataWord(Arrays.clone(data));
     }

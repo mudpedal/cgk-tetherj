@@ -7,3 +7,5 @@ target/
 
 # eclipse build output
 bin/
+
+*.iml

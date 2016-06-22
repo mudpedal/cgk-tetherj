@@ -11,6 +11,13 @@ public class CallCreate {
     final byte[] gasLimit;
     final byte[] value;
 
+    /**
+     * Constructor.
+     * @param data for call
+     * @param destination contract address
+     * @param gasLimit gas limit
+     * @param value sent value
+     */
     public CallCreate(byte[] data, byte[] destination, byte[] gasLimit, byte[] value) {
         this.data = data;
         this.destination = destination;
