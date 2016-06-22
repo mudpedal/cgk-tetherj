@@ -30,6 +30,7 @@ public class DevTest {
         EthereumService service = new EthereumService(2);
 
         try {
+
             String sourceFilePath = "/home/andreicg/untouched/DAO/FULL.sol";
             String source = new String(Files.readAllBytes(Paths.get(sourceFilePath)), "UTF-8");
             TetherjResponse<CompileOutput> compileResponse = service.compileSolidity(source);
@@ -63,7 +64,9 @@ public class DevTest {
                     finished.set(true);
                 });*/
 
+
                 FilterLogRequest request = theDao.getEventFilter("Transfer");
+                request.setFromBlock(BigInteger.valueOf(1749768));
                 TetherjResponse<TetherjFilterWatch> watchResponse = service.watchEvents(request, response -> {
                     if (response.isSuccessful()) {
                         if (response.isSuccessful()) {
@@ -81,9 +84,25 @@ public class DevTest {
                 }
 
             }
+
+
+            /*
+            String sourceFilePath = "/home/andreicg/untouched/DAO/testStruct.sol";
+            String source = new String(Files.readAllBytes(Paths.get(sourceFilePath)), "UTF-8");
+            TetherjResponse<CompileOutput> compileResponse = service.compileSolidity(source);
+
+            if (compileResponse.isSuccessful()) {
+                EthSmartContractFactory nameRegistryFactory = new EthSmartContractFactory(
+                    compileResponse.getValue().getContractByName("NameRegistry"));
+
+                System.out.println(nameRegistryFactory.getCode());
+                System.out.println(nameRegistryFactory.getContractDataAsString());
+            } else {
+                System.err.println(compileResponse.getException().getMessage());
+            }
+            */
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
     }
 }

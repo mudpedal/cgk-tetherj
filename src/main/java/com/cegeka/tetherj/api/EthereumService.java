@@ -1512,6 +1512,17 @@ public class EthereumService {
         });
     }
 
+    /**
+     * Private implemenetation of getEvents that only get a partial list of the initial request,
+     * this is because this kind of query can take a lot of time and we want to block async
+     * threads as little as possible.
+     *
+     * @param eventResponse
+     * @param latestBlock
+     * @param partialRequest
+     * @param request
+     * @param handle
+     */
     private void getEventsPartial(List<EthEvent> eventResponse, BigInteger latestBlock,
         FilterLogRequest partialRequest, FilterLogRequest request, TetherjHandle<List<EthEvent>>
         handle) {
@@ -1604,7 +1615,8 @@ public class EthereumService {
                 eventHandle.call(new TetherjResponse<>(eventResponse));
             }
 
-            executorAsyncTimed(() -> watchEventChanges(request, watch, filterId, eventHandle), 1000);
+            executorAsyncTimed(() -> watchEventChanges(request, watch, filterId, eventHandle),
+                1000);
         }
     }
 }
