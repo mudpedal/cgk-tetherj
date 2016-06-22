@@ -44,6 +44,14 @@ public class TetherjResponse<T> {
     private final Exception exception;
     private final T value;
 
+    public static <T> TetherjResponse<T> success(T resp) {
+        return new TetherjResponse<>(null, null, resp);
+    }
+
+    public static <V,T> TetherjResponse<T> failure(TetherjResponse<V> failureResponse) {
+        return new TetherjResponse<>(failureResponse);
+    }
+
     /**
      * Construct response.
      * @param errorType Error type to set.

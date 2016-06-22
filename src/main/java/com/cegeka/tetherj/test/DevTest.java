@@ -4,17 +4,18 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.cegeka.tetherj.*;
+import com.cegeka.tetherj.EthCall;
+import com.cegeka.tetherj.EthEvent;
+import com.cegeka.tetherj.EthRpcClient;
+import com.cegeka.tetherj.EthSmartContract;
+import com.cegeka.tetherj.EthSmartContractFactory;
 import com.cegeka.tetherj.api.EthereumService;
 import com.cegeka.tetherj.api.TetherjFilterWatch;
-import com.cegeka.tetherj.api.TetherjHandle;
+
 import com.cegeka.tetherj.api.TetherjResponse;
 import com.cegeka.tetherj.pojo.CompileOutput;
-import com.cegeka.tetherj.pojo.FilterLogObject;
+
 import com.cegeka.tetherj.pojo.FilterLogRequest;
 
 public class DevTest {
@@ -23,6 +24,7 @@ public class DevTest {
 
     /**
      * MAIN TEST.
+     *
      * @param args process args
      */
     public static void main(String[] args) {
@@ -37,13 +39,13 @@ public class DevTest {
 
             if (compileResponse.isSuccessful()) {
                 EthSmartContractFactory daoFactory = new EthSmartContractFactory(
-                        compileResponse.getValue().getContractByName("DAO"));
+                    compileResponse.getValue().getContractByName("DAO"));
 
                 EthSmartContract theDao = daoFactory
-                        .getContract("0xbb9bc244d798123fde783fcc1c72d3bb8c189413");
+                    .getContract("0xbb9bc244d798123fde783fcc1c72d3bb8c189413");
 
                 EthCall call = theDao.callConstantMethod("balanceOf",
-                        "e382dcaabf70dbce10dfcaecf0ac3b78184f6e65");
+                    "e382dcaabf70dbce10dfcaecf0ac3b78184f6e65");
                 TetherjResponse<Object[]> balanceResponse = service.makeCall(call);
                 if (balanceResponse.isSuccessful()) {
                     System.out.println(Arrays.toString(balanceResponse.getValue()));
@@ -67,7 +69,8 @@ public class DevTest {
 
                 FilterLogRequest request = theDao.getEventFilter("Transfer");
                 request.setFromBlock(BigInteger.valueOf(1749768));
-                TetherjResponse<TetherjFilterWatch> watchResponse = service.watchEvents(request, response -> {
+                TetherjResponse<TetherjFilterWatch> watchResponse = service.watchEvents(request,
+                    response -> {
                     if (response.isSuccessful()) {
                         if (response.isSuccessful()) {
                             for (EthEvent event : response.getValue()) {

@@ -1,8 +1,18 @@
 package com.cegeka.tetherj.api;
 
-import com.cegeka.tetherj.*;
+import com.cegeka.tetherj.EthCall;
+import com.cegeka.tetherj.EthEvent;
+import com.cegeka.tetherj.EthRpcClient;
+import com.cegeka.tetherj.EthSignedTransaction;
+import com.cegeka.tetherj.EthTransaction;
+import com.cegeka.tetherj.EthWallet;
 import com.cegeka.tetherj.crypto.CryptoUtil;
-import com.cegeka.tetherj.pojo.*;
+import com.cegeka.tetherj.pojo.Block;
+import com.cegeka.tetherj.pojo.CompileOutput;
+import com.cegeka.tetherj.pojo.FilterLogObject;
+import com.cegeka.tetherj.pojo.FilterLogRequest;
+import com.cegeka.tetherj.pojo.Transaction;
+import com.cegeka.tetherj.pojo.TransactionReceipt;
 import com.googlecode.jsonrpc4j.HttpException;
 import com.googlecode.jsonrpc4j.JsonRpcClientException;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +24,13 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Implementation for an Ethereum service api.
@@ -221,7 +237,7 @@ public class EthereumService {
             ex = generalException;
         }
 
-        return new TetherjResponse<T>(err, ex, rpcResponse);
+        return new TetherjResponse<>(err, ex, rpcResponse);
     }
 
     /**
@@ -268,6 +284,7 @@ public class EthereumService {
                     executor.schedule(runnable, millis, TimeUnit.MILLISECONDS);
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    return false;
                 }
             }
 
@@ -476,11 +493,11 @@ public class EthereumService {
         throws WalletLockedException {
         TetherjResponse<BigInteger> nonceResponse = getAccountNonceWithPending(from.getAddress());
 
-        if (nonceResponse.getErrorType() == null) {
+        if (nonceResponse.isSuccessful()) {
             return sendTransaction(from, transaction, nonceResponse.getValue());
         }
 
-        return new TetherjResponse<>(nonceResponse);
+        return TetherjResponse.failure(nonceResponse);
     }
 
     /**
@@ -515,10 +532,10 @@ public class EthereumService {
         TetherjHandle<String> callable) {
         String address = from.getAddress();
         getAccountNonceWithPending(address, response -> {
-            if (response.getErrorType() == null) {
+            if (response.isSuccessful()) {
                 sendTransaction(from, transaction, response.getValue(), callable);
             } else {
-                callable.call(new TetherjResponse<>(response));
+                callable.call(TetherjResponse.failure(response));
             }
         });
     }
@@ -556,13 +573,13 @@ public class EthereumService {
         String from = wallet.getAddress();
         TetherjResponse<BigInteger> nonceResponse = getAccountNonceWithPending(from);
 
-        if (nonceResponse.getErrorType() != null) {
-            return new TetherjResponse<>(nonceResponse);
+        if (!nonceResponse.isSuccessful()) {
+            return TetherjResponse.failure(nonceResponse);
         }
 
         EthSignedTransaction txSigned = transaction.signWithWallet(wallet,
             nonceResponse.getValue());
-        return new TetherjResponse<>(null, null, txSigned);
+        return TetherjResponse.success(txSigned);
     }
 
     /**
@@ -648,7 +665,7 @@ public class EthereumService {
             TransactionReceipt receipt = rpc.getTransactionReceipt(txHash);
             return receipt;
         }, response -> {
-            if (response.getErrorType() != null) {
+            if (!response.isSuccessful()) {
                 callable.call(response);
             } else {
                 TransactionReceipt receipt = response.getValue();
@@ -659,13 +676,11 @@ public class EthereumService {
                     callable.call(new TetherjResponse<>(
                         ErrorType.OPERATION_TIMEOUT, new TxReceiptTimeoutException()));
                 } else {
-                    if (executor != null && !executor.isShutdown()) {
-                        synchronized (executor) {
-                            executor.schedule((Runnable) () -> listenForTxReceipt(txHash,
-                                checkIntervalMillis, checks - 1,
-                                callable), checkIntervalMillis, TimeUnit.MILLISECONDS);
-                        }
-                    } else {
+                    boolean asyncExec = executorAsyncTimed(() -> listenForTxReceipt(txHash,
+                        checkIntervalMillis, checks - 1,
+                        callable), checkIntervalMillis);
+
+                    if (!asyncExec) {
                         callable.call(new TetherjResponse<>(
                             ErrorType.OPERATION_TIMEOUT, new TxReceiptTimeoutException()));
                     }
@@ -724,8 +739,8 @@ public class EthereumService {
             try {
                 response = future.get(1500, TimeUnit.MILLISECONDS);
 
-                if (response.getErrorType() != null) {
-                    return new TetherjResponse<>(response);
+                if (!response.isSuccessful()) {
+                    return TetherjResponse.failure(response);
                 }
 
                 responses.add(response.getValue());
@@ -1082,13 +1097,13 @@ public class EthereumService {
                     event.setFilterLogObject(obj);
                     events.add(event);
                 }
-                return new TetherjResponse<>(null, null, events);
+                return TetherjResponse.success(events);
             } else if (!eventResponse.isSuccessful()) {
-                return new TetherjResponse<>(filterResponse);
+                return TetherjResponse.failure(filterResponse);
             }
         }
 
-        return new TetherjResponse<>(filterResponse);
+        return TetherjResponse.failure(filterResponse);
     }
 
     /**
@@ -1102,7 +1117,7 @@ public class EthereumService {
     public void getEvents(FilterLogRequest request, TetherjHandle<List<EthEvent>> handle) {
         this.getLatestBlockNumber(latestBlockResponse -> {
             if (!latestBlockResponse.isSuccessful()) {
-                handle.call(new TetherjResponse<>(latestBlockResponse));
+                handle.call(TetherjResponse.failure(latestBlockResponse));
             } else {
 
                 FilterLogRequest partialRequest = request;
@@ -1146,7 +1161,7 @@ public class EthereumService {
         handle) {
         TetherjResponse<List<EthEvent>> partialEvents = getEvents(partialRequest);
         if (!partialEvents.isSuccessful()) {
-            handle.call(new TetherjResponse<>(partialEvents));
+            handle.call(TetherjResponse.failure(partialEvents));
         } else {
             eventResponse.addAll(partialEvents.getValue());
 
@@ -1168,7 +1183,7 @@ public class EthereumService {
                     request, handle));
 
             } else {
-                handle.call(new TetherjResponse<>(null, null, eventResponse));
+                handle.call(TetherjResponse.success(eventResponse));
             }
         }
     }
@@ -1199,7 +1214,7 @@ public class EthereumService {
         TetherjResponse<BigInteger> filterResponse = this.newFilter(request);
 
         if (!filterResponse.isSuccessful()) {
-            return new TetherjResponse<>(filterResponse);
+            return TetherjResponse.failure(filterResponse);
         }
 
         BigInteger filterId = filterResponse.getValue();
@@ -1207,9 +1222,17 @@ public class EthereumService {
 
         executorAsync(() -> watchEventChanges(request, watch, filterId, eventHandle));
 
-        return new TetherjResponse<>(null, null, watch);
+        return TetherjResponse.success(watch);
     }
 
+    /**
+     * Private method for watching events, calls itself async
+     *
+     * @param request
+     * @param watch
+     * @param filterId
+     * @param eventHandle
+     */
     private void watchEventChanges(FilterLogRequest request, TetherjFilterWatch watch, BigInteger
         filterId,
         TetherjHandle<List<EthEvent>> eventHandle) {
@@ -1228,9 +1251,9 @@ public class EthereumService {
                     event.setFilterLogObject(obj);
                     events.add(event);
                 }
-                eventHandle.call(new TetherjResponse<>(null, null, events));
+                eventHandle.call(TetherjResponse.success(events));
             } else if (!eventResponse.isSuccessful()) {
-                eventHandle.call(new TetherjResponse<>(eventResponse));
+                eventHandle.call(TetherjResponse.failure(eventResponse));
             }
 
             executorAsyncTimed(() -> watchEventChanges(request, watch, filterId, eventHandle),
