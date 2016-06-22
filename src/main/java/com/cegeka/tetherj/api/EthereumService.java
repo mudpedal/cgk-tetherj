@@ -928,8 +928,8 @@ public class EthereumService {
      * @param callable with Block response
      */
     public void newPendingTransactionFilter(TetherjHandle<BigInteger> callable) {
-        performAsyncRpcAction(() -> CryptoUtil.hexToBigInteger(rpc.newPendingTransactionFilter())
-            , callable);
+        performAsyncRpcAction(() -> CryptoUtil.hexToBigInteger(rpc.newPendingTransactionFilter()),
+            callable);
     }
 
     /**
@@ -1078,8 +1078,8 @@ public class EthereumService {
      * Blocking get all events using a query request. Warning: might take a lot if request block
      * range is large (over 100000 blocks)
      *
-     * @param request
-     * @return
+     * @param request request to use for query
+     * @return list of events
      */
     public TetherjResponse<List<EthEvent>> getEvents(FilterLogRequest request) {
         TetherjResponse<BigInteger> filterResponse = this.newFilter(request);
@@ -1110,9 +1110,8 @@ public class EthereumService {
      * Async get all events using a query request. Warning: might take a lot if request block
      * range is large (over 100000 blocks)
      *
-     * @param request
+     * @param request used for query
      * @param handle  to call after getting event list
-     * @return
      */
     public void getEvents(FilterLogRequest request, TetherjHandle<List<EthEvent>> handle) {
         this.getLatestBlockNumber(latestBlockResponse -> {
@@ -1126,8 +1125,8 @@ public class EthereumService {
                 BigInteger toBlock = blockAsBigInteger(request.getToBlock(), latestBlockResponse
                     .getValue());
 
-                if (toBlock.subtract(fromBlock).compareTo(BigInteger.valueOf
-                    (ASYNC_FILTER_BLOCK_SPLIT)) > 0) {
+                if (toBlock.subtract(fromBlock).compareTo(BigInteger.valueOf(
+                    ASYNC_FILTER_BLOCK_SPLIT)) > 0) {
                     toBlock = fromBlock.add(BigInteger.valueOf(ASYNC_FILTER_BLOCK_SPLIT));
 
                     partialRequest = new FilterLogRequest();
@@ -1150,11 +1149,11 @@ public class EthereumService {
      * this is because this kind of query can take a lot of time and we want to block async
      * threads as little as possible.
      *
-     * @param eventResponse
-     * @param latestBlock
-     * @param partialRequest
-     * @param request
-     * @param handle
+     * @param eventResponse list for final response
+     * @param latestBlock latest block considered for this query
+     * @param partialRequest the partial request
+     * @param request the full request
+     * @param handle callback
      */
     private void getEventsPartial(List<EthEvent> eventResponse, BigInteger latestBlock,
         FilterLogRequest partialRequest, FilterLogRequest request, TetherjHandle<List<EthEvent>>
@@ -1171,10 +1170,10 @@ public class EthereumService {
                 BigInteger newFromBlock = partialToBlock.add(BigInteger.ONE);
                 partialRequest.setFromBlock(newFromBlock);
 
-                if (requestToBlock.subtract(newFromBlock).compareTo(BigInteger.valueOf
-                    (ASYNC_FILTER_BLOCK_SPLIT)) > 0) {
-                    partialRequest.setToBlock(newFromBlock.add(BigInteger.valueOf
-                        (ASYNC_FILTER_BLOCK_SPLIT)));
+                if (requestToBlock.subtract(newFromBlock).compareTo(BigInteger.valueOf(
+                    ASYNC_FILTER_BLOCK_SPLIT)) > 0) {
+                    partialRequest.setToBlock(newFromBlock.add(BigInteger.valueOf(
+                        ASYNC_FILTER_BLOCK_SPLIT)));
                 } else {
                     partialRequest.setToBlock(requestToBlock);
                 }
@@ -1226,12 +1225,12 @@ public class EthereumService {
     }
 
     /**
-     * Private method for watching events, calls itself async
+     * Private method for watching events, calls itself async.
      *
-     * @param request
-     * @param watch
-     * @param filterId
-     * @param eventHandle
+     * @param request request data to use
+     * @param watch watch handle
+     * @param filterId to query from ethereum client
+     * @param eventHandle callback
      */
     private void watchEventChanges(FilterLogRequest request, TetherjFilterWatch watch, BigInteger
         filterId,

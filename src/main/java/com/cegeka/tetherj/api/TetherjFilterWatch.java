@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- *
+ * Handle for filter watches.
  */
 @Data
 public class TetherjFilterWatch {
