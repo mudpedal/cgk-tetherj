@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.cegeka.tetherj.*;
 import com.cegeka.tetherj.api.EthereumService;
+import com.cegeka.tetherj.api.TetherjFilterWatch;
 import com.cegeka.tetherj.api.TetherjHandle;
 import com.cegeka.tetherj.api.TetherjResponse;
 import com.cegeka.tetherj.pojo.CompileOutput;
@@ -47,12 +48,9 @@ public class DevTest {
                     System.out.println(Arrays.toString(balanceResponse.getValue()));
                 }
 
-                FilterLogRequest request = theDao.getEventFilter("Voted", 84);
-                request.setFromBlock(BigInteger.valueOf(1550000));
-                request.setToBlock("latest");
 
-                AtomicBoolean finished = new AtomicBoolean(false);
 
+                /*
                 service.getEvents(request, response -> {
                     if (response.isSuccessful()) {
                         for (EthEvent event : response.getValue()) {
@@ -63,15 +61,25 @@ public class DevTest {
                     }
 
                     finished.set(true);
+                });*/
+
+                FilterLogRequest request = theDao.getEventFilter("Transfer");
+                TetherjResponse<TetherjFilterWatch> watchResponse = service.watchEvents(request, response -> {
+                    if (response.isSuccessful()) {
+                        if (response.isSuccessful()) {
+                            for (EthEvent event : response.getValue()) {
+                                System.out.println(Arrays.toString(event.getData()));
+                            }
+                        } else {
+                            System.err.println(response.getException().getMessage());
+                        }
+                    }
                 });
 
-                while (!finished.get()) {
-                    Future<TetherjResponse<BigInteger>> future = service.getLatestBlockNumberFuture();
-                    TetherjResponse<BigInteger> response = future.get();
-                    if (response.isSuccessful()) {
-                        System.out.println("BALANCE IS " + response.getValue());
-                    }
+                if (watchResponse.isSuccessful()) {
+                    System.out.println("Created watch successfully");
                 }
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();

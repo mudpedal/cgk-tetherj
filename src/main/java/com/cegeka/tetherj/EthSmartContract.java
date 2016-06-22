@@ -157,7 +157,7 @@ public class EthSmartContract {
 
         FilterLogRequest filter = new FilterLogRequest();
         filter.setAddress(this.contractAddress);
-        filter.setFromBlock("0x0");
+        filter.setFromBlock("latest");
         filter.setToBlock("latest");
         filter.setTopics(eventFunction.encodeTopics(args));
         filter.setFunction(eventFunction);

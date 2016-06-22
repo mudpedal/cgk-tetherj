@@ -289,6 +289,22 @@ public class EthereumService {
         return false;
     }
 
+    private boolean executorAsyncTimed(Runnable runnable, long millis) {
+        if (executor != null && !executor.isShutdown()) {
+            synchronized (executor) {
+                try {
+                    executor.schedule(runnable, millis, TimeUnit.MILLISECONDS);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Async execute of rpc action. Returns a future to get when operation ends.
      *
@@ -1585,12 +1601,10 @@ public class EthereumService {
                 }
                 eventHandle.call(new TetherjResponse<>(null, null, events));
             } else if (!eventResponse.isSuccessful()) {
-                logger.error("Event Watch with filterId " + filterId + " for request " + request
-                    .toString() + " failed when fetching! ERROR: " + eventResponse.getException()
-                    .getMessage());
+                eventHandle.call(new TetherjResponse<>(eventResponse));
             }
 
-            executorAsync(() -> watchEventChanges(request, watch, filterId, eventHandle));
+            executorAsyncTimed(() -> watchEventChanges(request, watch, filterId, eventHandle), 1000);
         }
     }
 }
