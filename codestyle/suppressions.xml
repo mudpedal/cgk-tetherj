@@ -8,8 +8,8 @@
   <suppress files="[/\\]target[/\\]" checks=".*"/>
   <suppress files="src/test/*" checks="AbbreviationAsWordInName"/>
   <suppress files="src/main/java/org/*" checks=".*"/>
-  <suppress files="/src/main/java/com/cegeka/tetherj/crypto/WalletCryptoPojoV3.java" checks="MemberName"/>
-  <suppress files="/home/andreicg/Projects/tether/src/main/java/com/cegeka/tetherj/api/EthereumService.java" checks="Indentation"/>
-  <suppress files="/home/andreicg/Projects/tether/src/main/java/com/cegeka/tetherj/test/DevTest.java" checks=".*"/>
+  <suppress files="src/main/java/com/cegeka/tetherj/crypto/WalletCryptoPojoV3.java" checks="MemberName"/>
+  <suppress files="src/main/java/com/cegeka/tetherj/api/EthereumService.java" checks="Indentation"/>
+  <suppress files="src/main/java/com/cegeka/tetherj/test/DevTest.java" checks=".*"/>
 </suppressions>
 
