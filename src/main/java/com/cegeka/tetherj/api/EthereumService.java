@@ -661,10 +661,7 @@ public class EthereumService {
     private void listenForTxReceipt(final String txHash, final int checkIntervalMillis,
         final int checks, final TetherjHandle<TransactionReceipt> callable) {
 
-        performAsyncRpcAction(() -> {
-            TransactionReceipt receipt = rpc.getTransactionReceipt(txHash);
-            return receipt;
-        }, response -> {
+        performAsyncRpcAction(() -> rpc.getTransactionReceipt(txHash), response -> {
             if (response.isFailure()) {
                 callable.call(response);
             } else {
