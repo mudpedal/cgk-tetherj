@@ -22,6 +22,11 @@ public class TetherjResponse<T> {
         return getErrorType() == null;
     }
 
+    public boolean isFailure() {
+        return getErrorType() != null;
+    }
+
+
     /**
      * Returns exception that triggered the error. Sometimes its best to check cause as well.
      *

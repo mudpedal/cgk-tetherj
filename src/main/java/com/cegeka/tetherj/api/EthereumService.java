@@ -573,7 +573,7 @@ public class EthereumService {
         String from = wallet.getAddress();
         TetherjResponse<BigInteger> nonceResponse = getAccountNonceWithPending(from);
 
-        if (!nonceResponse.isSuccessful()) {
+        if (nonceResponse.isFailure()) {
             return TetherjResponse.failure(nonceResponse);
         }
 
@@ -665,7 +665,7 @@ public class EthereumService {
             TransactionReceipt receipt = rpc.getTransactionReceipt(txHash);
             return receipt;
         }, response -> {
-            if (!response.isSuccessful()) {
+            if (response.isFailure()) {
                 callable.call(response);
             } else {
                 TransactionReceipt receipt = response.getValue();
@@ -739,7 +739,7 @@ public class EthereumService {
             try {
                 response = future.get(1500, TimeUnit.MILLISECONDS);
 
-                if (!response.isSuccessful()) {
+                if (response.isFailure()) {
                     return TetherjResponse.failure(response);
                 }
 
@@ -1098,7 +1098,7 @@ public class EthereumService {
                     events.add(event);
                 }
                 return TetherjResponse.success(events);
-            } else if (!eventResponse.isSuccessful()) {
+            } else if (eventResponse.isFailure()) {
                 return TetherjResponse.failure(filterResponse);
             }
         }
@@ -1115,7 +1115,7 @@ public class EthereumService {
      */
     public void getEvents(FilterLogRequest request, TetherjHandle<List<EthEvent>> handle) {
         this.getLatestBlockNumber(latestBlockResponse -> {
-            if (!latestBlockResponse.isSuccessful()) {
+            if (latestBlockResponse.isFailure()) {
                 handle.call(TetherjResponse.failure(latestBlockResponse));
             } else {
 
@@ -1159,7 +1159,7 @@ public class EthereumService {
         FilterLogRequest partialRequest, FilterLogRequest request, TetherjHandle<List<EthEvent>>
         handle) {
         TetherjResponse<List<EthEvent>> partialEvents = getEvents(partialRequest);
-        if (!partialEvents.isSuccessful()) {
+        if (partialEvents.isFailure()) {
             handle.call(TetherjResponse.failure(partialEvents));
         } else {
             eventResponse.addAll(partialEvents.getValue());
@@ -1212,7 +1212,7 @@ public class EthereumService {
 
         TetherjResponse<BigInteger> filterResponse = this.newFilter(request);
 
-        if (!filterResponse.isSuccessful()) {
+        if (filterResponse.isFailure()) {
             return TetherjResponse.failure(filterResponse);
         }
 
@@ -1251,7 +1251,7 @@ public class EthereumService {
                     events.add(event);
                 }
                 eventHandle.call(TetherjResponse.success(events));
-            } else if (!eventResponse.isSuccessful()) {
+            } else if (eventResponse.isFailure()) {
                 eventHandle.call(TetherjResponse.failure(eventResponse));
             }
 
