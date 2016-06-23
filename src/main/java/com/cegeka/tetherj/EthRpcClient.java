@@ -87,6 +87,17 @@ public class EthRpcClient {
     }
 
     /**
+     * Get latest block number.
+     *
+     * @return Returns latest block number.
+     * @throws JsonRpcClientException
+     *             In case of rpc errors.
+     */
+    public BigInteger getLatestBlockNumber() throws JsonRpcClientException {
+        return CryptoUtil.hexToBigInteger(rpc.eth_blockNumber());
+    }
+
+    /**
      * This get only counts mined transactions.
      *
      * @param address

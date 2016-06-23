@@ -22,6 +22,11 @@ public class TetherjResponse<T> {
         return getErrorType() == null;
     }
 
+    public boolean isFailure() {
+        return getErrorType() != null;
+    }
+
+
     /**
      * Returns exception that triggered the error. Sometimes its best to check cause as well.
      *
@@ -43,6 +48,14 @@ public class TetherjResponse<T> {
     private final ErrorType errorType;
     private final Exception exception;
     private final T value;
+
+    public static <T> TetherjResponse<T> success(T resp) {
+        return new TetherjResponse<>(null, null, resp);
+    }
+
+    public static <V,T> TetherjResponse<T> failure(TetherjResponse<V> failureResponse) {
+        return new TetherjResponse<>(failureResponse);
+    }
 
     /**
      * Construct response.
