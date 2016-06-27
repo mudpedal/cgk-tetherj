@@ -114,4 +114,41 @@ public class CryptoUtil {
         }
         throw new IllegalArgumentException("Invalid hex character");
     }
+
+    /**
+     * Get the address as short string.
+     * @param ethereumAddress Address as big integer.
+     * @return short string represent 1f21c...
+     */
+    public static String bigIntegerToAddress(BigInteger ethereumAddress) {
+        String address = ethereumAddress.toString(16);
+
+        while (address.length() < 40) {
+            address = "0" + address;
+        }
+
+        if (!isValidAddress(address)) {
+            throw new Error("not an address");
+        }
+
+        return "0x" + address;
+    }
+
+    /**
+     * Returns true if address is a valid ethereum address.
+     * @param address to check
+     * @return true if valid
+     */
+    public static boolean isValidAddress(byte[] address) {
+        return address != null && address.length == 20;
+    }
+
+    /**
+     * Returns true if address is a valid ethereum address.
+     * @param address to check
+     * @return true if valid
+     */
+    public static boolean isValidAddress(String address) {
+        return address != null && address.length() == 40;
+    }
 }
