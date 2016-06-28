@@ -446,6 +446,12 @@ public class CallTransaction {
         }
 
         @Override
+        public Object decode(byte[] encoded, int offset) {
+            BigInteger addressAsInt = (BigInteger) super.decode(encoded, offset);
+            return CryptoUtil.bigIntegerToAddress(addressAsInt);
+        }
+
+        @Override
         public String toString() {
             return "String";
         }
