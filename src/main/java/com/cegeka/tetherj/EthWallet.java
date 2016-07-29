@@ -49,6 +49,11 @@ public class EthWallet implements Serializable {
         this.storage = storage;
     }
 
+    public EthWallet(String privateKey) {
+        this.privateKey = CryptoUtil.hexToBytes(privateKey);
+        this.storage = WalletStoragePojoV3.createFromPrivateKey(this.privateKey);
+    }
+
     /**
      * Generate a random key pair wallet.
      * 
