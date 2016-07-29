@@ -125,13 +125,20 @@ public class EthWallet implements Serializable {
      * @return Returns true if succeeded.
      */
     public boolean unlock(String passphrase) {
-        privateKey = storage.getPrivateKey(passphrase);
+        if (storage.getCrypto() != null) {
+            privateKey = storage.getPrivateKey(passphrase);
+            if (privateKey == null) {
+                logger.debug("Failed to unlock wallet " + storage.toString());
+                return false;
+            }
+
+            logger.debug("Unlocked wallet " + storage.toString());
+        }
+
         if (privateKey == null) {
-            logger.debug("Failed to unlock wallet " + storage.toString());
             return false;
         }
 
-        logger.debug("Unlocked wallet " + storage.toString());
         return true;
     }
 
