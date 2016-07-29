@@ -149,6 +149,11 @@ public class WalletStoragePojoV3 implements Serializable {
         return null;
     }
 
+    /**
+     * Creates storage from private key. Storage will lack encrypted part.
+     * @param privateKey to generate storage from.
+     * @return storage instance
+     */
     public static WalletStoragePojoV3 createFromPrivateKey(byte[] privateKey) {
         WalletStoragePojoV3 wallet = new WalletStoragePojoV3();
         wallet.version = storageVersion;

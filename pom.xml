@@ -87,6 +87,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<propertyExpansion>config_loc=codestyle/</propertyExpansion>
 					<includeTestSourceDirectory>true</includeTestSourceDirectory>
 					<failOnViolation>true</failOnViolation>
 					<configLocation>codestyle/codestyle.xml</configLocation>

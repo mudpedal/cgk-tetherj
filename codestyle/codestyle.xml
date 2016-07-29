@@ -16,7 +16,7 @@ Checkstyle configurartion that checks the Google coding conventions (https://goo
   <property name="fileExtensions" value="java, properties, xml"/>
 
   <module name="SuppressionFilter">
-    <property name="file" value="codestyle/suppressions.xml"/>
+    <property name="file" value="${config_loc}suppressions.xml"/>
     <property name="optional" value="false"/>
   </module>
 
