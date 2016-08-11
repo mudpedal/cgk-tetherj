@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cegeka</groupId>
 	<artifactId>tetherj</artifactId>
-	<version>1.3.1</version>
+	<version>1.3.2-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.scm.id>github</project.scm.id>
@@ -24,7 +24,7 @@
 		<url>${scm.url}</url>
 		<connection>${scm.url}</connection>
 		<developerConnection>${scm.url}</developerConnection>
-		<tag>tetherj-1.3.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<build>
 		<pluginManagement>
