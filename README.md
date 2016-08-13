@@ -1,5 +1,5 @@
 # About
-Ethereum Connector In Java. Please see (https://github.com/cegeka/tether/wiki "wiki") for more information.
+Ethereum Connector In Java. Please see [wiki](https://github.com/cegeka/tether/wiki) for more information.
 
 ##### Build prerequisites
 jdk8  
