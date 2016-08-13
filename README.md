@@ -1,5 +1,5 @@
 # About
-Java API for Ethereum Blockchain Systems.
+Ethereum Connector In Java. Please see (https://github.com/cegeka/tether/wiki "wiki") for more information.
 
 ##### Build prerequisites
 jdk8  
