@@ -1,15 +1,13 @@
 package org.ethereum.vm;
 
 /**
- * A wrapper for a message call from a contract to another account.
- * This can either be a normal CALL, STATELESS call or POST call.
+ * A wrapper for a message call from a contract to another account. This can either be a normal
+ * CALL, STATELESS call or POST call.
  */
 public class MessageCall {
 
     public enum MsgType {
-        CALL,
-        STATELESS,
-        POST
+        CALL, STATELESS, POST
     }
 
     /**
@@ -46,8 +44,8 @@ public class MessageCall {
      */
     private DataWord outDataSize;
 
-    public MessageCall(MsgType type, DataWord gas, DataWord codeAddress,
-                       DataWord endowment, DataWord inDataOffs, DataWord inDataSize) {
+    public MessageCall(MsgType type, DataWord gas, DataWord codeAddress, DataWord endowment,
+            DataWord inDataOffs, DataWord inDataSize) {
         this.type = type;
         this.gas = gas;
         this.codeAddress = codeAddress;
@@ -56,9 +54,8 @@ public class MessageCall {
         this.inDataSize = inDataSize;
     }
 
-    public MessageCall(MsgType type, DataWord gas, DataWord codeAddress,
-                       DataWord endowment, DataWord inDataOffs, DataWord inDataSize,
-                       DataWord outDataOffs, DataWord outDataSize) {
+    public MessageCall(MsgType type, DataWord gas, DataWord codeAddress, DataWord endowment,
+            DataWord inDataOffs, DataWord inDataSize, DataWord outDataOffs, DataWord outDataSize) {
         this(type, gas, codeAddress, endowment, inDataOffs, inDataSize);
         this.outDataOffs = outDataOffs;
         this.outDataSize = outDataSize;

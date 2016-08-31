@@ -3,6 +3,7 @@ package com.cegeka.tetherj;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.ethereum.core.CallTransaction.Function;
@@ -16,173 +17,226 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Factory to instantiate contracts on the chain and access existing ones.
- * 
+ *
  * @author Andrei Grigoriu
  *
  */
 public class EthSmartContractFactory implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8576482271936503680L;
-	private ContractData contract;
+    /**
+     * .
+     */
+    private static final long serialVersionUID = 8576482271936503680L;
+    private ContractData contract;
 
-	private HashMap<String, Function> modFunctions;
-	private HashMap<String, Function> constFunctions;
-	private Function constructor;
-	
-	/**
-	 * 
-	 * @param contract
-	 *            data to use for this factory
-	 */
-	public EthSmartContractFactory(ContractData contract) {
-		this.contract = contract;
-		indexMethods();
-	}
-	
-	/**
-	 * Simple constructor
-	 */
-	public EthSmartContractFactory() {
-	}
-	
-	/**
-	 * 
-	 * @return smart contract factory from json string of contract data
-	 */
-	public static EthSmartContractFactory createFactoryFromContractDataString(String json) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return new EthSmartContractFactory(mapper.readValue(json, ContractData.class));
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
+    private HashMap<String, Function> modFunctions;
+    private HashMap<String, Function> constFunctions;
+    private HashMap<String, Function> events;
+    private Function constructor;
 
-	/**
-	 * called once to index functions by type
-	 */
-	private void indexMethods() {
-		this.modFunctions = new HashMap<>();
-		this.constFunctions = new HashMap<>();
-		
-		ContractAbiMethod[] methods = contract.getInfo().getAbiDefinition();
+    /**
+     * Construct factory by contract data.
+     *
+     * @param contract
+     *            Contract data to use for this factory
+     */
+    public EthSmartContractFactory(ContractData contract) {
+        this.contract = contract;
+        indexMethods();
+    }
 
-		try {
-			for (ContractAbiMethod method : methods) {
-				ObjectMapper mapper = new ObjectMapper();
-				Function function = Function.fromJsonInterface(mapper.writeValueAsString(method));
-				if (method.getType().equals("constructor")) {
-					constructor = function;
-				} else {
-					if (!method.isConstant()) {
-						modFunctions.put(method.getName(), function);
-					} else {
-						constFunctions.put(method.getName(), function);
-					}
-				}
-			}
-		} catch (JsonProcessingException ex) {
-			ex.printStackTrace();
-		}
-	}
+    /**
+     * Noarg constructor.
+     */
+    public EthSmartContractFactory() {
+    }
 
-	/**
-	 * 
-	 * @return contact data
-	 */
-	public ContractData getContract() {
-		return contract;
-	}
-	
-	/**
-	 * Set contract data
-	 * @param contract
-	 */
-	public void setContract(ContractData contract) {
-		this.contract = contract;
-	}
+    /**
+     * Factory static method to create a smart contract factory from json contract data.
+     *
+     * @return smart contract factory.
+     */
+    public static EthSmartContractFactory createFactoryFromContractDataString(String json)
+            throws IOException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return new EthSmartContractFactory(mapper.readValue(json, ContractData.class));
+    }
 
-	/**
-	 * 
-	 * @return contract data as json string. Use this to store it into the
-	 *         database.
-	 */
-	public String getContractDataAsString() {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.writeValueAsString(contract);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    /**
+     * called once to index functions by type.
+     */
+    private void indexMethods() {
+        this.modFunctions = new HashMap<>();
+        this.constFunctions = new HashMap<>();
+        this.events = new HashMap<>();
 
-	/**
-	 * @return contract evm code
-	 */
-	public String getCode() {
-		return contract.getCode();
-	}
+        ContractAbiMethod[] methods = contract.getInfo().getAbiDefinition();
 
-	/**
-	 * Creates a transaction that will create a contract instance.
-	 * 
-	 * @param args
-	 *            for the contract constructor
-	 * @return transaction to sign and submit to your service
-	 */
-	public EthTransaction createContract(Object... args) {
+        try {
+            for (ContractAbiMethod method : methods) {
+                ObjectMapper mapper = new ObjectMapper();
+                Function function = Function.fromJsonInterface(mapper.writeValueAsString(method));
+                if (method.getType().equals("constructor")) {
+                    constructor = function;
+                } else if (method.getType().equals("function")) {
+                    if (!method.isConstant()) {
+                        modFunctions.put(method.getName(), function);
+                    } else {
+                        constFunctions.put(method.getName(), function);
+                    }
+                } else {
+                    events.put(method.getName(), function);
+                }
+            }
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-		byte[] codeBytes = CryptoUtil.hexToBytes(contract.getCode());
-		byte[] constructorCall = constructor.encodeArguments(args);
+    /**
+     * @return Returns contract data.
+     */
+    public ContractData getContractData() {
+        return contract;
+    }
 
-		return new EthTransaction(null, BigInteger.ZERO, EthTransaction.defaultGasPrice, EthTransaction.defaultGasLimit,
-				ByteUtil.merge(codeBytes, constructorCall));
-	}
+    /**
+     * Set contract data.
+     *
+     * @param contract
+     *            Contract data to set.
+     */
+    public void setContract(ContractData contract) {
+        this.contract = contract;
+    }
 
-	/**
-	 * Create a smart contract handle for a contract on your chain.
-	 * 
-	 * @param contractAddress
-	 *            for the contract on the chain
-	 * @return the smart contract handle
-	 */
-	public EthSmartContract getContract(String contractAddress) {
-		return new EthSmartContract(this, contractAddress);
-	}
+    /**
+     *
+     * @return Returns contract data as json string. Use this for storage purposes.
+     */
+    public String getContractDataAsString() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(contract);
+        } catch (JsonProcessingException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
 
-	/**
-	 * Return a constant function handle for this contract
-	 * 
-	 * @param method
-	 *            to get
-	 * @return
-	 */
-	public Function getConstantFunction(String method) {
-		if (constFunctions == null) {
-			indexMethods();
-		}
-		return constFunctions.get(method);
-	}
+    /**
+     * @return Returns contract evm code.
+     */
+    public String getCode() {
+        return contract.getCode();
+    }
 
-	/**
-	 * Return a modifier function handle for this contract
-	 * 
-	 * @param method
-	 *            to get
-	 * @return
-	 */
-	public Function getModFunction(String method) {
-		if (modFunctions == null) {
-			indexMethods();
-		}
-		return modFunctions.get(method);
-	}
+    /**
+     * Creates a transaction that will create a contract instance.
+     *
+     * @param args
+     *            for the contract constructor
+     * @return Returns transaction to sign and submit to your service.
+     */
+    public EthTransaction createContract(Object... args) {
+
+        byte[] codeBytes = CryptoUtil.hexToBytes(contract.getCode());
+        byte[] constructorCall = constructor.encodeArguments(args);
+
+        return new EthTransaction(null, BigInteger.ZERO, EthTransaction.DEFAULT_GAS_PRICE,
+                EthTransaction.DEFAULT_GAS_LIMIT, ByteUtil.merge(codeBytes, constructorCall));
+    }
+
+    /**
+     * Factory method to create a smart contract handle for a contract on your chain.
+     *
+     * @param contractAddress
+     *            Contract address on the blockchain.
+     * @return Returns the smart contract handle
+     */
+    public EthSmartContract getContract(String contractAddress) {
+        return new EthSmartContract(this, contractAddress);
+    }
+
+    /**
+     * @return Returns all modifier functions.
+     */
+    public Collection<Function> getModFunctions() {
+        if (modFunctions == null) {
+            indexMethods();
+        }
+        return modFunctions.values();
+    }
+
+    /**
+     * @return Returns all constant functions.
+     */
+    public Collection<Function> getConstFunctions() {
+        if (constFunctions == null) {
+            indexMethods();
+        }
+        return constFunctions.values();
+    }
+
+    /**
+     * @return Returns all event functions.
+     */
+    public Collection<Function> getEventFunctions() {
+        if (events == null) {
+            indexMethods();
+        }
+        return events.values();
+    }
+
+    /**
+     * @return Returns constructor function.
+     */
+    public Function getConstructor() {
+        if (constructor == null) {
+            indexMethods();
+        }
+        return constructor;
+    }
+
+    /**
+     * Return a constant function handle for this contract.
+     *
+     * @param method
+     *            Method name.
+     * @return Returns the requested constant function.
+     */
+    public Function getConstantFunction(String method) {
+        if (constFunctions == null) {
+            indexMethods();
+        }
+        return constFunctions.get(method);
+    }
+
+    /**
+     * Return a modifier function handle for this contract.
+     *
+     * @param method
+     *            Method name.
+     * @return Returns the requested modifier function.
+     */
+    public Function getModFunction(String method) {
+        if (modFunctions == null) {
+            indexMethods();
+        }
+        return modFunctions.get(method);
+    }
+
+    /**
+     * Return an event function handle for this contract.
+     *
+     * @param event
+     *            Event name.
+     * @return Returns the requested event function.
+     */
+    public Function getEventFunction(String event) {
+        if (events == null) {
+            indexMethods();
+        }
+        return events.get(event);
+    }
 
 }

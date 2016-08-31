@@ -16,10 +16,10 @@ public class LRUMap<K, V> extends ConcurrentHashMap<K, V> {
         this.maxEntries = maxEntries;
     }
 
-/* todo: temporary removed during concurrent impl
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<K,V> eldest) {
-        return size() > maxEntries;
-    }
-*/
+    /*
+     * todo: temporary removed during concurrent impl
+     * 
+     * @Override protected boolean removeEldestEntry(Map.Entry<K,V> eldest) { return size() >
+     * maxEntries; }
+     */
 }

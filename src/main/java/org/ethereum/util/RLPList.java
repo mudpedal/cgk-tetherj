@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class RLPList extends ArrayList<RLPElement> implements RLPElement {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 4295342919763885324L;
-	byte[] rlpData;
+     * 
+     */
+    private static final long serialVersionUID = 4295342919763885324L;
+    byte[] rlpData;
 
     public void setRLPData(byte[] rlpData) {
         this.rlpData = rlpData;

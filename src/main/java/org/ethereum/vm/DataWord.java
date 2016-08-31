@@ -10,8 +10,8 @@ import org.spongycastle.util.Arrays;
 import org.spongycastle.util.encoders.Hex;
 
 /**
- * DataWord is the 32-byte array representation of a 256-bit number
- * Calculations can be done on this word with other DataWords
+ * DataWord is the 32-byte array representation of a 256-bit number Calculations can be done on this
+ * word with other DataWords
  *
  * @author Roman Mandeleil
  * @since 01.06.2014
@@ -21,9 +21,8 @@ public class DataWord implements Comparable<DataWord> {
     /* Maximum value of the DataWord */
     public static final BigInteger _2_256 = BigInteger.valueOf(2).pow(256);
     public static final BigInteger MAX_VALUE = _2_256.subtract(BigInteger.ONE);
-    public static final DataWord ZERO = new DataWord(new byte[32]);      // don't push it in to the stack
-    public static final DataWord ZERO_EMPTY_ARRAY = new DataWord(new byte[0]);      // don't push it in to the stack
-
+    public static final DataWord ZERO = new DataWord(new byte[32]);
+    public static final DataWord ZERO_EMPTY_ARRAY = new DataWord(new byte[0]);
     private byte[] data = new byte[32];
 
     public DataWord() {
@@ -48,7 +47,7 @@ public class DataWord implements Comparable<DataWord> {
         this(Hex.decode(data));
     }
 
-    public DataWord(ByteArrayWrapper wrappedData){
+    public DataWord(ByteArrayWrapper wrappedData) {
         this(wrappedData.getData());
     }
 
@@ -80,18 +79,17 @@ public class DataWord implements Comparable<DataWord> {
     }
 
     /**
-     * Converts this DataWord to an int, checking for lost information.
-     * If this DataWord is out of the possible range for an int result
-     * then an ArithmeticException is thrown.
+     * Converts this DataWord to an int, checking for lost information. If this DataWord is out of
+     * the possible range for an int result then an ArithmeticException is thrown.
      *
      * @return this DataWord converted to an int.
-     * @throws ArithmeticException - if this will not fit in an int.
+     * @throws ArithmeticException
+     *             - if this will not fit in an int.
      */
     public int intValue() {
         int intVal = 0;
 
-        for (int i = 0; i < data.length; i++)
-        {
+        for (int i = 0; i < data.length; i++) {
             intVal = (intVal << 8) + (data[i] & 0xff);
         }
 
@@ -99,29 +97,28 @@ public class DataWord implements Comparable<DataWord> {
     }
 
     /**
-     * In case of int overflow returns Integer.MAX_VALUE
-     * otherwise works as #intValue()
+     * In case of int overflow returns Integer.MAX_VALUE otherwise works as #intValue()
      */
     public int intValueSafe() {
         int bytesOccupied = bytesOccupied();
         int intValue = intValue();
-        if (bytesOccupied > 4 || intValue < 0) return Integer.MAX_VALUE;
+        if (bytesOccupied > 4 || intValue < 0)
+            return Integer.MAX_VALUE;
         return intValue;
     }
 
     /**
-     * Converts this DataWord to a long, checking for lost information.
-     * If this DataWord is out of the possible range for a long result
-     * then an ArithmeticException is thrown.
+     * Converts this DataWord to a long, checking for lost information. If this DataWord is out of
+     * the possible range for a long result then an ArithmeticException is thrown.
      *
      * @return this DataWord converted to a long.
-     * @throws ArithmeticException - if this will not fit in a long.
+     * @throws ArithmeticException
+     *             - if this will not fit in a long.
      */
     public long longValue() {
 
         long longVal = 0;
-        for (int i = 0; i < data.length; i++)
-        {
+        for (int i = 0; i < data.length; i++) {
             longVal = (longVal << 8) + (data[i] & 0xff);
         }
 
@@ -129,13 +126,13 @@ public class DataWord implements Comparable<DataWord> {
     }
 
     /**
-     * In case of long overflow returns Long.MAX_VALUE
-     * otherwise works as #longValue()
+     * In case of long overflow returns Long.MAX_VALUE otherwise works as #longValue()
      */
     public long longValueSafe() {
         int bytesOccupied = bytesOccupied();
         long longValue = longValue();
-        if (bytesOccupied > 8 || longValue < 0) return Long.MAX_VALUE;
+        if (bytesOccupied > 8 || longValue < 0)
+            return Long.MAX_VALUE;
         return longValue;
     }
 
@@ -143,13 +140,14 @@ public class DataWord implements Comparable<DataWord> {
         return new BigInteger(data);
     }
 
-    public String  bigIntValue() {
+    public String bigIntValue() {
         return new BigInteger(data).toString();
     }
 
     public boolean isZero() {
         for (byte tmp : data) {
-            if (tmp != 0) return false;
+            if (tmp != 0)
+                return false;
         }
         return true;
     }
@@ -188,7 +186,8 @@ public class DataWord implements Comparable<DataWord> {
 
     public void negate() {
 
-        if (this.isZero()) return;
+        if (this.isZero())
+            return;
 
         for (int i = 0; i < this.data.length; ++i) {
             this.data[i] = (byte) ~this.data[i];
@@ -196,7 +195,8 @@ public class DataWord implements Comparable<DataWord> {
 
         for (int i = this.data.length - 1; i >= 0; --i) {
             this.data[i] = (byte) (1 + this.data[i] & 0xFF);
-            if (this.data[i] != 0) break;
+            if (this.data[i] != 0)
+                break;
         }
     }
 
@@ -208,7 +208,7 @@ public class DataWord implements Comparable<DataWord> {
         this.data = ByteUtil.copyToArray(MAX_VALUE.subtract(this.value()));
     }
 
-    // By   : Holger
+    // By : Holger
     // From : http://stackoverflow.com/a/24023466/459349
     public void add(DataWord word) {
         byte[] result = new byte[32];
@@ -227,8 +227,8 @@ public class DataWord implements Comparable<DataWord> {
     }
 
     // TODO: mul can be done in more efficient way
-    // TODO:     with shift left shift right trick
-    // TODO      without BigInteger quick hack
+    // TODO: with shift left shift right trick
+    // TODO without BigInteger quick hack
     public void mul(DataWord word) {
         BigInteger result = value().multiply(word.value());
         this.data = ByteUtil.copyToArray(result.and(MAX_VALUE));
@@ -257,7 +257,6 @@ public class DataWord implements Comparable<DataWord> {
         BigInteger result = sValue().divide(word.sValue());
         this.data = ByteUtil.copyToArray(result.and(MAX_VALUE));
     }
-
 
     // TODO: improve with no BigInteger
     public void sub(DataWord word) {
@@ -317,6 +316,7 @@ public class DataWord implements Comparable<DataWord> {
         this.data = ByteUtil.copyToArray(result.and(MAX_VALUE));
     }
 
+    @Override
     public String toString() {
         return Hex.toHexString(data);
     }
@@ -324,7 +324,8 @@ public class DataWord implements Comparable<DataWord> {
     public String toPrefixString() {
 
         byte[] pref = getNoLeadZeroesData();
-        if (pref.length == 0) return "";
+        if (pref.length == 0)
+            return "";
 
         if (pref.length < 7)
             return Hex.toHexString(pref);
@@ -337,14 +338,17 @@ public class DataWord implements Comparable<DataWord> {
         return "0x" + hexValue.replaceFirst("^0+(?!$)", "");
     }
 
+    @Override
     public DataWord clone() {
         return new DataWord(Arrays.clone(data));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         DataWord dataWord = (DataWord) o;
 
@@ -359,10 +363,10 @@ public class DataWord implements Comparable<DataWord> {
 
     @Override
     public int compareTo(DataWord o) {
-        if (o == null || o.getData() == null) return -1;
-        int result = FastByteComparisons.compareTo(
-                data, 0, data.length,
-                o.getData(), 0, o.getData().length);
+        if (o == null || o.getData() == null)
+            return -1;
+        int result = FastByteComparisons.compareTo(data, 0, data.length, o.getData(), 0,
+                o.getData().length);
         // Convert result into -1, 0 or 1 as is the convention
         return (int) Math.signum(result);
     }
@@ -378,7 +382,8 @@ public class DataWord implements Comparable<DataWord> {
 
     public int bytesOccupied() {
         int firstNonZero = ByteUtil.firstNonZeroByte(data);
-        if (firstNonZero == -1) return 0;
+        if (firstNonZero == -1)
+            return 0;
         return 31 - firstNonZero + 1;
     }
 
@@ -386,7 +391,7 @@ public class DataWord implements Comparable<DataWord> {
         return Hex.toHexString(data).equals(hex);
     }
 
-    public String asString(){
+    public String asString() {
         return new String(getNoLeadZeroesData());
     }
 }

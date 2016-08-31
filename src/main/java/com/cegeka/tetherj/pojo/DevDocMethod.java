@@ -2,27 +2,19 @@ package com.cegeka.tetherj.pojo;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DevDocMethod implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6621194127186336761L;
-	public String getDetails() {
-		return details;
-	}
 
-	public void setDetails(String details) {
-		this.details = details;
-	}
+    private static final long serialVersionUID = -6621194127186336761L;
 
-	public DevDocMethodParams getParams() {
-		return params;
-	}
+    @JsonProperty("return")
+    String returnValue;
 
-	public void setParams(DevDocMethodParams params) {
-		this.params = params;
-	}
-
-	String details;
-	DevDocMethodParams params;
+    String details;
+    DevDocMethodParams params;
 }
