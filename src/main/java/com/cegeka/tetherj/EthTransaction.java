@@ -152,7 +152,7 @@ public class EthTransaction {
             to = to.substring(2);
         }
 
-        Transaction tx = Transaction.create(to, weiValue, nonce, gasPrice, gasLimit, data);
+        Transaction tx = Transaction.create(to, weiValue, nonce, gasPrice, gasLimit, data, 1);
         tx.sign(CryptoUtil.hexToBytes(privateKey));
 
         return new EthSignedTransaction(this, wallet.getAddress(), nonce, tx.getEncoded());
